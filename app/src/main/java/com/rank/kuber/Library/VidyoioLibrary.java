@@ -120,7 +120,7 @@ public class VidyoioLibrary implements Connector.IConnect,
 
         instance.setRoomActivityListener(listener);
 //
-        instance.requestPermission(activity);
+ //       instance.requestPermission(activity);
 
         return instance;
     }
@@ -184,9 +184,9 @@ public class VidyoioLibrary implements Connector.IConnect,
     public void constructConnector(VideoFrameLayout mVideoFrame){
         try {
             mVidyoConnector = new Connector(mVideoFrame,
-                    Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Tiles,
+                    Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Default,
                     7,
-                    "info@VidyoClient info@VidyoConnector warning",
+                    "",
                     "",
                     0);
         }catch (Exception ex){

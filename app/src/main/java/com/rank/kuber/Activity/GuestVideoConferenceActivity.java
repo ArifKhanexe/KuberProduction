@@ -132,7 +132,7 @@ public class GuestVideoConferenceActivity extends AppCompatActivity implements
     //    String Host =  "https://RanktechSolutions.vidyocloud.com";   //TODO old Portal
     Boolean callEndedByHeadEmployee = false;
     //TODO new Portal Host vidyo 7-01-2022
-    String Host = "";
+    String Host = "ranktechsolutions.platform.vidyo.io";
 
 
     @Override
@@ -184,40 +184,61 @@ public class GuestVideoConferenceActivity extends AppCompatActivity implements
 
         // Set the application's UI context to this activity.
 //        ConnectorPkg.setApplicationUIContext(this);
-        mVidyoioLibrary.setApplicationUIContext(this);
+        mVidyoioLibrary.setApplicationUIContext(GuestVideoConferenceActivity.this);
 
 
-
+        Boolean b= mVidyoioLibrary.initialize();
         // Initialize the VidyoClient library - this should be done once in the lifetime of the application.
 //
-        if (mVidyoioLibrary.initialize()) {
+        if (b) {
             // Construct Connector and register for events.
             try {
                 Log.d(TAG, "Constructing Connector");
 
                 mVidyoioLibrary.constructConnector(mVideoFrame);
-
-//                mVidyoioLibrary.setEventListener();
+                mVidyoioLibrary.setEventListener();
                 Log.d(TAG, "EVENT LISTENER Already CALLED");
 
                 // Beginning in Android 6.0 (API level 23), users grant permissions to an app while
                 // the app is running, not when they install the app. Check whether app has permission
                 // to access what is declared in its manifest.
-
+                // mVidyoioLibrary.showViewAt(mVideoFrame);
 //                requestPermission();
-//                this.startVideoViewSizeListener();
+                this.startVideoViewSizeListener();
 
             } catch (Exception e) {
                 Log.d(TAG, "Connector Construction failed");
                 Log.d(TAG, e.getMessage());
             }
 //                mVidyoioLibrary.setRoomActivityListener(this);
+
             joinConference();
 
         }
     }
 
 
+    private void startVideoViewSizeListener() {
+        Log.d(TAG,"EVENT LISTENER startVideoViewSizeListener");
+
+        // Render the video each time that the video view (mVideoFrame) is resized. This will
+        // occur upon activity creation, orientation changes, and when foregrounding the app.
+        ViewTreeObserver viewTreeObserver = mVideoFrame.getViewTreeObserver();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    // Specify the width/height of the view to render to.
+                    Log.d(TAG,"EVENT LISTENER showViewAt: width = " + mVideoFrame.getWidth() + ", height = " + mVideoFrame.getHeight());
+//                    mVidyoConnector.showViewAt(mVideoFrame, 0, 0, mVideoFrame.getWidth(), mVideoFrame.getHeight());
+                    mVidyoioLibrary.showViewAt(mVideoFrame);
+                    mOnGlobalLayoutListener = this;
+                }
+            });
+        } else {
+            Log.d(TAG,"ERROR in startVideoViewSizeListener! Video will not be rendered.");
+        }
+    }
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d(TAG,"onNewIntent");
@@ -382,7 +403,7 @@ public class GuestVideoConferenceActivity extends AppCompatActivity implements
             try {
                 mVidyoioLibrary.vidyoioCallConnect(
                         AppData.Portal_Address,
-                        AppData.CustFName,
+                        AppData.CustName,
                         AppData.RoomKey,
                         AppData.RoomName);
             }catch (Exception e){
@@ -437,6 +458,85 @@ public class GuestVideoConferenceActivity extends AppCompatActivity implements
         }
     }
 
+
+ /*   // The state of the VidyoConnector connection changed, reconfigure the UI.
+    // If connected, dismiss the controls language_layout
+    private void changeState(VidyoConnectorState state) {
+        Log.d(TAG,"changeState: " + state.toString());
+
+        mVidyoConnectorState = state;
+
+        // Execute this code on the main thread since it is updating the UI language_layout.
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Set the status text in the toolbar.
+//                mToolbarStatus.setText(mStateDescription.get(mVidyoConnectorState));
+
+                // Depending on the state, do a subset of the following:
+                // - update the toggle connect button to either start call or end call image: mToggleConnectButton
+                // - display toolbar in case it is hidden: mToolbarLayout
+                // - show/hide the connection spinner: mConnectionSpinner
+                // - show/hide the input form: mControlsLayout
+                switch (mVidyoConnectorState) {
+                    case Connecting:
+//                        mToolbarStatus.setText(mStateDescription.get(mVidyoConnectorState));
+                        mToggleConnectButton.setChecked(true);
+//                        mConnectionSpinner.setVisibility(View.VISIBLE);
+                        break;
+
+                    case Connected:
+                        //mToolbarStatus.setText(mStateDescription.get(mVidyoConnectorState));
+                        showToast(mStateDescription.get(mVidyoConnectorState));
+                        mToolbarStatus.setVisibility(View.GONE);
+                        mToggleConnectButton.setChecked(true);
+                        // Keep the device awake if connected.
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        break;
+
+                    case Disconnecting:
+                        mToolbarStatus.setText(mStateDescription.get(mVidyoConnectorState));
+                        // The button just switched to the callStart image.
+                        // Change the button back to the callEnd image because do not want to assume that the Disconnect
+                        // call will actually end the call. Need to wait for the callback to be received
+                        // before swapping to the callStart image.
+                        mToggleConnectButton.setChecked(true);
+                        break;
+
+                    case Disconnected:
+                    case DisconnectedUnexpected:
+                        mToolbarStatus.setText(mStateDescription.get(mVidyoConnectorState));
+                    case Failure:
+                        mToolbarStatus.setText(mStateDescription.get(mVidyoConnectorState));
+                    case FailureInvalidResource:
+                        mToolbarStatus.setText(mStateDescription.get(mVidyoConnectorState));
+                        mToggleConnectButton.setChecked(false);
+                        mToolbarLayout.setVisibility(View.VISIBLE);
+//                        mConnectionSpinner.setVisibility(View.INVISIBLE);
+
+                        // If a return URL was provided as an input parameter, then return to that application
+                        if (mReturnURL != null) {
+                            // Provide a callstate of either 0 or 1, depending on whether the call was successful
+                            Intent returnApp = getPackageManager().getLaunchIntentForPackage(mReturnURL);
+                            returnApp.putExtra("callstate", (mVidyoConnectorState == VidyoConnectorState.Disconnected) ? 1 : 0);
+                            startActivity(returnApp);
+                        }
+
+                        // If the allow-reconnect flag is set to false and a normal (non-failure) disconnect occurred,
+                        // then disable the toggle connect button, in order to prevent reconnection.
+                        if (!mAllowReconnect && (mVidyoConnectorState == VidyoConnectorState.Disconnected)) {
+                            mToggleConnectButton.setEnabled(false);
+                            mToolbarStatus.setText("Call ended");
+                        }
+
+                        // Allow the device to sleep if disconnected.
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        break;
+                }
+            }
+        });
+    }
+*/
 
     public void showAlertDialogOnBackPressed(){
 

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context=".Activity.ConferenceActivity">
+
+    <FrameLayout
+        android:id="@+id/join_params_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/portal_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/join_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imgvw_menu_plus"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="15dp"
+        android:background="@drawable/ic_menu_two"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/llFunctionality"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivMicOn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:src="@drawable/ic_mic_on"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivMicOff"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:src="@drawable/ic_mic_off"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivCamOn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:src="@drawable/ic_video_resume"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivCamOff"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:src="@drawable/ic_video_pause"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivCamRotateBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:src="@drawable/camera_switch"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivCamRotateFront"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:src="@drawable/camera_switch"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/endCall"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:src="@drawable/callend" />
+
+    </LinearLayout>
+
+
+</FrameLayout>

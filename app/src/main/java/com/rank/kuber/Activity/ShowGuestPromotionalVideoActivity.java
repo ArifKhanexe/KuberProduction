@@ -117,7 +117,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
 
 //                           Move to conference activities when agent is available.
                             if(!AppData.CallType.equalsIgnoreCase("chat")){
-                                Intent i = new Intent(getApplicationContext(), GuestVideoConferenceActivity.class);
+                                Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
                                 startActivity(i);
                                 finish();
                             } else {

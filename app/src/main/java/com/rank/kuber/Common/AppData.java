@@ -2,6 +2,8 @@ package com.rank.kuber.Common;
 
 import android.content.Context;
 
+import com.vidyo.VidyoClient.Connector.Connector;
+
 public class AppData {
 
     public static String TAG = "KUBER_TAG";
@@ -46,8 +48,10 @@ public class AppData {
     public static String Longitude= "";
     public static String Latitude= "";
 
+    public static Connector mVidyoconnector=null;
 
-    public static String BASE_URL= "https://collab.ranktechsolutions.com/videobanking/";
+ //   public static String BASE_URL= "https://collab.ranktechsolutions.com/videobanking/";
+    public static String BASE_URL= "https://vconnect.ranktechsolutions.com/videobanking/";
 
 
     public static final String REQUEST_TYPE_SERVICE_LIST = "rest/getservicelist";
