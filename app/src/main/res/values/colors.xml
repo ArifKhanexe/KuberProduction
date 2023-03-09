@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    <color name="colorPrimary">#DC1F15</color>-->
+    <color name="colorPrimary">#F63127</color>
+    <!--    E21F15-->
+    <color name="colorPrimaryDark">#C30606</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorTransparentWhite">#59ffffff</color>
+    <color name="colorTransparentBlack">#a1000000</color>
+
+
+    <color name="alpha_light_grey">#80eeeeee</color>
+    <color name="alpha_dark_grey">#80333333</color>
+
+    <color name="light_grey">#eeeeee</color>
+
+    <!--For Chat Layout-->
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorPrimaryLightDark">#F0F0F0</color>
+    <color name="colorSecondaryText">#757575</color>
+    <color name="light">#DDDDDD</color>
+    <color name="white">#FFFFFF</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="grey">#BDBDBD</color>
+    <color name="dark_grey">#333333</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorDark">#000000</color>
+    <color name="colorAzure">#F0FFFF</color>
+    <color name="colorOffGrey">#EAEAEA</color>
+    <color name="colorWhiteGrey">#C4C6C9</color>
+    <color name="colorDarkGrey">#545353</color>
+    <color name="colorAquamarine">#7FFFD4</color>
+    <color name="colorGrassGreen">#42C382</color>
+    <color name="colorForestGreen">#228B22</color>
+    <color name="colorDarkGreen">#006400</color>
+
+    <color name="colorLightSteelBlue">#B0C4DE</color>
+    <color name="colorLavendar">#E6E6FA</color>
+    <color name="colorMarine">#2D78A5</color>
+    <color name="colorLightRed">#F26161</color>
+    <color name="colorDarkRed">#AC2020</color>
+    <color name="colorDarkOrange">#FF8C00</color>
+    <color name="colorYellow">#FFFFC107</color>
+    <color name="colorLimeGreen">#32CD32</color>
+    <color name="colorLightSeaGreen">#20B2AA</color>
+    <color name="colorDarkTurquoise">#00CED1</color>
+    <color name="colorSteelBlue">#4682B4</color>
+    <color name="colorDodgerBlue">#1E90FF</color>
+    <color name="colorHealthBlue">#00BFFE</color>
+
+    <color name="colorLoginButton">#00A650</color>
+    <color name="colorSettingsButton">#FEFEFE</color>
+
+    <color name="colorSignUpHintColor">#a6a6a6</color>
+    <color name="colorSignUpTextColor">#000000</color>
+    <color name="colorSignUpEditTextBorder">#d7d7d7</color>
+    <color name="colorSignUpEditTextBG">#eaeaea</color>
+    <color name="colorSignUpEditTextBorderPressed">#868686</color>
+    <color name="colorSignUpEditTextBGPressed">#ffffff</color>
+    <color name="colorSignUpConfirm">#1C842F</color>
+    <color name="colorSignUpCancel">#FE0000</color>
+
+    <color name="dashboardbandwidthtile">#FFC107</color>
+    <color name="dashboardvideocalltile">#32c061</color>
+    <color name="dashboardlogouttile">#e26460</color>
+    <color name="dashboardalpha">#77000000</color>
+    <color name="colorRed">#FF0000</color>
+    <color name="dashboardscheduletile">#ad43fc</color>
+
+    <color name="splashbackground">#4682B4</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+
+</resources>
