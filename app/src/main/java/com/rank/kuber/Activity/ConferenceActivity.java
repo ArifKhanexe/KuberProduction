@@ -94,12 +94,14 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         AppData.mVidyoconnector.registerLocalSpeakerEventListener(this);
         AppData.mVidyoconnector.registerParticipantEventListener(this);*/
 //        frame.addOnLayoutChangeListener(this);
+
         initObjects();
         buttonClickEvent();
 
     }
 
     private void initObjects() {
+        Log.e(TAG, "Initobject");
         handler = new Handler();
 
         frame = findViewById(R.id.main_content);
@@ -226,15 +228,22 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
      * Initialize Vidyo Connector Object
      */
     private void initVideoconnectorObj() {
-        ConnectorPkg.setApplicationUIContext(ConferenceActivity.this);
-        ConnectorPkg.initialize();
-        String logLevel = "warning debug@VidyoClient all@LmiPortalSession " +
-                "all@LmiPortalMembership info@LmiResourceManagerUpdates info@LmiPace info@LmiIce " +
-                "all@LmiSignaling warning info@VidyoClient info@LmiPortalSession" +
-                "info@LmiPortalMembership info@LmiResourceManagerUpdates info@LmiPace info@LmiIce";
-        AppData.mVidyoconnector = new Connector(fl_videoFrame, Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Default, 15, logLevel, "", 0);
-        String libVersion = AppData.mVidyoconnector.getVersion();
-        Log.e(TAG, libVersion);
+        Log.e(TAG, "Initvideoconnectorobj");
+         try {
+             ConnectorPkg.setApplicationUIContext(getApplicationContext());
+             ConnectorPkg.initialize();
+             String logLevel = "info@VidyoClient info@VidyoConnector warning";
+
+             AppData.mVidyoconnector = new Connector(fl_videoFrame, Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Default, 15, logLevel, "", 0);
+             Log.e(TAG, "Library Version" + AppData.mVidyoconnector.getVersion());
+
+         } catch (Exception e){
+             e.printStackTrace();
+             Log.e(TAG,"Error : " + e.toString());
+         }
+
+        Log.d("VidyoIOLibrary","Version"+AppData.mVidyoconnector.getVersion());
+
         AppData.mVidyoconnector.registerLocalCameraEventListener(this);
         handler.postDelayed(new Runnable() {
             @Override
@@ -255,7 +264,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 //        final String portalParam = portal.getText().toString();
         Log.e(TAG, "Token: " + AppData.RoomKey);
         Log.e(TAG, "Portal: " + AppData.Portal_Address);
-        AppData.mVidyoconnector.connectToRoomAsGuest(Host, AppData.CustFName, AppData.RoomKey, "",this);
+        AppData.mVidyoconnector.connectToRoomAsGuest(Host, AppData.CustName, AppData.RoomKey, "",this);
 
                /* if (AppData.DIAL_CALL_TOKEN != null && AppData.DIAL_CALL_TOKEN.length() > 0) {
                     Log.e("joinConference", "DialCallToken: " + AppData.DIAL_CALL_TOKEN);

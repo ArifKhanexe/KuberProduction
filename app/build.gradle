@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.rank.kuber"
-        minSdk 21
+        minSdk 24
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -38,11 +38,13 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    implementation fileTree(dir: "libs", include: ['*.aar', '*.jar'])
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+   /* implementation fileTree(dir: 'C:\\Users\\Arif PC\\Desktop\\KuberProduction\\app\\libs', include: ['*.aar', '*.jar'], exclude: [])*/
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
