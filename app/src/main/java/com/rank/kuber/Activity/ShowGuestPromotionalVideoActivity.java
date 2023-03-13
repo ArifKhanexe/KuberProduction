@@ -23,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
+public class ShowGuestPromotionalVideoActivity extends AppCompatActivity implements View.OnClickListener{
 
     Handler handler;
     AgentRequest agentRequest;
@@ -156,7 +156,22 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
         retry_btn = (Button) findViewById(R.id.retry_btn) ;
         agentwaitprogressbar= findViewById(R.id.agentwaitingprogressBar);
 
+        retry_btn.setOnClickListener(this);
+        cancel_btn.setOnClickListener(this);
+
         cancel_btn.setVisibility(View.GONE);
         retry_btn.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view==retry_btn){
+            availableagent();
+        }
+        if(view==cancel_btn){
+            Intent i = new Intent(getApplicationContext(), GuestLoginActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 }
