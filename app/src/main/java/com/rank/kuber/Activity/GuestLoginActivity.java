@@ -86,7 +86,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         setClickListenerEvents();
         getServiceDetails();
     }
-
+//     Registering broadcast receiver for runtime network checking
     private void registerBroadcastReceiver() {
         networkBroadcastReceiver= new NetworkBroadcast();
         registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -145,8 +145,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-
-    //    To get the servicelist details from servicelist API
+//      To get the servicelist details from servicelist API
     private void getServiceDetails() {
         ApiClient.getApiClient().getservice(EmptyRequest.INSTANCE).enqueue(new Callback<ServiceModel>() {
             @Override
@@ -326,6 +325,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+//    Checking if email is valid or not.
     public final boolean isValidEmail(String email)
     {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();

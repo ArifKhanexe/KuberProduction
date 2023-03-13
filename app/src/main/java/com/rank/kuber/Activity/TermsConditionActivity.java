@@ -56,7 +56,7 @@ public class TermsConditionActivity extends AppCompatActivity implements View.On
         setClickListenerEvents();
 
     }
-
+//         Registering broadcast receiver for runtime network checking
     private void registerBroadcastReceiver() {
         networkBroadcastReceiver= new NetworkBroadcast();
         registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -80,7 +80,7 @@ public class TermsConditionActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View view) {
         if(view==accept_btn){
-
+//        Call Registercustomer() only when the term_checkbox is checked.
             boolean isChecked =   terms_checkbox.isChecked();
             if(isChecked){
                 RegisterCustomer();
@@ -90,6 +90,7 @@ public class TermsConditionActivity extends AppCompatActivity implements View.On
         }
     }
 
+//    Registering the customer.
     private void RegisterCustomer() {
         registerRequest = new RegisterRequest();
         registerRequest.setCategory(AppData.category);

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -30,6 +31,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
     VideoView video_view;
     TextView waiting_status_tv;
     Button cancel_btn, retry_btn;
+    ProgressBar agentwaitprogressbar;
     String TAG = "ShowGuestPromotionalVideoActivity";
     boolean isCancelledClick = false;
     int count = 1;
@@ -40,15 +42,16 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_guest_promotional_video);
         init();
+        agentwaitprogressbar.setVisibility(View.VISIBLE);
 
-     handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                availableagent();
-            }
-        }, 10000);
-    }
+         handler = new Handler();
+         handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    availableagent();
+                }
+            }, 6000);
+        }
 
         @Override
         protected void onStart() {
@@ -88,6 +91,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
                         Log.e(TAG,"StatusResponse=> "+response.isSuccessful());
                         if (!agentResponse.getPayload().getStatus().equals("Not Initiated")) {
 
+//                            Saving Portal address and Roomkey from url.
                             String url = agentResponse.getPayload().getUrl();
                             String[] arrOfStr = url.split("/join/", 2);
                             AppData.Portal_Address = arrOfStr[0];
@@ -112,10 +116,11 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
                             Log.e(TAG,"Agent_Name=> "+AppData.Agent_Name);
                             Log.e(TAG,"Portal_Address=> "+AppData.Portal_Address);
 
+                            agentwaitprogressbar.setVisibility(View.GONE);
 //                        Showing agent name
                             waiting_status_tv.setText("You are going to meet "+AppData.Agent_Name);
 
-//                           Move to conference activities when agent is available.
+//                           Move to conference activities when agent is available and calltype is video or audio. Else move to chat conference.
                             if(!AppData.CallType.equalsIgnoreCase("chat")){
                                 Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
                                 startActivity(i);
@@ -127,6 +132,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
                             }
 
                         } else{
+                            agentwaitprogressbar.setVisibility(View.GONE);
                             waiting_status_tv.setText("Sorry, no Agent is available right now. Please try again later.");
                             retry_btn.setVisibility(View.VISIBLE);
                             cancel_btn.setVisibility(View.VISIBLE);
@@ -148,6 +154,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity {
         waiting_status_tv = (TextView) findViewById(R.id.waiting_status_tv);
         cancel_btn = (Button) findViewById(R.id.cancel_btn);
         retry_btn = (Button) findViewById(R.id.retry_btn) ;
+        agentwaitprogressbar= findViewById(R.id.agentwaitingprogressBar);
 
         cancel_btn.setVisibility(View.GONE);
         retry_btn.setVisibility(View.GONE);

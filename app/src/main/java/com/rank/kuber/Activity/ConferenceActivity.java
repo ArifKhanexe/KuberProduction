@@ -80,7 +80,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
 
-        joinForm = findViewById(R.id.join_params_frame);
+ //       joinForm = findViewById(R.id.join_params_frame);
 /*        promoVideoLayout = findViewById(R.id.promoVideolayout);
         txtAgentInfo = promoVideoLayout.findViewById(R.id.txtAgentInfo);
         promotional_videovw = promoVideoLayout.findViewById(R.id.videoPlayer);
@@ -88,7 +88,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         endCallReceiver = new EndCallReceiver();*/
 
         joinProgress = findViewById(R.id.join_progress);
-        joinProgress.setVisibility(View.GONE);
+        joinProgress.setVisibility(View.VISIBLE);
+
         /*AppData.mVidyoconnector.registerLocalCameraEventListener(this);
         AppData.mVidyoconnector.registerLocalMicrophoneEventListener(this);
         AppData.mVidyoconnector.registerLocalSpeakerEventListener(this);
@@ -128,6 +129,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                     llFunctionality.setVisibility(View.GONE);
                 } else {
                     llFunctionality.setVisibility(View.VISIBLE);
+                    iv_menu.setVisibility(View.GONE);
                 }
             }
         });
@@ -321,7 +323,6 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
         joinProgress.setVisibility(View.GONE);
 
-        joinForm.setVisibility(View.VISIBLE);
 //        lmiDeviceManagerView.setVisibility(View.GONE);
 
 //        controlForm.setVisibility(View.GONE);
@@ -335,7 +336,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 //            jniBridge.LeaveConference();
 //            callCancel();
             finish();
-            startActivity(new Intent(ConferenceActivity.this, ShowGuestPromotionalVideoActivity.class));
+            startActivity(new Intent(ConferenceActivity.this, FeedbackActivity.class));
 
         }
     }
