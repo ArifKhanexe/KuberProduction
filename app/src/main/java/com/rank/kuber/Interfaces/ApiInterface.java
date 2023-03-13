@@ -4,6 +4,7 @@ import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.AgentRequest;
 import com.rank.kuber.Model.AgentResponse;
 import com.rank.kuber.Model.EmptyRequest;
+import com.rank.kuber.Model.HangUpCustomerRequest;
 import com.rank.kuber.Model.RegisterRequest;
 import com.rank.kuber.Model.RegisterResponse;
 import com.rank.kuber.Model.ServiceModel;
@@ -22,6 +23,9 @@ public interface ApiInterface {
 
     @POST(AppData.REQUEST_TYPE_AVAILABLE_AGENT)
     Call<AgentResponse> getavailableagent (@Body AgentRequest agentRequest);
+
+    @POST(AppData.REQUEST_TYPE_HANGUP_CUSTOMER)
+    Call<> gethangupcustomer(@Body HangUpCustomerRequest hangUpCustomerRequest);
 
 
 

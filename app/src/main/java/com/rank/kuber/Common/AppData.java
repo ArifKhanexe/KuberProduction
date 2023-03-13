@@ -57,6 +57,8 @@ public class AppData {
     public static final String REQUEST_TYPE_SERVICE_LIST = "rest/getservicelist";
     public static final String REQUEST_TYPE_REGISTER_CUSTOMER = "rest/registercustomer";
     public static final String REQUEST_TYPE_AVAILABLE_AGENT = "rest/calltoavailabeagent";
+    public static final String REQUEST_TYPE_HANGUP_CUSTOMER = "rest/hangupcustomer";
+
 
 
 }
