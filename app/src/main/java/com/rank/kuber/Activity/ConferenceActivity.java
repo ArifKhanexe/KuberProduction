@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -23,7 +24,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
+import com.rank.kuber.Model.HangUpCustomerRequest;
+import com.rank.kuber.Model.HangUpCustomerResponse;
 import com.rank.kuber.R;
 import com.vidyo.VidyoClient.Connector.Connector;
 import com.vidyo.VidyoClient.Connector.ConnectorPkg;
@@ -40,6 +44,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import javax.crypto.NoSuchPaddingException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class ConferenceActivity extends AppCompatActivity implements Connector.IConnect,
@@ -59,6 +67,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     ViewGroup frame;
     private FrameLayout fl_videoFrame;
 
+    private HangUpCustomerRequest hangUpCustomerRequest;
+
     private boolean doRender = false;
     private boolean callStarted = false;
     private ProgressBar joinProgress;
@@ -73,11 +83,15 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //code that displays the content in full screen mode
         setContentView(R.layout.activity_conference);
 
         /*Keep Screen Light On*/
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+
 
 
  //       joinForm = findViewById(R.id.join_params_frame);
@@ -129,7 +143,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                     llFunctionality.setVisibility(View.GONE);
                 } else {
                     llFunctionality.setVisibility(View.VISIBLE);
-                    iv_menu.setVisibility(View.GONE);
+//                    iv_menu.setVisibility(View.GONE);
                 }
             }
         });
@@ -306,14 +320,15 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         }
     }
 
-    private void callHangupApiCall(){
 
-    }
 
     private void callEnded() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        callHangupApiCall();
+
         callStarted = false;
+        AppData.Call_ID="";
         AppData.Agent_id = "";
         AppData.RoomKey = "";
         AppData.Portal_Address = "";
@@ -339,6 +354,24 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             startActivity(new Intent(ConferenceActivity.this, FeedbackActivity.class));
 
         }
+    }
+
+    private void callHangupApiCall() {
+        hangUpCustomerRequest = new HangUpCustomerRequest();
+        hangUpCustomerRequest.setCallId(AppData.Call_ID);
+        hangUpCustomerRequest.setCustId(AppData.CustID);
+
+        ApiClient.getApiClient().gethangupcustomer(hangUpCustomerRequest).enqueue(new Callback<HangUpCustomerResponse>() {
+            @Override
+            public void onResponse(Call<HangUpCustomerResponse> call, Response<HangUpCustomerResponse> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<HangUpCustomerResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     void stopDevices() {
@@ -437,7 +470,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         }
     }
 
-    private void audioVideoCheckingForHold() {
+   private void audioVideoCheckingForHold() {
         if ((AppData.isMicOnMute) && (AppData.isSpeakerOnMute) && (AppData.isVideoOnMute)) {
             muteFunction();
         } else if ((!AppData.isMicOnMute) && (AppData.isSpeakerOnMute) && (AppData.isVideoOnMute)) {
@@ -468,6 +501,14 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             unmuteAudioVideo();
         }
     }
+
+ /*   private void audioVideoCheckingForHold2(){
+        if ((!AppData.isMicOnMute) && (!AppData.isSpeakerOnMute) && (!AppData.isVideoOnMute)) {
+            unmuteAudioVideo();
+        } else{
+            muteFunction();
+        }
+    }*/
     private void muteFunction() {
         AppData.mVidyoconnector.setMicrophonePrivacy(true);
         AppData.mVidyoconnector.setSpeakerPrivacy(true);

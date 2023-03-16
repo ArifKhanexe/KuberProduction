@@ -3,6 +3,7 @@ package com.rank.kuber.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -42,6 +43,24 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_guest_promotional_video);
         init();
+
+        video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                return true;
+            }
+        });
+
+        video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.seekTo(0);
+                video_view.start();
+            }
+        });
+
+
         agentwaitprogressbar.setVisibility(View.VISIBLE);
 
          handler = new Handler();
@@ -159,8 +178,21 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         retry_btn.setOnClickListener(this);
         cancel_btn.setOnClickListener(this);
 
+        playPromotionalVideo(AppData.PROMOTIONAL_VIDEO);
+
         cancel_btn.setVisibility(View.GONE);
         retry_btn.setVisibility(View.GONE);
+    }
+
+    private void playPromotionalVideo(String videoURL) {
+        if(!videoURL.isEmpty())
+        {
+            if(!video_view.isPlaying())
+            {
+                video_view.setVideoPath(videoURL);
+                video_view.start();
+            }
+        }
     }
 
     @Override

@@ -29,6 +29,7 @@ public class SplashActivity extends AppCompatActivity {
             , "android.permission.WRITE_EXTERNAL_STORAGE"
             , "android.permission.ACCESS_FINE_LOCATION"
             , "android.permission.ACCESS_NETWORK_STATE"
+            , "android.permission.RECORD_AUDIO"
     };
 
     @Override
@@ -61,7 +62,8 @@ public class SplashActivity extends AppCompatActivity {
         int result2 = ContextCompat.checkSelfPermission(this, mPermissions[1]);
         int result3 = ContextCompat.checkSelfPermission(this, mPermissions[2]);
         int result4 = ContextCompat.checkSelfPermission(this, mPermissions[3]);
-        return result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED && result3 == PackageManager.PERMISSION_GRANTED && result4 == PackageManager.PERMISSION_GRANTED;
+        int result5 = ContextCompat.checkSelfPermission(this, mPermissions[4]);
+        return result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED && result3 == PackageManager.PERMISSION_GRANTED && result4 == PackageManager.PERMISSION_GRANTED && result5 == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -75,7 +77,7 @@ public class SplashActivity extends AppCompatActivity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(SplashActivity.this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2]/*mPermissions[3]*/}, PERMISSIONS_REQUEST_ALL);
+                                ActivityCompat.requestPermissions(SplashActivity.this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2],mPermissions[3],mPermissions[4]}, PERMISSIONS_REQUEST_ALL);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -87,7 +89,7 @@ public class SplashActivity extends AppCompatActivity {
                         }).create().show();
             } else {
                 if (Build.VERSION.SDK_INT > 22) {
-                    ActivityCompat.requestPermissions(this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2]/*mPermissions[3]*/}, PERMISSIONS_REQUEST_ALL);
+                    ActivityCompat.requestPermissions(this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2],mPermissions[3],mPermissions[4]}, PERMISSIONS_REQUEST_ALL);
                 }
             }
         }
