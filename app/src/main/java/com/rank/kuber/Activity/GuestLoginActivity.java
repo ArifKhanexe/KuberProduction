@@ -184,13 +184,13 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId){
                     case R.id.audiooradioButton:
-                        AppData.CallType = "Audio";
+                        AppData.CallType = "audio";
                         break;
                     case R.id.videoradioButton:
-                        AppData.CallType = "Video";
+                        AppData.CallType = "video";
                         break;
                     case R.id.chatoradioButton:
-                        AppData.CallType = "Chat";
+                        AppData.CallType = "chat";
                         break;
                 }
             }

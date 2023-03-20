@@ -79,6 +79,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     String generatedRandomString;
     private Handler handler;
     private static boolean isOnHold;
+//    String Host = "https://ranktechsolutions.platform.vidyo.io";
     String Host = "https://ranktechsolutions.platform.vidyo.io";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,7 +329,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         callHangupApiCall();
 
         callStarted = false;
-        AppData.Call_ID="";
+      //  AppData.Call_ID="";
         AppData.Agent_id = "";
         AppData.RoomKey = "";
         AppData.Portal_Address = "";
@@ -440,6 +441,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     public void onSuccess() {
         Log.e("onSuccess", "Join Conference Successfully");
 
+
+
         /*Register ParticipantEventListener Interface*/
         AppData.mVidyoconnector.registerLocalMicrophoneEventListener(this);
         AppData.mVidyoconnector.registerParticipantEventListener(this);
@@ -450,6 +453,13 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             public void run() {
                 joinProgress.setVisibility(View.GONE);
                 iv_menu.setVisibility(View.VISIBLE);
+
+                if(AppData.CallType.equalsIgnoreCase("audio")){
+                    AppData.mVidyoconnector.setCameraPrivacy(true);
+                    isVideoOnMute = true;
+                    ivCamOn.setVisibility(View.GONE);
+                    ivCamOff.setVisibility(View.VISIBLE);
+                }
                 /*llFunctionality.setVisibility(View.VISIBLE);
                 llFunctionality.bringToFront();*/
 //                    }
@@ -459,14 +469,27 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     }
 
     private void unmuteAudioVideo() {
-        if (!AppData.isMicOnMute) {
-            AppData.mVidyoconnector.setMicrophonePrivacy(false);
-        }
-        if (!AppData.isSpeakerOnMute) {
-            AppData.mVidyoconnector.setSpeakerPrivacy(false);
-        }
-        if (!AppData.isVideoOnMute) {
-            AppData.mVidyoconnector.setCameraPrivacy(false);
+
+        if (AppData.CallType.equalsIgnoreCase("audio")) {
+
+            AppData.mVidyoconnector.setCameraPrivacy(true);
+
+            if (!AppData.isMicOnMute) {
+                AppData.mVidyoconnector.setMicrophonePrivacy(false);
+            }
+            if (!AppData.isSpeakerOnMute) {
+                AppData.mVidyoconnector.setSpeakerPrivacy(false);
+            }
+        } else {
+            if (!AppData.isMicOnMute) {
+                AppData.mVidyoconnector.setMicrophonePrivacy(false);
+            }
+            if (!AppData.isSpeakerOnMute) {
+                AppData.mVidyoconnector.setSpeakerPrivacy(false);
+            }
+            if (!AppData.isVideoOnMute) {
+                AppData.mVidyoconnector.setCameraPrivacy(false);
+            }
         }
     }
 

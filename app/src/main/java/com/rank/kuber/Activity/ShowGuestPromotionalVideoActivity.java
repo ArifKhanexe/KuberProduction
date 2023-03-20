@@ -85,6 +85,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         agentRequest.setLanguage(AppData.language);
         agentRequest.setService(AppData.selectedService);
         agentRequest.setCallOption(AppData.CallType);
+        Log.e(TAG,"CALL OPTION :"+ AppData.CallType);
         if(AppData.location.isEmpty()) {
             agentRequest.setLocation("India");
         }else{
