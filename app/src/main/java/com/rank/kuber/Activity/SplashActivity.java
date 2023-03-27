@@ -17,12 +17,16 @@ import android.widget.Toast;
 
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.R;
+import com.rank.kuber.socket.SocketClass;
+import com.rank.kuber.socket.SocketParser;
+import com.socket.SocketLibrary;
 
 
 public class SplashActivity extends AppCompatActivity {
 
 
     public static final int PERMISSIONS_REQUEST_ALL = 100;
+
 
     private String[] mPermissions = {
             "android.permission.CAMERA"
@@ -36,6 +40,9 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        AppData.currentContext = SplashActivity.this;
+
 //      Checks if permission is already granted. If true, then move to GuestLoginActivity else request permission.
         if(checkPermission()){
             Toast.makeText(SplashActivity.this, "Permission Already Granted", Toast.LENGTH_SHORT).show();
@@ -43,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
         }else {
             requestPermission();
         }
-
+        createSocket();
     }
 
     private void mainFunction() {
@@ -142,6 +149,23 @@ public class SplashActivity extends AppCompatActivity {
                 );
             }
 
+        }
+    }
+    /* @param
+     * @task Create Socket Connection
+     */
+    private void createSocket() {
+        try {
+            AppData.socketClass = new SocketClass();
+            AppData.socketParser = new SocketParser();
+            AppData.socketLibrary = new SocketLibrary();
+            AppData.socketClass.setSocketUrl(AppData.SOCKET_URL);
+            AppData.socketClass.setSocketPort(AppData.SOCKET_PORT);
+
+            AppData.socketParser.createSocket();
+            Log.e("Socket", "Socket Created");
+        } catch (Exception e) {
+            Log.e("CreateSocketException", "ExceptionCause: " + e.getMessage());
         }
     }
 

@@ -1,9 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Activity.ChatConferenceActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ListView
+        android:id="@+id/lv_userSpecificChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/sixDp"
+        android:layout_marginTop="@dimen/sixDp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:divider="@null"
+        android:dividerHeight="@dimen/tenDp"
+        android:scrollbars="none"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/tenDp"
+        android:orientation="horizontal"
+        android:padding="@dimen/tenDp"
+        android:weightSum="1">
+
+        <EditText
+            android:id="@+id/et_writeChatMsg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".85"
+            android:hint="Type your message"
+            android:imeOptions="actionDone"
+            android:maxLength="250"
+            android:padding="@dimen/sixDp"
+            android:textColor="#80333333"
+            android:textSize="@dimen/seventeenSp" />
+
+        <ImageView
+            android:id="@+id/iv_sendChat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/tenDp"
+            android:layout_weight=".15"
+            android:src="@drawable/ic_sendchat" />
+    </LinearLayout>
+
+
+</LinearLayout>

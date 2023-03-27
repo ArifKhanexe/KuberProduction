@@ -2,7 +2,12 @@ package com.rank.kuber.Common;
 
 import android.content.Context;
 
+import com.rank.kuber.socket.SocketClass;
+import com.rank.kuber.socket.SocketParser;
+import com.socket.SocketLibrary;
 import com.vidyo.VidyoClient.Connector.Connector;
+
+import io.socket.client.Socket;
 
 public class AppData {
 
@@ -33,7 +38,7 @@ public class AppData {
     public static String CustFName = "";
     public static String CustLName = "";
     public static String Call_ID = "";
-    public static String SocketHostUrl = "";
+
     public static String ServiceName = "";
     public static String Agent_id = "";
     public static String Entity_id= "";
@@ -44,6 +49,44 @@ public class AppData {
     public static String Portal_Address = "";
     // public static String Portal_Address = "";
     public static String DISPLAY_NAME = "";
+
+    // Socket handling
+    public static String SocketHostUrl = "https://vconnect.ranktechsolutions.com:3001";
+    public static String SOCKET_URL = "https://vconnect.ranktechsolutions.com";//TODO Correct Url 8-11-2022
+    public static String SOCKET_PORT = "3001";
+    public static String socketMSG = "";
+    public static SocketParser socketParser;
+    public static SocketLibrary socketLibrary;
+    public static SocketClass socketClass;
+    public static Socket socket;
+
+    /* Socket MSG Initialization */
+    public static final String SOCKET_MSG_DIAL_CALL_RECEIVED_BY_EMPLOYEE = "callReceivedByDoctor";
+    public static final String SOCKET_MSG_CALL_MISSED_BY_EMPLOYEE = "callMissedByDoctor";
+    public static final String SOCKET_MSG_SCHEDULE_CALL_FROM_EMPLOYEE = "scheduleCallFromEmployee";
+    public static final String SOCKET_MSG_PATIENT_JOIN_SCHEDULE_CALL = "callJoinedByPatient";
+    public static final String SOCKET_MSG_CALL_ENDED_BY_EMPLOYEE = "callEndedByEmployee";
+    public static final String SOCKET_MSG_RECORD_STARTED = "recordConfirm~recordOn";
+    public static final String SOCKET_MSG_MULTIWAY_EMP_LEAVE_CONFERECE = "leaveConferenceByMultiwayEmployee";
+    public static final String SOCKET_MSG_HOLD = "holdByEmployee";
+    public static final String SOCKET_MSG_UNHOLD = "unholdByEmployee";
+    public static final String SOCKET_MSG_FILE_RECEIVED_DURING_CALL = "fileSent";
+    public static final String SOCKET_MSG_PRESCRIPTION_RECEIVED_DURING_CALL = "prescriptionSent";
+
+
+
+    /* Intent Filters For Broadcast Receiver */
+    public static String _intentFilter_FORCE_LOGOUT = "forcelogout";
+    public static String _intentFilter_DIALCALL = "callReceivedByDoctor";
+    public static String _intentFilter_MISSED_CALL = "callMissedByDoctor";
+    public static String _intentFilter_INCOMINGCALL = "scheduleCallFromEmployee";
+    public static String _intentFilter_HOLD = "holdByEmployee";
+    public static String _intentFilter_UNHOLD = "unholdByEmployee";
+    public static String _intentFilter_CHATMSG_RECEIVED = "chatMsgReceived";
+    public static String _intentFilter_INDIVIDUAL_CHATMSG = "individualChatMsgReceived";
+    public static String _intentFilter_FILERECEIVED = "fileReceivedDuringCall";
+    public static String _intentFilter_MULTIWAY = "multiwayCallFromEmployee";
+    public static String _intentFilter_ENDCALL = "callEndedByEmployee";
 
     public static String Longitude= "";
     public static String Latitude= "";

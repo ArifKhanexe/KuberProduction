@@ -26,6 +26,7 @@ import android.widget.VideoView;
 
 import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
+import com.rank.kuber.Model.ChatModel;
 import com.rank.kuber.Model.HangUpCustomerRequest;
 import com.rank.kuber.Model.HangUpCustomerResponse;
 import com.rank.kuber.R;
@@ -68,6 +69,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private FrameLayout fl_videoFrame;
 
     private HangUpCustomerRequest hangUpCustomerRequest;
+
+
 
     private boolean doRender = false;
     private boolean callStarted = false;

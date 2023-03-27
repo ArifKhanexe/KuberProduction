@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/chat_bubble_right_margin"
+    android:layout_marginStart="@dimen/chat_bubble_left_margin"
+    android:layout_marginTop="@dimen/chat_bubble_top_margin"
+    android:minHeight="@dimen/message_bubble_min_height"
+    android:orientation="vertical"
+    android:padding="@dimen/eightDp">
+
+    <TextView
+        android:id="@+id/txtChatSender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:paddingBottom="4dp"
+        android:paddingEnd="@dimen/chat_message_padding"
+        android:text="Me"
+        android:textColor="@color/colorAccent" />
+
+    <TextView
+        android:id="@+id/txtChatMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/txtChatSender"
+        android:background="@drawable/rounded_chat_send"
+        android:padding="@dimen/chat_message_padding"
+        android:text="Test message ?"
+        android:textColor="@color/colorPrimaryText" />
+
+    <TextView
+        android:id="@+id/txtChatDateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/txtChatMessage"
+        android:layout_marginTop="8dp"
+        android:paddingEnd="@dimen/chat_message_padding"
+        android:paddingStart="@dimen/chat_message_padding"
+        android:text="15 Jun, 2017, 4:25 A.M."
+        android:textColor="@color/grey"
+        android:textSize="15sp" />
+</RelativeLayout>

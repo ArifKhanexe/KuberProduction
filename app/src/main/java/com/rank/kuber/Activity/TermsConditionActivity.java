@@ -111,6 +111,7 @@ public class TermsConditionActivity extends AppCompatActivity implements View.On
                        Toast.makeText(TermsConditionActivity.this, "Success", Toast.LENGTH_SHORT).show();
                        AppData.PROMOTIONAL_VIDEO = registerResponse.getPayload().getPromotionalVideo();
                        AppData.CustID = registerResponse.getPayload().getCustomerId(); //CustID is used as LoginID in calltoavailabeagent api.
+
                        AppData.CustName = registerResponse.getPayload().getCustFname();
                        AppData.CustFName = registerResponse.getPayload().getCustFname();
                        AppData.CustLName = registerResponse.getPayload().getCustLname();
