@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class SocketClass {
+
     private String socketUrl, socketPort;
 
     /**
@@ -157,4 +158,5 @@ public class SocketClass {
         if (AppData.socket != null)
             AppData.socket.disconnect();
     }
+
 }

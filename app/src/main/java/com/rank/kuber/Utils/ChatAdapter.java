@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.rank.kuber.Activity.ChatConferenceActivity;
+import com.rank.kuber.Activity.EveryoneChatActivity;
+import com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity;
 import com.rank.kuber.R;
 
 public class ChatAdapter extends BaseAdapter {
@@ -19,7 +21,7 @@ public class ChatAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return ChatConferenceActivity.al_chat_specific_user.size();
+        return ShowGuestPromotionalVideoActivity.al_chat_specific_user.size();
     }
 
     @Override
@@ -36,7 +38,7 @@ public class ChatAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        if (ChatConferenceActivity.al_chat_specific_user.get(position).getLeft()) {
+        if (ShowGuestPromotionalVideoActivity.al_chat_specific_user.get(position).getLeft()) {
             convertView = inflater.inflate(R.layout.sent_chat_layout, parent, false);
         } else {
             convertView = inflater.inflate(R.layout.receive_chat_layout, parent, false);
@@ -46,9 +48,9 @@ public class ChatAdapter extends BaseAdapter {
         TextView chatPerson = (TextView) convertView.findViewById(R.id.txtChatSender);
         TextView chatMessage = (TextView) convertView.findViewById(R.id.txtChatMessage);
 
-        chatDate.setText(ChatConferenceActivity.al_chat_specific_user.get(position).getTime());
-        chatPerson.setText(ChatConferenceActivity.al_chat_specific_user.get(position).getSenderId());
-        chatMessage.setText(ChatConferenceActivity.al_chat_specific_user.get(position).getMsg());
+        chatDate.setText(ShowGuestPromotionalVideoActivity.al_chat_specific_user.get(position).getTime());
+        chatPerson.setText(ShowGuestPromotionalVideoActivity.al_chat_specific_user.get(position).getSenderId());
+        chatMessage.setText(ShowGuestPromotionalVideoActivity.al_chat_specific_user.get(position).getMsg());
 
         return convertView;
     }

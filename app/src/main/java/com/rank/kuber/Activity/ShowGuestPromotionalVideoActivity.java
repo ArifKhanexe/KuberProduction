@@ -2,7 +2,10 @@ package com.rank.kuber.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +21,12 @@ import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.AgentRequest;
 import com.rank.kuber.Model.AgentResponse;
+import com.rank.kuber.Model.ChatModel;
 import com.rank.kuber.R;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,12 +45,33 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     boolean isCancelledClick = false;
     int count = 1;
     boolean AgentStatus = false;
+    public static String ADMIN = "supervisor";
+    public static String ADMIN_NAME = "admin/supervisor";
+    private boolean isAdminAvailable = false;
+
+
+    public static ArrayList<ChatModel> al_chat_everyone; //Display chats related to EveryOne
+    public static ArrayList<ChatModel> al_chat_specific_user; //Display chats related to Individual User
+
+    public static int msgCounter = 0;
+    public static boolean isEveryoneSelected = false;
+
+    public static String previousId="";
+
+
+
+    public static ArrayList<String> listOfIds;
+    public static ArrayList<String> listOfUsersId ;
+    public static ArrayList<String> listOfUsersName;
+
+    private ChatMsgReceiver chatMsgReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_guest_promotional_video);
         init();
+        registerReceivers();
 
         video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
@@ -76,6 +105,22 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         protected void onStart() {
         super.onStart();
 
+    }
+
+    private void registerReceivers() {
+        try {
+            registerReceiver(chatMsgReceiver, new IntentFilter(AppData._intentFilter_CHATMSG_RECEIVED));
+        } catch (Exception e) {
+            Log.e(AppData.TAG, "RegisterReceiverExceptionCause: " + e.getMessage());
+        }
+    }
+
+    private void unregisterReceivers() {
+        try {
+            unregisterReceiver(chatMsgReceiver);
+        } catch (Exception e) {
+            Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
+        }
     }
 
     private void availableagent() {
@@ -142,11 +187,11 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
 //                           Move to conference activities when agent is available and calltype is video or audio. Else move to chat conference.
                             if(!AppData.CallType.equalsIgnoreCase("chat")){
-                                Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
+                                Intent i = new Intent(getApplicationContext(), ShowGuestPromotionalVideoActivity.class);
                                 startActivity(i);
                                 finish();
                             } else {
-                                Intent i = new Intent(getApplicationContext(), ChatConferenceActivity.class);
+                                Intent i = new Intent(getApplicationContext(), EveryoneChatActivity.class);
                                 startActivity(i);
                                 finish();
                             }
@@ -170,6 +215,26 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     }
 
     public void init(){
+
+
+        if (al_chat_everyone == null) {
+            al_chat_everyone = new ArrayList<>();
+        }
+        if (al_chat_specific_user == null) {
+            al_chat_specific_user = new ArrayList<>();
+        }
+        if (listOfUsersId == null) {
+            listOfUsersId = new ArrayList<>();
+            listOfUsersId.add("Everyone");
+        }
+        if (listOfUsersName == null) {
+            listOfUsersName = new ArrayList<>();
+            listOfUsersName.add("All-users (group chat)");
+        }
+
+        /*Init Broadcast Receiver*/
+        chatMsgReceiver = new ChatMsgReceiver();
+
         video_view = (VideoView) findViewById(R.id.video_view);
         waiting_status_tv = (TextView) findViewById(R.id.waiting_status_tv);
         cancel_btn = (Button) findViewById(R.id.cancel_btn);
@@ -207,4 +272,154 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
             finish();
         }
     }
+
+    /**
+     * Broadcast Receiver For Chat
+     */
+    private class ChatMsgReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                String msg = intent.getStringExtra("chatMsg");
+                String senderId = intent.getStringExtra("senderId");
+                String event = intent.getStringExtra("event");
+
+
+                if (senderId.contains(ADMIN)) {
+                    boolean isAdminContain = false;
+                    isAdminAvailable = true;
+
+                    /* THIS CHECKING IS DONE TO AVOID MULTIPLE ADMIN NAMES IN LIST */
+                    for (int i = 0; i < listOfUsersId.size(); i++) {
+                        if (listOfUsersId.get(i).contains(ADMIN)) {
+                            isAdminContain = true;
+                            break;
+                        }
+                    }
+
+                    if (!isAdminContain) {
+                        listOfUsersId.add(senderId);
+                        listOfUsersName.add(ADMIN_NAME);
+                    }
+                }
+
+
+                Log.e("ChatMsgReceiver", "listOfUsersId: " + listOfUsersId.toString());
+
+                ChatModel chatModel = new ChatModel();
+
+                chatModel.setSenderId(senderId);
+                chatModel.setMsg(msg);
+                chatModel.setTime(new SimpleDateFormat("dd-MM-yyyy | hh:mm").format(new Date()));
+                chatModel.setLeft(true);
+
+                if (event.equalsIgnoreCase("private-chat")) {
+                    chatModel.setEveryone(false);
+                    isEveryoneSelected = false;
+                } else {
+                    chatModel.setEveryone(true);
+                    isEveryoneSelected = true;
+                }
+
+                ShowGuestPromotionalVideoActivity.al_chat_everyone.add(chatModel);
+
+                /* Inside ChatActivity or UserSpecificChatActivity i.e. the user is currently chatting */
+                if (AppData.currentContext instanceof EveryoneChatActivity || AppData.currentContext instanceof ChatConferenceActivity) {
+
+                    Log.e("ChatMsgReceiver", "inside ChatActivity");
+
+                    /* Checking whether the user is currently chatting or not i.e. inside ViewSpecificChatListActivity */
+                    if ((EveryoneChatActivity.selectedChatUserPos >= 0) && (AppData.currentContext instanceof ChatConferenceActivity)) {
+
+                        Log.e("ChatMsgReceiver", "if part: ViewSpecificChatListActivity");
+                        Log.e("ChatMsgReceiver", "SenderId: " + senderId + " selected id: " + ShowGuestPromotionalVideoActivity.listOfUsersId.get(EveryoneChatActivity.selectedChatUserPos)
+                                + " pos: " + EveryoneChatActivity.selectedChatUserPos + " listOfUsersId: " + listOfUsersId);
+
+                        /* Update the chat list during chatting */
+                        if ((senderId.equalsIgnoreCase(listOfUsersId.get(EveryoneChatActivity.selectedChatUserPos)) && EveryoneChatActivity.selectedChatUserPos > 0 && !isEveryoneSelected)
+                                || (!senderId.equalsIgnoreCase(listOfUsersId.get(EveryoneChatActivity.selectedChatUserPos)) && EveryoneChatActivity.selectedChatUserPos == 0 && isEveryoneSelected)) {
+
+                            Log.e("ChatMsgReceiver", "inside if ");
+                            ShowGuestPromotionalVideoActivity.al_chat_specific_user.add(chatModel);
+                            intent = new Intent(AppData._intentFilter_INDIVIDUAL_CHATMSG);
+                            AppData.currentContext.sendBroadcast(intent);
+                        }
+                        /* While chatting if any msg received from other user, show the toast */
+                        else {
+                            Log.e("ChatMsgReceiver", "else part");
+                            increaseMsgCounter(senderId);
+
+                            //   EveryoneChatActivity.receivedChatId = id;
+                            if (isEveryoneSelected) {
+                                EveryoneChatActivity.receivedChatId = "Everyone";
+                                Toast.makeText(getApplicationContext(), "Chat message received from: " + senderId + " (in Group-chat)", Toast.LENGTH_LONG).show();
+                            } else {
+                                EveryoneChatActivity.receivedChatId = senderId;
+                                Toast.makeText(getApplicationContext(), "Chat message received from: " + senderId, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    } else {
+                        /* Inside EveryoneChatActivity, not in ChatShowGuestPromotionalVideoActivity */
+                        Log.e("ChatMsgReceiver", "else part: ChatShowGuestPromotionalVideoActivity");
+
+                        increaseMsgCounter(senderId);
+
+                        if (isEveryoneSelected) {
+                            EveryoneChatActivity.receivedChatId = "Everyone";
+                        } else {
+                            EveryoneChatActivity.receivedChatId = senderId;
+                        }
+
+                        intent = new Intent(ShowGuestPromotionalVideoActivity.this, EveryoneChatActivity.class);
+                        startActivity(intent);
+                    }
+
+                } else {
+                    /* Not in EveryoneChatActivity, just open the activity */
+                    Log.e("ChatMsgReceiver", "not in EveryoneChatActivity");
+                    increaseMsgCounter(senderId);
+
+                    if (isEveryoneSelected) {
+                        EveryoneChatActivity.receivedChatId = "Everyone";
+                    } else {
+                        EveryoneChatActivity.receivedChatId = senderId;
+                    }
+
+                    intent = new Intent(ShowGuestPromotionalVideoActivity.this, EveryoneChatActivity.class);
+                    startActivity(intent);
+                }
+            } catch (Exception e) {
+                Log.e("ChatMsgReceiver", "ExceptionCause: " + e.getMessage());
+            }
+        }
+    }
+
+
+    private void increaseMsgCounter(String id) {
+
+        /* Since id of the user sent from Everyone or Privately is same */
+        if (isEveryoneSelected) {
+            id = "Everyone";
+        } else {
+            //do nothing
+        }
+
+        /* Empty means, first time when anyone sends chat */
+        if (previousId.isEmpty() || previousId.equalsIgnoreCase(id)) {
+            msgCounter++;
+            previousId = id;
+            Log.e("increaseMsgCounter", "msgCounter: " + msgCounter + ", previousId: " + previousId);
+        }
+
+        /* Refresh the counter, otherwise it will show the unread msg count of other users also */
+        else {
+            msgCounter = 0;
+            msgCounter++;
+            previousId = id;
+            Log.e("increaseMsgCounter", "msgCounter: " + msgCounter + ", previousId: " + previousId);
+        }
+    }
+
+
 }

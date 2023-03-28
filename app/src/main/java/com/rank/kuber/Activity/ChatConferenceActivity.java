@@ -31,11 +31,9 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
     private ListView lv_userSpecificChat;
     private EditText et_writeChatMsg;
     private ImageView iv_sendChat;
-    public static ArrayList<ChatModel> al_chat_specific_user;
     private ChatAdapter chatAdapter;
     private ChatReceivedUserReceiver chatReceivedUserReceiver;
-    private ChatMsgReceiver chatMsgReceiver;
-    public static ArrayList<String> listOfUsersId ;
+
 
 
     @Override
@@ -44,11 +42,6 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_chat_conference);
 
         AppData.currentContext = ChatConferenceActivity.this;
-        if (al_chat_specific_user == null) {
-            al_chat_specific_user = new ArrayList<>();
-        }
-        chatMsgReceiver = new ChatMsgReceiver();
-        registerReceivers();
         AppData.TAG = "UserSpecificChatActivity";
 
         /*Call Required Functions*/
@@ -59,14 +52,6 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
         initObjects();
     }
 
-    private void registerReceivers() {
-        try {
-            registerReceiver(chatMsgReceiver, new IntentFilter(AppData._intentFilter_CHATMSG_RECEIVED));
-
-        } catch (Exception e) {
-            Log.e(AppData.TAG, "RegisterReceiverExceptionCause: " + e.getMessage());
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -115,16 +100,21 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
                 chatModel.setMsg(et_writeChatMsg.getText().toString());
                 chatModel.setTime(new SimpleDateFormat("dd-MM-yyyy | hh:mm").format(new Date()));
                 chatModel.setLeft(false);
-                chatModel.setSenderId(AppData.CustName);
+                chatModel.setSenderId(ShowGuestPromotionalVideoActivity.listOfUsersId.get(EveryoneChatActivity.selectedChatUserPos));
+                chatModel.setEveryone(ShowGuestPromotionalVideoActivity.isEveryoneSelected);
 
 
-                ChatConferenceActivity.al_chat_specific_user.add(chatModel);
-                listOfUsersId = new ArrayList<>();
-                listOfUsersId.add("Everyone");
+                ShowGuestPromotionalVideoActivity.al_chat_everyone.add(chatModel);
+                ShowGuestPromotionalVideoActivity.al_chat_specific_user.add(chatModel);
 
-                Log.e("UserSpecificChatAct", "Chat Send To Everyone");
-                AppData.socketClass.sendGroupChat(listOfUsersId, et_writeChatMsg.getText().toString());
-
+                if (!ShowGuestPromotionalVideoActivity.isEveryoneSelected) {
+                    Log.e("UserSpecificChatAct", "Chat Send To Specific User");
+                    AppData.socketClass.sendPrivateChat(ShowGuestPromotionalVideoActivity.listOfUsersId.get(EveryoneChatActivity.selectedChatUserPos), et_writeChatMsg.getText().toString());
+                } else {
+                    Log.e("UserSpecificChatAct", "ListUserId "+ShowGuestPromotionalVideoActivity.listOfUsersId);
+                    Log.e("UserSpecificChatAct", "Chat Send To Everyone");
+                    AppData.socketClass.sendGroupChat(ShowGuestPromotionalVideoActivity.listOfUsersId, et_writeChatMsg.getText().toString());
+                }
 
                 et_writeChatMsg.setText("");
                 chatAdapter.notifyDataSetChanged();
@@ -135,43 +125,12 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
     }
 
 
-
-    private class ChatMsgReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try {
-                String msg = intent.getStringExtra("chatMsg");
-                String senderId = intent.getStringExtra("senderId");
-                String event = intent.getStringExtra("event");
-
-                ChatModel chatModel = new ChatModel();
-
-                chatModel.setSenderId(senderId);
-                chatModel.setMsg(msg);
-                chatModel.setTime(new SimpleDateFormat("dd-MM-yyyy | hh:mm").format(new Date()));
-                chatModel.setLeft(true);
-
-                if (AppData.currentContext instanceof ChatConferenceActivity) {
-
-                    Log.e("ChatMsgReceiver", "inside if ");
-                    ChatConferenceActivity.al_chat_specific_user.add(chatModel);
-                    intent = new Intent(AppData._intentFilter_INDIVIDUAL_CHATMSG);
-                    AppData.currentContext.sendBroadcast(intent);
-                }
-            }catch (Exception e) {
-                Log.e("ChatMsgReceiver", "ExceptionCause: " + e.getMessage());
-            }
-
-        }
-
-    }
     private class ChatReceivedUserReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                Log.e("chatRecUserReceiver", "UserListSize: " + ChatConferenceActivity.al_chat_specific_user.size());
+                Log.e("chatRecUserReceiver", "UserListSize: " + ShowGuestPromotionalVideoActivity.al_chat_specific_user.size());
                 lv_userSpecificChat.setAdapter(chatAdapter);
             } catch (Exception e) {
                 Log.e("chatRecUserReceiverEx", "ExceptionCause: " + e.getMessage());

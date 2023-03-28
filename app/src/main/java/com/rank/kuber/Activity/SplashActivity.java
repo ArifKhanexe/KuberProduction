@@ -50,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
         }else {
             requestPermission();
         }
-        createSocket();
+
     }
 
     private void mainFunction() {
@@ -151,23 +151,7 @@ public class SplashActivity extends AppCompatActivity {
 
         }
     }
-    /* @param
-     * @task Create Socket Connection
-     */
-    private void createSocket() {
-        try {
-            AppData.socketClass = new SocketClass();
-            AppData.socketParser = new SocketParser();
-            AppData.socketLibrary = new SocketLibrary();
-            AppData.socketClass.setSocketUrl(AppData.SOCKET_URL);
-            AppData.socketClass.setSocketPort(AppData.SOCKET_PORT);
 
-            AppData.socketParser.createSocket();
-            Log.e("Socket", "Socket Created");
-        } catch (Exception e) {
-            Log.e("CreateSocketException", "ExceptionCause: " + e.getMessage());
-        }
-    }
 
 
 }

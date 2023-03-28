@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <ImageView
+        android:id="@+id/circleImageView"
+        android:layout_width="@dimen/fortyfiveDp"
+        android:layout_height="@dimen/fortyfiveDp"
+        android:layout_margin="@dimen/tenDp"
+        android:layout_weight=".1"
+        android:background="@drawable/ic_incoming_user" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".9"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tenDp"
+            android:layout_marginRight="@dimen/tenDp"
+            android:layout_marginTop="@dimen/sixDp"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:text="User name"
+            android:textSize="@dimen/twentyoneSp" />
+
+        <TextView
+            android:id="@+id/tv_userid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tenDp"
+            android:layout_marginRight="@dimen/tenDp"
+            android:layout_marginTop="@dimen/sixDp"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:text="User id"
+            android:textSize="@dimen/fifteenSp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="@dimen/thirtyTwoDp"
+        android:layout_height="@dimen/thirtyTwoDp"
+        android:layout_margin="@dimen/tenDp"
+        android:alpha=".6"
+        android:visibility="gone"
+        android:background="@drawable/ic_arrow_right_black" />
+
+    <TextView
+        android:id="@+id/tv_yellow_dot"
+        android:layout_width="@dimen/thirtyTwoDp"
+        android:layout_height="@dimen/thirtyTwoDp"
+        android:layout_margin="@dimen/tenDp"
+        android:background="@drawable/ic_yellow_dot"
+        android:gravity="center_horizontal|center_vertical"
+        android:padding="@dimen/fourDp"
+        android:text="13"
+        android:textColor="@color/white"
+        android:textSize="@dimen/thirteenSp" />
+
+</LinearLayout>

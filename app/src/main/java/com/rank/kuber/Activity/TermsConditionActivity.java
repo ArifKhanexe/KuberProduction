@@ -33,6 +33,9 @@ import com.rank.kuber.Model.RegisterRequest;
 import com.rank.kuber.Model.RegisterResponse;
 import com.rank.kuber.R;
 import com.rank.kuber.Utils.NetworkBroadcast;
+import com.rank.kuber.socket.SocketClass;
+import com.rank.kuber.socket.SocketParser;
+import com.socket.SocketLibrary;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -118,6 +121,8 @@ public class TermsConditionActivity extends AppCompatActivity implements View.On
                        AppData.SocketHostUrl = registerResponse.getPayload().getSocketHostPublic();
                        AppData.DISPLAY_NAME = AppData.CustFName+" "+AppData.CustLName;
 
+                       createSocket();
+
                        Intent i = new Intent(getApplicationContext(), ShowGuestPromotionalVideoActivity.class);
                        startActivity(i);
                        finish();
@@ -130,6 +135,24 @@ public class TermsConditionActivity extends AppCompatActivity implements View.On
                 Toast.makeText(TermsConditionActivity.this, "Cannot register the customer", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /* @param
+     * @task Create Socket Connection
+     */
+    private void createSocket() {
+        try {
+            AppData.socketClass = new SocketClass();
+            AppData.socketParser = new SocketParser();
+            AppData.socketLibrary = new SocketLibrary();
+            AppData.socketClass.setSocketUrl(AppData.SOCKET_URL);
+            AppData.socketClass.setSocketPort(AppData.SOCKET_PORT);
+
+            AppData.socketParser.createSocket();
+            Log.e("Socket", "Socket Created");
+        } catch (Exception e) {
+            Log.e("CreateSocketException", "ExceptionCause: " + e.getMessage());
+        }
     }
 
 }

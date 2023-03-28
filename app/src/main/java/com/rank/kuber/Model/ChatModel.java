@@ -4,6 +4,15 @@ public class ChatModel {
 
     private String senderId, msg, time;
     private Boolean isLeft = false;
+    private Boolean isEveryone = false;
+
+    public Boolean getEveryone() {
+        return isEveryone;
+    }
+
+    public void setEveryone(Boolean everyone) {
+        isEveryone = everyone;
+    }
 
     public Boolean getLeft() {
         return isLeft;
