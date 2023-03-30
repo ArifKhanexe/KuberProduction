@@ -64,7 +64,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     public static ArrayList<String> listOfUsersId ;
     public static ArrayList<String> listOfUsersName;
 
-    private ChatMsgReceiver chatMsgReceiver;
+    public ChatMsgReceiver chatMsgReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,13 +98,19 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                 public void run() {
                     availableagent();
                 }
-            }, 6000);
+            }, 7000);
         }
 
         @Override
         protected void onStart() {
         super.onStart();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        unregisterReceivers();
     }
 
     private void registerReceivers() {
@@ -114,14 +120,16 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
             Log.e(AppData.TAG, "RegisterReceiverExceptionCause: " + e.getMessage());
         }
     }
+//
+//    private void unregisterReceivers() {
+//        try {
+//            unregisterReceiver(chatMsgReceiver);
+//        } catch (Exception e) {
+//            Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
+//        }
+//    }
 
-    private void unregisterReceivers() {
-        try {
-            unregisterReceiver(chatMsgReceiver);
-        } catch (Exception e) {
-            Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
-        }
-    }
+
 
     private void availableagent() {
         agentRequest = new AgentRequest();
@@ -161,7 +169,6 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             String[] arrOfStr = url.split("/join/", 2);
                             AppData.Portal_Address = arrOfStr[0];
                             AppData.RoomKey = arrOfStr[1];
-
                             AppData.Call_ID = agentResponse.getPayload().getCallId();
                             AppData.Agent_id= agentResponse.getPayload().getAgentId();
                             AppData.SocketHostUrl = agentResponse.getPayload().getSocketHostPublic();
@@ -169,12 +176,18 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             AppData.CustLName=agentResponse.getPayload().getCustLname();
                             AppData.RoomName= agentResponse.getPayload().getRoomName();
                             AppData.Entity_id=agentResponse.getPayload().getEntityId();
+                            AppData.Agent_login_id= agentResponse.getPayload().getAgentLoginId();
+
+
 
 //                        Saving agent name from status
                             String fullStatus = agentResponse.getPayload().getStatus();
                             String[] arr = fullStatus.split("||", 2);
                             AppData.Agent_Name = arr[0];
                             AppData.Agent_Name = fullStatus.substring(11);
+
+                            listOfUsersId.add(AppData.Agent_login_id);
+                            listOfUsersName.add(AppData.Agent_Name);
 
                             Log.e(TAG,"RoomKey=> "+AppData.RoomKey);
                             Log.e(TAG,"Agent_id=> "+AppData.Agent_id);
@@ -187,7 +200,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
 //                           Move to conference activities when agent is available and calltype is video or audio. Else move to chat conference.
                             if(!AppData.CallType.equalsIgnoreCase("chat")){
-                                Intent i = new Intent(getApplicationContext(), ShowGuestPromotionalVideoActivity.class);
+                                Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
                                 startActivity(i);
                                 finish();
                             } else {
@@ -226,7 +239,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         if (listOfUsersId == null) {
             listOfUsersId = new ArrayList<>();
             listOfUsersId.add("Everyone");
-        }
+       }
         if (listOfUsersName == null) {
             listOfUsersName = new ArrayList<>();
             listOfUsersName.add("All-users (group chat)");
@@ -264,7 +277,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     @Override
     public void onClick(View view) {
         if(view==retry_btn){
-            availableagent();
+           availableagent();
         }
         if(view==cancel_btn){
             Intent i = new Intent(getApplicationContext(), GuestLoginActivity.class);
@@ -286,23 +299,23 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                 String event = intent.getStringExtra("event");
 
 
-                if (senderId.contains(ADMIN)) {
-                    boolean isAdminContain = false;
-                    isAdminAvailable = true;
-
-                    /* THIS CHECKING IS DONE TO AVOID MULTIPLE ADMIN NAMES IN LIST */
-                    for (int i = 0; i < listOfUsersId.size(); i++) {
-                        if (listOfUsersId.get(i).contains(ADMIN)) {
-                            isAdminContain = true;
-                            break;
-                        }
-                    }
-
-                    if (!isAdminContain) {
-                        listOfUsersId.add(senderId);
-                        listOfUsersName.add(ADMIN_NAME);
-                    }
-                }
+//                if (senderId.contains(ADMIN)) {
+//                    boolean isAdminContain = false;
+//                    isAdminAvailable = true;
+//
+//                    /* THIS CHECKING IS DONE TO AVOID MULTIPLE ADMIN NAMES IN LIST */
+//                    for (int i = 0; i < listOfUsersId.size(); i++) {
+//                        if (listOfUsersId.get(i).contains(ADMIN)) {
+//                            isAdminContain = true;
+//                            break;
+//                        }
+//                    }
+//
+//                    if (!isAdminContain) {
+//                        listOfUsersId.add(senderId);
+//                        listOfUsersName.add(ADMIN_NAME);
+//                    }
+//                }
 
 
                 Log.e("ChatMsgReceiver", "listOfUsersId: " + listOfUsersId.toString());

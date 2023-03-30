@@ -4,8 +4,9 @@ import java.util.List;
 
 public class ServiceModel {
 
+
     /**
-     * payload : [{"id":3,"serviceCd":"CASA","serviceName":"CASA","serviceDesc":"CASA"},{"id":2,"serviceCd":"CC","serviceName":"Credit Card","serviceDesc":"Credit Card"},{"id":1,"serviceCd":"Loan","serviceName":"LOAN","serviceDesc":"Loan"}]
+     * payload : [{"id":3,"serviceCd":"CASA","serviceName":"New Account","serviceDesc":"CASA New Account"},{"id":2,"serviceCd":"CC","serviceName":"Credit Card","serviceDesc":"Credit Card"},{"id":1,"serviceCd":"LNM","serviceName":"Loan","serviceDesc":"Loan"}]
      * error : null
      * status : true
      */
@@ -15,11 +16,11 @@ public class ServiceModel {
     /**
      * id : 3
      * serviceCd : CASA
-     * serviceName : CASA
-     * serviceDesc : CASA
+     * serviceName : New Account
+     * serviceDesc : CASA New Account
      */
 
-    private List<ServiceList> payload;
+    private List<PayloadBean> payload;
 
     public Object getError() {
         return error;
@@ -37,15 +38,15 @@ public class ServiceModel {
         this.status = status;
     }
 
-    public List<ServiceList> getPayload() {
+    public List<PayloadBean> getPayload() {
         return payload;
     }
 
-    public void setPayload(List<ServiceList> payload) {
+    public void setPayload(List<PayloadBean> payload) {
         this.payload = payload;
     }
 
-    /*public static class PayloadBean {
+    public static class PayloadBean {
         private int id;
         private String serviceCd;
         private String serviceName;
@@ -82,6 +83,5 @@ public class ServiceModel {
         public void setServiceDesc(String serviceDesc) {
             this.serviceDesc = serviceDesc;
         }
-    }*/
-
+    }
 }

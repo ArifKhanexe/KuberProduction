@@ -284,7 +284,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 //        final String portalParam = portal.getText().toString();
         Log.e(TAG, "Token: " + AppData.RoomKey);
         Log.e(TAG, "Portal: " + AppData.Portal_Address);
-        AppData.mVidyoconnector.connectToRoomAsGuest(Host, AppData.CustName, AppData.RoomKey, "",this);
+        String display_name = AppData.CustFName + "~" + AppData.CustID ;
+        AppData.mVidyoconnector.connectToRoomAsGuest(Host, display_name, AppData.RoomKey, "",this);
 
                /* if (AppData.DIAL_CALL_TOKEN != null && AppData.DIAL_CALL_TOKEN.length() > 0) {
                     Log.e("joinConference", "DialCallToken: " + AppData.DIAL_CALL_TOKEN);

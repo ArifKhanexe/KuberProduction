@@ -64,6 +64,7 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(chatReceivedUserReceiver);
+
     }
 
     public static ChatConferenceActivity getInstance() {
@@ -100,7 +101,7 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
                 chatModel.setMsg(et_writeChatMsg.getText().toString());
                 chatModel.setTime(new SimpleDateFormat("dd-MM-yyyy | hh:mm").format(new Date()));
                 chatModel.setLeft(false);
-                chatModel.setSenderId(ShowGuestPromotionalVideoActivity.listOfUsersId.get(EveryoneChatActivity.selectedChatUserPos));
+                chatModel.setSenderId(AppData.CustName);
                 chatModel.setEveryone(ShowGuestPromotionalVideoActivity.isEveryoneSelected);
 
 

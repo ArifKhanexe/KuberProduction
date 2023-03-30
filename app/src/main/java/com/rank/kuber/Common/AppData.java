@@ -40,6 +40,7 @@ public class AppData {
     public static String Call_ID = "";
 
     public static String ServiceName = "";
+    public static String Status ="";
     public static String Agent_id = "";
     public static String Entity_id= "";
     public static String Agent_login_id = "";
@@ -94,7 +95,8 @@ public class AppData {
     public static Connector mVidyoconnector=null;
 
  //   public static String BASE_URL= "https://collab.ranktechsolutions.com/videobanking/";
-    public static String BASE_URL= "https://vconnect.ranktechsolutions.com/videobanking/";
+ //    public static String BASE_URL= "https://vconnect.ranktechsolutions.com/videobanking/";
+    public static String BASE_URL= "https://vconnect.ranktechsolutions.com/firstbank/"; // URL Changed on 3/30/23 by Arif Khan.
 
 
     public static final String REQUEST_TYPE_SERVICE_LIST = "rest/getservicelist";

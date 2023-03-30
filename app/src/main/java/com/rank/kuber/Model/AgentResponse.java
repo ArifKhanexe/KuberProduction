@@ -59,6 +59,15 @@ public class AgentResponse {
         private String custLname;
         private String roomName;
         private String entityId;
+        private String agentLoginId;
+
+        public String getAgentLoginId() {
+            return agentLoginId;
+        }
+
+        public void setAgentLoginId(String agentLoginId) {
+            this.agentLoginId = agentLoginId;
+        }
 
         public String getUrl() {
             return url;

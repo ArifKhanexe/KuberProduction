@@ -1,13 +1,11 @@
 package com.rank.kuber.Activity;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -18,7 +16,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -31,7 +28,6 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +37,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.EmptyRequest;
-import com.rank.kuber.Model.ServiceList;
 import com.rank.kuber.Model.ServiceModel;
 import com.rank.kuber.R;
 import com.rank.kuber.Utils.NetworkBroadcast;
@@ -54,7 +49,7 @@ import retrofit2.Response;
 
 public class GuestLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    List<ServiceList> serviceLists ;
+    List<ServiceModel.PayloadBean> serviceLists ;
 
     Handler handler;
     BroadcastReceiver networkBroadcastReceiver;
@@ -83,8 +78,14 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             }
         }, 3000);
 
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getServiceDetails();
+            }
+        }, 2000);
         setClickListenerEvents();
-        getServiceDetails();
+
     }
 //     Registering broadcast receiver for runtime network checking
     private void registerBroadcastReceiver() {
@@ -290,9 +291,9 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     public class ServiceAdapter extends BaseAdapter {
 
         private Context context;
-        private List<ServiceList> slist;
+        private List<ServiceModel.PayloadBean> slist;
 
-        public ServiceAdapter(Context context, List<ServiceList> slist) {
+        public ServiceAdapter(Context context, List<ServiceModel.PayloadBean> slist) {
             this.context = context;
             this.slist = slist;
         }
