@@ -110,24 +110,24 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        unregisterReceivers();
+        unregisterReceivers();
     }
 
-    private void registerReceivers() {
+    public void registerReceivers() {
         try {
             registerReceiver(chatMsgReceiver, new IntentFilter(AppData._intentFilter_CHATMSG_RECEIVED));
         } catch (Exception e) {
             Log.e(AppData.TAG, "RegisterReceiverExceptionCause: " + e.getMessage());
         }
     }
-//
-//    private void unregisterReceivers() {
-//        try {
-//            unregisterReceiver(chatMsgReceiver);
-//        } catch (Exception e) {
-//            Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
-//        }
-//    }
+
+        public void unregisterReceivers() {
+        try {
+            unregisterReceiver(chatMsgReceiver);
+        } catch (Exception e) {
+            Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
+        }
+    }
 
 
 
@@ -206,7 +206,6 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             } else {
                                 Intent i = new Intent(getApplicationContext(), EveryoneChatActivity.class);
                                 startActivity(i);
-                                finish();
                             }
 
                         } else{
@@ -240,6 +239,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
             listOfUsersId = new ArrayList<>();
             listOfUsersId.add("Everyone");
        }
+
         if (listOfUsersName == null) {
             listOfUsersName = new ArrayList<>();
             listOfUsersName.add("All-users (group chat)");
@@ -285,6 +285,8 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
             finish();
         }
     }
+
+
 
     /**
      * Broadcast Receiver For Chat

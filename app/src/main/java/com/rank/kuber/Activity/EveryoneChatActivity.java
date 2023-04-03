@@ -1,11 +1,14 @@
 package com.rank.kuber.Activity;
 
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersId;
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersName;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -19,19 +22,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.ChatModel;
+import com.rank.kuber.Model.HangUpCustomerRequest;
+import com.rank.kuber.Model.HangUpCustomerResponse;
 import com.rank.kuber.R;
+import com.rank.kuber.socket.SocketClass;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class EveryoneChatActivity extends AppCompatActivity {
 
     String TAG = "EveryoneChatActivity";
-
-
+    HangUpCustomerRequest hangUpCustomerRequest;
     public static int selectedChatUserPos = -1;
     public static String receivedChatId;  //Required to show a yellow dot beside the user, to identify that chat msg has received
     private ChatUserListAdapter chatUserListAdapter;
@@ -62,7 +72,58 @@ public class EveryoneChatActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        showAlertDialogOnBackPressed();
+    }
 
+    public void showAlertDialogOnBackPressed(){
+        new AlertDialog.Builder(this)
+                .setTitle("Exit")
+                .setMessage("Do you want to exit or disconnect the chat ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        listOfUsersId=null;
+                        listOfUsersName=null;
+                        AppData.Agent_login_id="";
+                        AppData.Agent_id="";
+                        callHangupApiCall();
+                        AppData.socketClass.removeSocket();
+                        startActivity(new Intent(getApplicationContext(), FeedbackActivity.class));
+                        finish();
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                }).create().show();
+    }
+
+
+    private void callHangupApiCall() {
+        hangUpCustomerRequest = new HangUpCustomerRequest();
+        hangUpCustomerRequest.setCallId(AppData.Call_ID);
+        hangUpCustomerRequest.setCustId(AppData.CustID);
+
+        ApiClient.getApiClient().gethangupcustomer(hangUpCustomerRequest).enqueue(new Callback<HangUpCustomerResponse>() {
+            @Override
+            public void onResponse(Call<HangUpCustomerResponse> call, Response<HangUpCustomerResponse> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<HangUpCustomerResponse> call, Throwable t) {
+
+            }
+        });
+    }
 
     public static EveryoneChatActivity getInstance() {
         return (EveryoneChatActivity) AppData.currentContext;
