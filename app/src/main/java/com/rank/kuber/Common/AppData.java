@@ -105,6 +105,7 @@ public class AppData {
     public static final String REQUEST_TYPE_HANGUP_CUSTOMER = "rest/hangupcustomer";
     public static final String REQUEST_TYPE_GET_FEEDBACK = "rest/getfeedback";
     public static final String REQUEST_TYPE_SAVE_FEEDBACK = "rest/savecustomerfeedback";
+    public static final String REQUEST_TYPE_GET_SERVICEDOWNTIME = "rest/getservicedowntime";
 
 
 

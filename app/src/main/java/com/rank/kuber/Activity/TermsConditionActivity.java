@@ -55,12 +55,12 @@ public class TermsConditionActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terms_condition);
         init();
-        registerBroadcastReceiver();
+        registerNetworkBroadcastReceiver();
         setClickListenerEvents();
 
     }
 //         Registering broadcast receiver for runtime network checking
-    private void registerBroadcastReceiver() {
+    private void registerNetworkBroadcastReceiver() {
         networkBroadcastReceiver= new NetworkBroadcast();
         registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }

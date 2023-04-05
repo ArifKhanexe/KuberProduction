@@ -26,8 +26,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,8 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     BroadcastReceiver networkBroadcastReceiver;
     ServiceAdapter serviceAdapter=null;
     LocationManager locationManager;
+    RelativeLayout layoutcontainer;
+    ProgressBar loadingGuestLogin;
     FusedLocationProviderClient fusedLocationClient;
     EditText name_edt, email_edt,mobile_edt, nationality_edt;
     TextView service_dropdown;
@@ -68,9 +72,11 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guest_login);
+
         init();
-        registerBroadcastReceiver();
+        registerNetworkBroadcastReceiver();
         handler = new Handler();
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -78,17 +84,12 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             }
         }, 3000);
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getServiceDetails();
-            }
-        }, 2000);
+        getServiceDetails();
         setClickListenerEvents();
 
     }
 //     Registering broadcast receiver for runtime network checking
-    private void registerBroadcastReceiver() {
+    private void registerNetworkBroadcastReceiver() {
         networkBroadcastReceiver= new NetworkBroadcast();
         registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -169,6 +170,8 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
     private void init() {
 
+        layoutcontainer= (RelativeLayout) findViewById(R.id.RelativeLayoutContainer);
+        loadingGuestLogin= (ProgressBar)findViewById(R.id.loadingGuestLogin);
         name_edt = (EditText) findViewById(R.id.name_edt);
         email_edt = (EditText) findViewById(R.id.email_edt);
         mobile_edt = (EditText) findViewById(R.id.mobile_edt);

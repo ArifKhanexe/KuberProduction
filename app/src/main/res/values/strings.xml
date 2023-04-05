@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Kuber_Main</string>
     <string name="terms">Please note that services offered vide Service facility(‘facility’) are subject to governing policies as may be adopted by CCMS and as may be permitted by local regulation.</string>
+    <string name="waiting_status">"Please wait while your call is being connected with agent"</string>
 </resources>

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,7 +23,10 @@ import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.AgentRequest;
 import com.rank.kuber.Model.AgentResponse;
 import com.rank.kuber.Model.ChatModel;
+import com.rank.kuber.Model.EmptyRequest;
+import com.rank.kuber.Model.ServiceDownTimeResponse;
 import com.rank.kuber.R;
+import com.rank.kuber.Utils.NetworkBroadcast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     Button cancel_btn, retry_btn;
     ProgressBar agentwaitprogressbar;
     String TAG = "ShowGuestPromotionalVideoActivity";
+    BroadcastReceiver networkBroadcastReceiver;
     boolean isCancelledClick = false;
     int count = 1;
     boolean AgentStatus = false;
@@ -71,6 +76,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_guest_promotional_video);
         init();
+        registerNetworkBroadcastReceiver();
         registerReceivers();
 
         video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -92,24 +98,26 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
         agentwaitprogressbar.setVisibility(View.VISIBLE);
 
-         handler = new Handler();
-         handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    availableagent();
-                }
-            }, 7000);
-        }
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+              getservicedowmtime();
+            }
+        }, 1000);
 
-        @Override
-        protected void onStart() {
-        super.onStart();
+    }
 
+
+    private void registerNetworkBroadcastReceiver() {
+        networkBroadcastReceiver= new NetworkBroadcast();
+        registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(networkBroadcastReceiver);
         unregisterReceivers();
     }
 
@@ -127,6 +135,40 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         } catch (Exception e) {
             Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
         }
+    }
+
+
+    private void getservicedowmtime(){
+        ApiClient.getApiClient().getservicedowntime(EmptyRequest.INSTANCE).enqueue(new Callback<ServiceDownTimeResponse>() {
+            @Override
+            public void onResponse(Call<ServiceDownTimeResponse> call, Response<ServiceDownTimeResponse> response) {
+                if(response.isSuccessful()){
+                    ServiceDownTimeResponse serviceDownTimeResponse= response.body();
+                    if(serviceDownTimeResponse.isStatus()){
+                        Toast.makeText(ShowGuestPromotionalVideoActivity.this,"Searching available agent",Toast.LENGTH_SHORT).show();
+                        handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                availableagent();
+                            }
+                        }, 3000);
+
+                    }else{
+                        agentwaitprogressbar.setVisibility(View.GONE);
+                        waiting_status_tv.setText(serviceDownTimeResponse.getError().getErrorMessage());
+                        retry_btn.setVisibility(View.VISIBLE);
+                        cancel_btn.setVisibility(View.VISIBLE);
+                        cancel_btn.setText("Understood");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServiceDownTimeResponse> call, Throwable t) {
+                Toast.makeText(ShowGuestPromotionalVideoActivity.this,"Couldn't fetch details.",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -277,7 +319,18 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     @Override
     public void onClick(View view) {
         if(view==retry_btn){
-           availableagent();
+            waiting_status_tv.setText(R.string.waiting_status);
+            agentwaitprogressbar.setVisibility(View.VISIBLE);
+            cancel_btn.setVisibility(View.GONE);
+            retry_btn.setVisibility(View.GONE);
+
+            handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    availableagent();
+                }
+            }, 2000);
         }
         if(view==cancel_btn){
             Intent i = new Intent(getApplicationContext(), GuestLoginActivity.class);

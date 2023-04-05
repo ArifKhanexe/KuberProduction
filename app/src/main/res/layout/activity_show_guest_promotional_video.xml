@@ -30,7 +30,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="50dp"
             android:textSize="20dp"
-            android:text="Please wait while your call is being connected with agent"
+            android:text="@string/waiting_status"
             android:gravity="center"
          />
 
@@ -53,7 +53,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/cancel_btn"
@@ -65,7 +65,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
 
 
