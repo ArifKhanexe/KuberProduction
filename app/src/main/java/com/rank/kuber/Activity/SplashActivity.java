@@ -1,11 +1,14 @@
 package com.rank.kuber.Activity;
 
+import static com.rank.kuber.Utils.NetworkBroadcast.isOnline;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.R;
+import com.rank.kuber.Utils.NetworkBroadcast;
 import com.rank.kuber.socket.SocketClass;
 import com.rank.kuber.socket.SocketParser;
 import com.socket.SocketLibrary;
@@ -46,11 +50,35 @@ public class SplashActivity extends AppCompatActivity {
 //      Checks if permission is already granted. If true, then move to GuestLoginActivity else request permission.
         if(checkPermission()){
             Toast.makeText(SplashActivity.this, "Permission Already Granted", Toast.LENGTH_SHORT).show();
-            mainFunction();
+
+            if(isOnline(SplashActivity.this)){
+                mainFunction();
+            }else{
+               showDialog(SplashActivity.this);
+            }
+
         }else {
             requestPermission();
         }
 
+    }
+
+    public void showDialog(Context context){
+        new AlertDialog.Builder(context)
+                .setTitle("Alert")
+                .setMessage("No Internet Connection")
+                .setCancelable(false)
+                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if(isOnline(context)){
+                            mainFunction();
+                            dialogInterface.dismiss();
+                        }else{
+                            showDialog(SplashActivity.this);
+                        }
+                    }
+                }).create().show();
     }
 
     private void mainFunction() {

@@ -152,7 +152,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             public void run() {
                                 availableagent();
                             }
-                        }, 3000);
+                        }, 5000);
 
                     }else{
                         agentwaitprogressbar.setVisibility(View.GONE);
@@ -330,7 +330,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                 public void run() {
                     availableagent();
                 }
-            }, 2000);
+            }, 5000);
         }
         if(view==cancel_btn){
             Intent i = new Intent(getApplicationContext(), GuestLoginActivity.class);

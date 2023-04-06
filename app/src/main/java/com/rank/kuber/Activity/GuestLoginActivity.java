@@ -88,7 +88,8 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         setClickListenerEvents();
 
     }
-//     Registering broadcast receiver for runtime network checking
+
+    //     Registering broadcast receiver for runtime network checking
     private void registerNetworkBroadcastReceiver() {
         networkBroadcastReceiver= new NetworkBroadcast();
         registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -323,6 +324,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             }
 
             TextView textViewItemview= (TextView) view.findViewById(R.id.service_list_name);
+            View lineview= (View) view.findViewById(R.id.view1);
             textViewItemview.setText(slist.get(i).getServiceName());
             return view;
 

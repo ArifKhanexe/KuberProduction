@@ -77,4 +77,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
 
+    <color name="primary_project_color">#0094D0</color>
+    <color name="radio_project_color">#00B7F2</color>
+    <color name="secondary_project_color">#00B8F3</color>
+    <color name="grey_project_color">#919191</color>
+
 </resources>
