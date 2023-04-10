@@ -26,6 +26,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -71,7 +72,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guest_login);
+        setContentView(R.layout.activity_guest);
 
         init();
         registerNetworkBroadcastReceiver();
@@ -277,6 +278,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         final ListPopupWindow popupWindow= new ListPopupWindow(GuestLoginActivity.this);
         popupWindow.setAnchorView(service_dropdown);
         popupWindow.setWidth(service_dropdown.getWidth());
+        popupWindow.setModal(false);
         popupWindow.setHeight(popupWindow.WRAP_CONTENT);
         popupWindow.setAdapter(serviceAdapter);
         popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -289,6 +291,16 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             }
         });
         popupWindow.show();
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                service_dropdown.setBackground(getResources().getDrawable(R.drawable.selected_service_list));
+            }
+        });
+
+        if(popupWindow.isShowing()){
+            service_dropdown.setBackground(getResources().getDrawable(R.drawable.up_service_list));
+        }
     }
 
 //    Service list Adapter for setting for the value of servicelist.

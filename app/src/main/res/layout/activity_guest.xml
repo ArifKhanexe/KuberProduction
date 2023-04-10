@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:src="@drawable/kuber_logo_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/textView_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="120dp"
+                        android:layout_marginEnd="120dp"
+                        android:layout_marginTop="30dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView"
+                        android:text="Guest Login"
+                        android:textColor="@color/black"
+                        android:textSize="40dp" />
+
+
+                    <EditText
+                        android:id="@+id/name_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:drawablePadding="8dp"
+                        android:backgroundTint="@color/black"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginBottom="20dp"
+                        android:ems="10"
+                        android:hint="Name"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:paddingHorizontal="10dp"
+                        android:textSize="14dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView_header"/>
+
+                    <EditText
+                        android:id="@+id/email_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginBottom="20dp"
+                        android:drawablePadding="8dp"
+                        android:ems="10"
+                        android:hint="Email"
+                        android:backgroundTint="@color/black"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:paddingHorizontal="10dp"
+                        android:textSize="14dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/name_edt"/>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/linear_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginBottom="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/email_edt"
+                       >
+
+                        <EditText
+                            android:id="@+id/mobile_edt"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_marginRight="5dp"
+                            android:hint="Mobile No"
+                            android:imeOptions="actionNext"
+                            android:backgroundTint="@color/black"
+                            android:inputType="phone"
+                            android:maxLength="10"
+                            android:paddingLeft="10dp"
+                            android:textSize="14dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/nationality_edt"
+                            />
+
+                        <EditText
+                            android:id="@+id/nationality_edt"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:hint="Nationality"
+                            android:backgroundTint="@color/black"
+                            android:imeOptions="actionDone"
+                            android:inputType="textCapWords"
+                            android:paddingLeft="10dp"
+                            android:textSize="14dp"
+                            app:layout_constraintStart_toEndOf="@+id/mobile_edt"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/service_dropdown_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginBottom="25dp"
+                        android:background="@drawable/down_service_list"
+                        android:text="Select the Service"
+                        android:textSize="14dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/linear_container">
+
+                    </TextView>
+
+                    <View
+                        android:id="@+id/view1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1.1dp"
+                        android:layout_marginTop="-17dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/service_dropdown_textview"
+                        />
+
+                    <TextView
+                        android:id="@+id/text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginBottom="20dp"
+                        android:textColor="@color/black"
+                        android:text="Call Type"
+                        android:textStyle="bold"
+                        android:textSize="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view1"/>
+
+            <RadioGroup
+                android:id="@+id/call_type_radioGroup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text">
+                <RadioButton
+                    android:id="@+id/videoradioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:layout_weight="0.5"
+                    android:theme="@style/RadioButtonStyle"
+                    android:text="Video"
+                    android:textStyle="bold"/>
+
+                <RadioButton
+                    android:id="@+id/audiooradioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:checked="false"
+                    android:theme="@style/RadioButtonStyle"
+                    android:text="Audio"
+                    android:textStyle="bold"/>
+
+                <RadioButton
+                    android:id="@+id/chatoradioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.33"
+                    android:layout_marginRight="5dp"
+                    android:checked="false"
+                    android:theme="@style/RadioButtonStyle"
+                    android:text="Chat"
+                    android:textStyle="bold"/>
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/login_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/button_color"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textSize="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/call_type_radioGroup"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
