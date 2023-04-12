@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,14 +19,17 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 import android.widget.PopupWindow;
@@ -59,10 +65,11 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     ServiceAdapter serviceAdapter=null;
     LocationManager locationManager;
     RelativeLayout layoutcontainer;
+    CheckBox terms_checkbox;
     ProgressBar loadingGuestLogin;
     FusedLocationProviderClient fusedLocationClient;
     EditText name_edt, email_edt,mobile_edt, nationality_edt;
-    TextView service_dropdown;
+    TextView service_dropdown, term_of_use;
     RadioGroup call_type_radioGroup;
     RadioButton videoradioButton, audiooradioButton, chatoradioButton;
     Button login_btn;
@@ -72,7 +79,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guest);
+        setContentView(R.layout.activity_guest_login);
 
         init();
         registerNetworkBroadcastReceiver();
@@ -151,12 +158,17 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
 //      To get the servicelist details from servicelist API
     private void getServiceDetails() {
+        loadingGuestLogin.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ApiClient.getApiClient().getservice(EmptyRequest.INSTANCE).enqueue(new Callback<ServiceModel>() {
             @Override
             public void onResponse(Call<ServiceModel> call, Response<ServiceModel> response) {
                 ServiceModel serviceModel = response.body();
                 if (response.isSuccessful()) {
                     if (serviceModel.isStatus()) {
+                        loadingGuestLogin.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         serviceLists = response.body().getPayload();
                     }
                 }
@@ -174,11 +186,13 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
         layoutcontainer= (RelativeLayout) findViewById(R.id.RelativeLayoutContainer);
         loadingGuestLogin= (ProgressBar)findViewById(R.id.loadingGuestLogin);
+        terms_checkbox = (CheckBox) findViewById(R.id.terms_checkbox);
         name_edt = (EditText) findViewById(R.id.name_edt);
         email_edt = (EditText) findViewById(R.id.email_edt);
         mobile_edt = (EditText) findViewById(R.id.mobile_edt);
         nationality_edt = (EditText) findViewById(R.id.nationality_edt);
         service_dropdown=(TextView) findViewById(R.id.service_dropdown_textview);
+        term_of_use=(TextView) findViewById(R.id.termsText);
         call_type_radioGroup = (RadioGroup) findViewById(R.id.call_type_radioGroup);
         videoradioButton = (RadioButton) findViewById(R.id.videoradioButton);
         audiooradioButton = (RadioButton) findViewById(R.id.audiooradioButton);
@@ -207,12 +221,32 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
         service_dropdown.setOnClickListener(this);
         login_btn.setOnClickListener(this);
+        term_of_use.setOnClickListener(this);
     }
     @Override
     public void onClick(View view){
 
         if(view==service_dropdown){
             dropdown(service_dropdown);
+        }
+        if(view==term_of_use){
+//            Opens the terms and condiotion dialog box
+            term_of_use.setTextColor(getResources().getColor(R.color.primary_project_color));
+            Dialog dialog= new Dialog(this);
+
+            dialog.setContentView(R.layout.terms_dialog_box);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
+            Button accepted_button= dialog.findViewById(R.id.accept_btn);
+            TextView hyperlink = dialog.findViewById(R.id.hyperlink);
+            hyperlink.setMovementMethod(LinkMovementMethod.getInstance());
+            accepted_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    terms_checkbox.setChecked(true);
+                    dialog.dismiss();
+                }
+            });
         }
 
 //        Checks validity of the data entered by the user then saving it in Appdata for further usage. Moving to TermsConditionActivity.
@@ -222,6 +256,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             String email = email_edt.getText().toString().trim();
             String nationality = nationality_edt.getText().toString().trim();
             final String selectedService= AppData.selectedService;
+            boolean isChecked =   terms_checkbox.isChecked();
 
             if(name.length()<1){
                 Toast.makeText(this, "Please enter name", Toast.LENGTH_SHORT).show();
@@ -243,6 +278,9 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             }
             else if(AppData.CallType.length()<1){
                 Toast.makeText(this,"Please select call type",Toast.LENGTH_SHORT).show();
+            }
+            else if(!isChecked){
+                Toast.makeText(GuestLoginActivity.this, "Please accept Terms of Use", Toast.LENGTH_SHORT).show();
             }
             else {
 

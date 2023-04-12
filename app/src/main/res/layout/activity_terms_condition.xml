@@ -29,6 +29,8 @@
             android:text="@string/terms"
             />
 
+
+
         <Button
             android:id="@+id/accept_btn"
             android:textColor="@color/white"

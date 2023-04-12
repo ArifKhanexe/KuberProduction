@@ -23,4 +23,9 @@
         <item name="colorAccent">@color/radio_project_color</item>
         <item name="android:textColorPrimary">@color/grey_project_color</item>
     </style>
+
+    <style name="CheckboxStyle" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/secondary_project_color</item>
+        <item name="android:textColorPrimary">@color/grey_project_color</item>
+    </style>
 </resources>
