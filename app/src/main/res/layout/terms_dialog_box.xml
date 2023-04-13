@@ -10,6 +10,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
         android:textSize="25dp"
         android:textStyle="bold"
         android:textColor="@color/colorDodgerBlue"
@@ -19,9 +21,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:textSize="20dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="16dp"
         android:gravity="center"
         android:text="@string/terms" />
     <TextView

@@ -23,9 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="20dp"
-        android:layout_marginTop="30dp"
         android:paddingVertical="10dp">
 
         <ProgressBar
@@ -45,12 +42,12 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:text="Guest Login"
             android:textColor="@color/black"
-            android:textSize="30dp"
+            android:textSize="25dp"
             android:textStyle="bold" />
 
 
@@ -76,10 +73,11 @@
                     android:layout_height="45dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/black"
+                    android:paddingStart="5dp"
+                    android:backgroundTint="@color/grey_project_color"
                     android:drawablePadding="8dp"
                     android:ems="10"
-                    android:hint="Name"
+                    android:hint="Guest Name"
                     android:imeOptions="actionNext"
                     android:inputType="textCapWords"
                     android:paddingHorizontal="10dp"
@@ -90,8 +88,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/black"
+                    android:backgroundTint="@color/grey_project_color"
                     android:drawablePadding="8dp"
+                    android:paddingStart="5dp"
                     android:ems="10"
                     android:hint="Email"
                     android:imeOptions="actionNext"
@@ -102,35 +101,31 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="13dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
                     <EditText
                         android:id="@+id/mobile_edt"
-                        android:layout_width="0dp"
+                        android:layout_width="60dp"
                         android:layout_height="45dp"
-                        android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/black"
+                        android:paddingStart="5dp"
+                        android:backgroundTint="@color/grey_project_color"
                         android:hint="Mobile No"
-                        android:imeOptions="actionNext"
                         android:inputType="phone"
                         android:maxLength="10"
-                        android:paddingLeft="10dp"
                         android:textSize="14dp" />
 
                     <EditText
                         android:id="@+id/nationality_edt"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="45dp"
-                        android:layout_marginLeft="5dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/black"
+                        android:paddingStart="5dp"
+                        android:backgroundTint="@color/grey_project_color"
                         android:hint="Nationality"
-                        android:imeOptions="actionDone"
                         android:inputType="textCapWords"
-                        android:paddingLeft="10dp"
                         android:textSize="14dp" />
 
                 </LinearLayout>
@@ -139,8 +134,11 @@
                     android:id="@+id/service_dropdown_textview"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/down_service_list"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center|left"
+                    android:drawableRight="@drawable/down_service_list"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="5dp"
                     android:text="Select the Service"
                     android:textSize="14dp">
 
@@ -150,18 +148,18 @@
                     android:id="@+id/view1"
                     android:layout_width="match_parent"
                     android:layout_height="1.1dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="-18dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginBottom="13dp"
-                    android:background="@color/black" />
+                    android:paddingStart="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="-7dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/grey_project_color" />
 
                 <TextView
                     android:id="@+id/text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="18dp"
                     android:layout_marginBottom="5dp"
                     android:text="Call Type"
                     android:textColor="@color/black"
@@ -174,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
@@ -213,8 +211,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -222,7 +220,6 @@
                         android:id="@+id/terms_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="1dp"
                         android:layout_weight="0"
                         android:theme="@style/CheckboxStyle" />
 
@@ -241,6 +238,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
+                    android:layout_gravity="center"
                     android:background="@drawable/button_color"
                     android:text="Login"
                     android:textAllCaps="false"

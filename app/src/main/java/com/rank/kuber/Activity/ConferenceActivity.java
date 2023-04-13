@@ -11,6 +11,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -61,7 +62,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private View joinForm;
     private LinearLayout llFunctionality;
     private ImageView tvEndCall;
-    private ImageView ivMicOn, ivMicOff, ivCamOn, ivCamOff, ivCamRotateBack, ivCamRotateFront, iv_menu;
+    private ImageView ivMicOn, ivMicOff, ivCamOn, ivCamOff, ivCamRotateBack, ivCamRotateFront, iv_menu, ivSpeakerOn, ivSpeakerOff;
     private View promoVideoLayout;
     private TextView txtAgentInfo;
     private VideoView promotional_videovw;
@@ -134,6 +135,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         ivCamOff = findViewById(R.id.ivCamOff);
         ivCamRotateBack = findViewById(R.id.ivCamRotateBack);
         ivCamRotateFront = findViewById(R.id.ivCamRotateFront);
+        ivSpeakerOn=findViewById(R.id.ivSpeakeron);
+        ivSpeakerOff=findViewById(R.id.ivSpeakeroff);
 
         initVideoconnectorObj();
     }
@@ -151,6 +154,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 }
             }
         });
+
 
         tvEndCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,6 +246,26 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
             }
         });
+
+        ivSpeakerOn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppData.mVidyoconnector.setSpeakerPrivacy(true);
+                isSpeakerOnMute=true;
+                ivSpeakerOn.setVisibility(View.GONE);
+                ivSpeakerOff.setVisibility(View.VISIBLE);
+            }
+        });
+
+        ivSpeakerOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppData.mVidyoconnector.setSpeakerPrivacy(false);
+                isSpeakerOnMute=false;
+                ivSpeakerOn.setVisibility(View.VISIBLE);
+                ivSpeakerOff.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
@@ -254,7 +278,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
              ConnectorPkg.initialize();
              String logLevel = "info@VidyoClient info@VidyoConnector warning";
 
-             AppData.mVidyoconnector = new Connector(fl_videoFrame, Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Default, 15, logLevel, "", 0);
+             AppData.mVidyoconnector = new Connector(fl_videoFrame, Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Tiles, 15, logLevel, "", 0);
              Log.e(TAG, "Library Version" + AppData.mVidyoconnector.getVersion());
 
          } catch (Exception e){

@@ -6,12 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:background="@color/black"
     tools:context=".Activity.ConferenceActivity">
 
     <FrameLayout
         android:id="@+id/join_params_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
@@ -20,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
     </FrameLayout>
 
@@ -36,74 +38,93 @@
     <LinearLayout
         android:id="@+id/llFunctionality"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:background="@color/black"
+        android:background="@drawable/conference_bottom_shape"
         android:orientation="horizontal"
+        android:weightSum="5"
         android:padding="5dp"
         android:visibility="visible">
 
         <ImageView
             android:id="@+id/ivMicOn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
-            android:layout_weight=".5"
+            android:layout_weight="1"
             android:src="@drawable/microphone_on"
             android:visibility="visible" />
 
         <ImageView
             android:id="@+id/ivMicOff"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight=".5"
+            android:layout_weight="1"
             android:src="@drawable/microphone_off"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/ivCamOn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight=".5"
+            android:layout_weight="1"
             android:src="@drawable/camera_on"
             android:visibility="visible" />
 
         <ImageView
             android:id="@+id/ivCamOff"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight=".5"
+            android:layout_weight="1"
             android:src="@drawable/camera_off"
             android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/ivCamRotateBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_weight=".5"
-            android:src="@drawable/camera_rotate"
-            android:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/ivCamRotateFront"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_weight=".5"
-            android:src="@drawable/camera_rotate"
-            android:visibility="gone" />
-
         <ImageView
             android:id="@+id/endCall"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_weight=".5"
+            android:layout_weight="1"
             android:src="@drawable/call_end" />
+
+        <ImageView
+            android:id="@+id/ivCamRotateBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/camera_rotate"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivCamRotateFront"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/camera_rotate"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivSpeakeron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/speaker"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivSpeakeroff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/speaker_mute"
+            android:visibility="gone" />
+
 
     </LinearLayout>
 

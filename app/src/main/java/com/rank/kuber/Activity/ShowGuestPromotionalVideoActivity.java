@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +43,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     AgentRequest agentRequest;
     AgentResponse agentResponse;
     VideoView video_view;
-    TextView waiting_status_tv;
+    TextView waiting_status_tv,oops;
     Button cancel_btn, retry_btn;
     ProgressBar agentwaitprogressbar;
     String TAG = "ShowGuestPromotionalVideoActivity";
@@ -157,6 +158,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                     }else{
                         agentwaitprogressbar.setVisibility(View.GONE);
                         waiting_status_tv.setText(serviceDownTimeResponse.getError().getErrorMessage());
+                        oops.setVisibility(View.VISIBLE);
                         retry_btn.setVisibility(View.VISIBLE);
                         cancel_btn.setVisibility(View.VISIBLE);
                         cancel_btn.setText("Understood");
@@ -252,9 +254,10 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
                         } else{
                             agentwaitprogressbar.setVisibility(View.GONE);
-                            waiting_status_tv.setText("Sorry, no Agent is available right now. Please try again later.");
+                            waiting_status_tv.setText("All our agents are busy right now. Please try again later.");
                             retry_btn.setVisibility(View.VISIBLE);
                             cancel_btn.setVisibility(View.VISIBLE);
+                            oops.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -290,6 +293,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         /*Init Broadcast Receiver*/
         chatMsgReceiver = new ChatMsgReceiver();
 
+        oops=(TextView) findViewById(R.id.oopsimage);
         video_view = (VideoView) findViewById(R.id.video_view);
         waiting_status_tv = (TextView) findViewById(R.id.waiting_status_tv);
         cancel_btn = (Button) findViewById(R.id.cancel_btn);
@@ -323,6 +327,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
             agentwaitprogressbar.setVisibility(View.VISIBLE);
             cancel_btn.setVisibility(View.GONE);
             retry_btn.setVisibility(View.GONE);
+            oops.setVisibility(View.GONE);
 
             handler = new Handler();
             handler.postDelayed(new Runnable() {

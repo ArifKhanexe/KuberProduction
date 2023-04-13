@@ -46,9 +46,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.EmptyRequest;
+import com.rank.kuber.Model.RegisterRequest;
+import com.rank.kuber.Model.RegisterResponse;
 import com.rank.kuber.Model.ServiceModel;
 import com.rank.kuber.R;
 import com.rank.kuber.Utils.NetworkBroadcast;
+import com.rank.kuber.socket.SocketClass;
+import com.rank.kuber.socket.SocketParser;
+import com.socket.SocketLibrary;
 
 import java.util.List;
 
@@ -73,6 +78,8 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     RadioGroup call_type_radioGroup;
     RadioButton videoradioButton, audiooradioButton, chatoradioButton;
     Button login_btn;
+    RegisterRequest registerRequest;
+    RegisterResponse registerResponse;
     String TAG = "GuestLoginActivity";
 
 
@@ -290,8 +297,9 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
                 AppData.nationality = nationality;
                 AppData.selectedService = selectedService;
 
-                Intent i = new Intent(GuestLoginActivity.this, TermsConditionActivity.class);
-                startActivity(i);
+                loadingGuestLogin.setVisibility(View.VISIBLE);
+
+                RegisterCustomer();
 
 
                 name_edt.setText("");
@@ -332,12 +340,15 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                service_dropdown.setBackground(getResources().getDrawable(R.drawable.selected_service_list));
+                service_dropdown.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.selected_service_list,0);
+
             }
         });
 
         if(popupWindow.isShowing()){
-            service_dropdown.setBackground(getResources().getDrawable(R.drawable.up_service_list));
+            service_dropdown.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.up_service_list,0);
+
+
         }
     }
 
@@ -385,6 +396,69 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     public final boolean isValidEmail(String email)
     {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+
+    //    Registering the customer.
+    private void RegisterCustomer() {
+        registerRequest = new RegisterRequest();
+        registerRequest.setCategory(AppData.category);
+        registerRequest.setLanguage(AppData.language);
+        registerRequest.setService(AppData.selectedService);
+        registerRequest.setCustomerName(AppData.name);
+        registerRequest.setEmail(AppData.email);
+        registerRequest.setCellPhone(AppData.phone);
+        registerRequest.setNationality(AppData.nationality);
+
+        ApiClient.getApiClient().getregistercustomer(registerRequest).enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                if(response.isSuccessful()){
+                    registerResponse=response.body();
+                    Log.e(TAG,"Status :" + registerResponse.isStatus());
+                    if(registerResponse.isStatus()){
+                        Toast.makeText(GuestLoginActivity.this, "Guest Registered.", Toast.LENGTH_SHORT).show();
+                        AppData.PROMOTIONAL_VIDEO = registerResponse.getPayload().getPromotionalVideo();
+                        AppData.CustID = registerResponse.getPayload().getCustomerId(); //CustID is used as LoginID in calltoavailabeagent api.
+
+                        AppData.CustName = registerResponse.getPayload().getCustFname();
+                        AppData.CustFName = registerResponse.getPayload().getCustFname();
+                        AppData.CustLName = registerResponse.getPayload().getCustLname();
+                        AppData.SocketHostUrl = registerResponse.getPayload().getSocketHostPublic();
+                        AppData.DISPLAY_NAME = AppData.CustFName+" "+AppData.CustLName;
+
+                        createSocket();
+
+                        Intent i = new Intent(getApplicationContext(), ShowGuestPromotionalVideoActivity.class);
+                        startActivity(i);
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                Toast.makeText(GuestLoginActivity.this, "Cannot register the guest.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /* @param
+     * @task Create Socket Connection
+     */
+    private void createSocket() {
+        try {
+            AppData.socketClass = new SocketClass();
+            AppData.socketParser = new SocketParser();
+            AppData.socketLibrary = new SocketLibrary();
+            AppData.socketClass.setSocketUrl(AppData.SOCKET_URL);
+            AppData.socketClass.setSocketPort(AppData.SOCKET_PORT);
+
+            AppData.socketParser.createSocket();
+            Log.e("Socket", "Socket Created");
+        } catch (Exception e) {
+            Log.e("CreateSocketException", "ExceptionCause: " + e.getMessage());
+        }
     }
 
 

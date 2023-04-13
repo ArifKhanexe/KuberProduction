@@ -9,7 +9,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="200dp">
 
             <VideoView
                 android:id="@+id/video_view"
@@ -22,13 +22,23 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/oopsimage"
+            android:drawableTop="@drawable/opps_image"
+            android:text="Opps, Sorry !"
+            android:textSize="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/waiting_status_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             android:textSize="20dp"
             android:text="@string/waiting_status"
             android:gravity="center"
@@ -37,11 +47,14 @@
         <ProgressBar
             android:id="@+id/agentwaitingprogressBar"
             style="?android:attr/progressBarStyle"
+            android:indeterminateTint="@color/primary_project_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:visibility="gone"/>
+            android:layout_marginTop="60dp"
+            android:visibility="visible"/>
+
+
 
         <Button
             android:id="@+id/retry_btn"
@@ -50,10 +63,11 @@
             android:layout_marginTop="70dp"
             android:padding="5dp"
             android:text="RETRY"
+            android:background="@drawable/button_color"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:textAllCaps="false"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/cancel_btn"
@@ -62,10 +76,11 @@
             android:layout_marginTop="30dp"
             android:padding="5dp"
             android:text="CANCEL"
+            android:background="@drawable/grey_button_color"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:textAllCaps="false"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
 
 
