@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+<LinearLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
@@ -13,6 +20,7 @@
             android:layout_centerHorizontal="true"
             android:id="@+id/imageView"
             android:src="@drawable/kuber_logo_icon"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -32,7 +40,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:indeterminateTint="@color/primary_project_color"
-            android:visibility="gone"
+            android:visibility="visible"
             />
 
 
@@ -42,12 +50,12 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
             android:text="Guest Login"
             android:textColor="@color/black"
-            android:textSize="25dp"
+            android:textSize="23dp"
             android:textStyle="bold" />
 
 
@@ -136,6 +144,7 @@
                     android:layout_height="45dp"
                     android:layout_marginTop="1dp"
                     android:gravity="center|left"
+                    android:textColor="@color/grey_project_color"
                     android:drawableRight="@drawable/down_service_list"
                     android:paddingEnd="10dp"
                     android:paddingStart="5dp"
@@ -211,8 +220,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="40dp"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -236,9 +245,12 @@
                 <Button
                     android:id="@+id/login_btn"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_alignParentBottom="true"
+                    android:elevation="2dp"
+                    android:stateListAnimator="@null"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
                     android:background="@drawable/button_color"
                     android:text="Login"
                     android:textAllCaps="false"
@@ -248,4 +260,5 @@
         </ScrollView>
     </RelativeLayout>
 
-</LinearLayout>
+ </LinearLayout>
+</ScrollView>

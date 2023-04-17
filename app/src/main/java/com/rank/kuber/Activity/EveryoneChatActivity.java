@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import com.rank.kuber.Model.ChatModel;
 import com.rank.kuber.Model.HangUpCustomerRequest;
 import com.rank.kuber.Model.HangUpCustomerResponse;
 import com.rank.kuber.R;
+import com.rank.kuber.Utils.NetworkBroadcast;
 import com.rank.kuber.socket.SocketClass;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +44,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
 
     String TAG = "EveryoneChatActivity";
     HangUpCustomerRequest hangUpCustomerRequest;
+    BroadcastReceiver networkBroadcastReceiver;
     public static int selectedChatUserPos = -1;
     public static String receivedChatId;  //Required to show a yellow dot beside the user, to identify that chat msg has received
     private ChatUserListAdapter chatUserListAdapter;
@@ -55,6 +58,8 @@ public class EveryoneChatActivity extends AppCompatActivity {
 
         /*Set Global Context*/
         AppData.currentContext = EveryoneChatActivity.this;
+
+        registerNetworkBroadcastReceiver();
 
         /*Call Required Functions*/
         getUIComponents();
@@ -70,6 +75,19 @@ public class EveryoneChatActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    //     Registering broadcast receiver for runtime network checking
+    private void registerNetworkBroadcastReceiver() {
+        networkBroadcastReceiver= new NetworkBroadcast();
+        registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkBroadcastReceiver);
     }
 
     @Override

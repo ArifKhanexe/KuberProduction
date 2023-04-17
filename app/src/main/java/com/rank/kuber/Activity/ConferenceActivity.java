@@ -3,10 +3,12 @@ package com.rank.kuber.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +33,7 @@ import com.rank.kuber.Model.ChatModel;
 import com.rank.kuber.Model.HangUpCustomerRequest;
 import com.rank.kuber.Model.HangUpCustomerResponse;
 import com.rank.kuber.R;
+import com.rank.kuber.Utils.NetworkBroadcast;
 import com.vidyo.VidyoClient.Connector.Connector;
 import com.vidyo.VidyoClient.Connector.ConnectorPkg;
 import com.vidyo.VidyoClient.Device.Device;
@@ -72,7 +75,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private HangUpCustomerRequest hangUpCustomerRequest;
 
 
-
+    BroadcastReceiver networkBroadcastReceiver;
     private boolean doRender = false;
     private boolean callStarted = false;
     private ProgressBar joinProgress;
@@ -91,6 +94,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //code that displays the content in full screen mode
         setContentView(R.layout.activity_conference);
+        registerNetworkBroadcastReceiver();
 
         /*Keep Screen Light On*/
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -118,6 +122,11 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         initObjects();
         buttonClickEvent();
 
+    }
+
+    private void registerNetworkBroadcastReceiver() {
+        networkBroadcastReceiver= new NetworkBroadcast();
+        registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     private void initObjects() {
@@ -453,6 +462,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         } catch (Exception e) {
             Log.e("onDestroy_3", e.toString());
         }
+
+        unregisterReceiver(networkBroadcastReceiver);
     }
 
     @Override

@@ -4,18 +4,27 @@ import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUs
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersName;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.text.method.LinkMovementMethod;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rank.kuber.Activity.FeedbackActivity;
 import com.rank.kuber.Common.AppData;
+import com.rank.kuber.R;
 
 public class NetworkBroadcast extends BroadcastReceiver {
     @Override
@@ -59,19 +68,42 @@ public class NetworkBroadcast extends BroadcastReceiver {
     }
 
     public static void showDialog(Context context){
-        new AlertDialog.Builder(context)
-                .setTitle("Alert")
-                .setMessage("No Internet Connection")
-                .setCancelable(false)
-                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(isOnline(context)){
-                            dialogInterface.dismiss();
-                        }else{
-                            showDialog(context);
-                        }
-                    }
-                }).create().show();
+
+
+        Dialog dialog= new Dialog(context);
+
+        dialog.setContentView(R.layout.no_internet_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.show();
+        Button tryagain_button= dialog.findViewById(R.id.tryagain_button);
+
+        tryagain_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(isOnline(context)){
+                    dialog.dismiss();
+                }else{
+                    showDialog(context);
+                }
+
+            }
+        });
+//
+//        new AlertDialog.Builder(context)
+//                .setTitle("Alert")
+//                .setMessage("No Internet Connection")
+//                .setCancelable(false)
+//                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        if(isOnline(context)){
+//                            dialogInterface.dismiss();
+//                        }else{
+//                            showDialog(context);
+//                        }
+//                    }
+//                }).create().show();
     }
 }

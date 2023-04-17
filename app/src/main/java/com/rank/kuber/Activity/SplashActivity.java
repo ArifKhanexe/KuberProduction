@@ -8,14 +8,23 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.rank.kuber.Common.AppData;
@@ -45,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+
         AppData.currentContext = SplashActivity.this;
 
 //      Checks if permission is already granted. If true, then move to GuestLoginActivity else request permission.
@@ -63,22 +73,51 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
     public void showDialog(Context context){
-        new AlertDialog.Builder(context)
-                .setTitle("Alert")
-                .setMessage("No Internet Connection")
-                .setCancelable(false)
-                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(isOnline(context)){
-                            mainFunction();
-                            dialogInterface.dismiss();
-                        }else{
-                            showDialog(SplashActivity.this);
-                        }
-                    }
-                }).create().show();
+//        new AlertDialog.Builder(context)
+//                .setTitle("Alert")
+//                .setMessage("No Internet Connection")
+//                .setCancelable(false)
+//                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        if(isOnline(context)){
+//                            mainFunction();
+//                            dialogInterface.dismiss();
+//                        }else{
+//                            showDialog(SplashActivity.this);
+//                        }
+//                    }
+//                }).create().show();
+        Dialog dialog= new Dialog(context);
+
+        dialog.setContentView(R.layout.no_internet_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog.show();
+        Button tryagain_button= dialog.findViewById(R.id.tryagain_button);
+
+        tryagain_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(isOnline(context)){
+                    mainFunction();
+                    dialog.dismiss();
+                }else{
+                    showDialog(context);
+                }
+
+            }
+        });
     }
 
     private void mainFunction() {

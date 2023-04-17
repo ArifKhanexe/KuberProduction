@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -183,7 +184,10 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(Call<ServiceModel> call, Throwable t) {
-                Toast.makeText(GuestLoginActivity.this, "No Service Available", Toast.LENGTH_SHORT).show();
+                loadingGuestLogin.setVisibility(View.GONE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                Toast.makeText(GuestLoginActivity.this, "No Service List Available", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -327,11 +331,14 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         popupWindow.setModal(false);
         popupWindow.setHeight(popupWindow.WRAP_CONTENT);
         popupWindow.setAdapter(serviceAdapter);
+        popupWindow.setVerticalOffset(-10);
+//        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
         popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 AppData.selectedService= serviceLists.get(i).getServiceName();
                 service_dropdown.setText(AppData.selectedService);
+                service_dropdown.setTextColor(getResources().getColor(R.color.black));
 
                 popupWindow.dismiss();
             }

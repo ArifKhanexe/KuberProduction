@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.ChatModel;
 import com.rank.kuber.R;
 import com.rank.kuber.Utils.ChatAdapter;
+import com.rank.kuber.Utils.NetworkBroadcast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
     private ImageView iv_sendChat;
     private ChatAdapter chatAdapter;
     private ChatReceivedUserReceiver chatReceivedUserReceiver;
+    BroadcastReceiver networkBroadcastReceiver;
 
 
 
@@ -43,6 +46,7 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
 
         AppData.currentContext = ChatConferenceActivity.this;
         AppData.TAG = "UserSpecificChatActivity";
+        registerNetworkBroadcastReceiver();
 
         /*Call Required Functions*/
         getUIComponents();
@@ -52,7 +56,11 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
         initObjects();
     }
 
-
+    //     Registering broadcast receiver for runtime network checking
+    private void registerNetworkBroadcastReceiver() {
+        networkBroadcastReceiver= new NetworkBroadcast();
+        registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -64,6 +72,7 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(chatReceivedUserReceiver);
+        unregisterReceiver(networkBroadcastReceiver);
 
     }
 

@@ -2,11 +2,16 @@ package com.rank.kuber.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +23,7 @@ import com.rank.kuber.Model.GetFeedbackResponse;
 import com.rank.kuber.Model.SaveFeedbackRequest;
 import com.rank.kuber.Model.SaveFeedbackResponse;
 import com.rank.kuber.R;
+import com.rank.kuber.Utils.NetworkBroadcast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +32,8 @@ import retrofit2.Response;
 public class FeedbackActivity extends AppCompatActivity implements View.OnClickListener{
 
     GetFeedbackResponse getFeedbackResponse;
+
+    BroadcastReceiver networkBroadcastReceiver;
     SaveFeedbackRequest saveFeedbackRequest;
     SaveFeedbackResponse saveFeedbackResponse;
     TextView test,query,satisfaction;
@@ -33,12 +41,26 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
     EditText feedbacktext;
     Button submit, skip;
     String testRating, queryRating, satisfactionRating,comment;
+    ProgressBar loadingfeedback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
         init();
+        registerNetworkBroadcastReceiver();
         getfeedback();
+    }
+
+    private void registerNetworkBroadcastReceiver() {
+        networkBroadcastReceiver= new NetworkBroadcast();
+        registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkBroadcastReceiver);
     }
 
     private void init(){
@@ -50,6 +72,8 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
         queryRB=findViewById(R.id.queryratingBar);
         satisfactionRB= findViewById(R.id.satisfactionratingBar);
 
+        loadingfeedback=findViewById(R.id.loadingFeedback);
+
         feedbacktext=findViewById(R.id.Comment);
         submit=findViewById(R.id.submitbutton);
         skip=findViewById(R.id.skipbutton);
@@ -59,6 +83,9 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void getfeedback() {
+        loadingfeedback.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ApiClient.getApiClient().getfeedback(EmptyRequest.INSTANCE).enqueue(new Callback<GetFeedbackResponse>() {
             @Override
             public void onResponse(Call<GetFeedbackResponse> call, Response<GetFeedbackResponse> response) {
@@ -68,6 +95,8 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
                          test.setText(getFeedbackResponse.getPayload().getQuestionOne());
                          satisfaction.setText(getFeedbackResponse.getPayload().getQuestionTwo());
                          query.setText(getFeedbackResponse.getPayload().getQuestionThree());
+                         loadingfeedback.setVisibility(View.GONE);
+                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                      }catch (Exception e){
                          e.printStackTrace();
                      }

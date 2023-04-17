@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,74 +7,125 @@
     android:orientation="vertical"
     tools:context=".Activity.FeedbackActivity">
 
+    <ProgressBar
+        android:id="@+id/loadingFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminateTint="@color/primary_project_color"
+        android:visibility="visible"
+        />
 
     <TextView
         android:id="@+id/texttest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="TextView"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp" />
+        android:textSize="14dp"
+        android:textStyle="bold" />
 
     <RatingBar
         android:id="@+id/testratingBar"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:theme="@style/RatingBar"
+        android:layout_below="@+id/texttest"
+        />
 
     <TextView
         android:id="@+id/textsatisfaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:lines="4"
-        android:maxLines="4"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/testratingBar"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        android:text="TextView" />
+        android:gravity="center"
+        android:textStyle="bold"
+        android:lines="3"
+        android:maxLines="3"
+        android:text="TextView"
+        android:textSize="14dp" />
 
     <RatingBar
         android:id="@+id/satisfactionratingBar"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:theme="@style/RatingBar"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textsatisfaction"/>
 
     <TextView
         android:id="@+id/textquery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/satisfactionratingBar"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        android:text="TextView" />
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="14dp"
+        android:textStyle="bold" />
 
     <RatingBar
         android:id="@+id/queryratingBar"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:theme="@style/RatingBar"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textquery"/>
 
     <EditText
         android:id="@+id/Comment"
         android:layout_width="match_parent"
-        android:layout_height="150sp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="10dp"
-        android:background="@color/colorSignUpEditTextBorder"
+        android:layout_height="200sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/feedback_border"
         android:ems="10"
         android:gravity="top"
         android:hint="Type your feedback"
         android:inputType="textPersonName"
         android:paddingLeft="10dp"
-        android:paddingTop="10dp" />
+        android:paddingTop="10dp"
+        android:textSize="14dp"
+        android:layout_below="@+id/queryratingBar"/>
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="10dp"
-      android:orientation="horizontal">
+      android:layout_marginTop="30dp"
+      android:orientation="horizontal"
+      android:layout_below="@+id/Comment">
+
+      <Button
+          android:id="@+id/skipbutton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight=".5"
+          android:layout_margin="10dp"
+          android:elevation="2dp"
+          android:stateListAnimator="@null"
+          android:background="@drawable/border_button_color"
+          android:textSize="12dp"
+          android:text="Skip"
+          android:textColor="@color/primary_project_color"
+          android:gravity="center"/>
 
       <Button
           android:id="@+id/submitbutton"
@@ -83,19 +134,14 @@
           android:layout_gravity="center"
           android:layout_weight=".5"
           android:layout_margin="10dp"
+          android:elevation="2dp"
+          android:stateListAnimator="@null"
           android:text="Submit"
+          android:textColor="@color/white"
+          android:background="@drawable/button_color"
           android:gravity="center"
-          android:textSize="12dp" />
+          android:textSize="14dp" />
 
-      <Button
-          android:id="@+id/skipbutton"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight=".5"
-          android:layout_margin="10dp"
-          android:textSize="12dp"
-          android:text="Skip"
-          android:gravity="center"/>
 
   </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
