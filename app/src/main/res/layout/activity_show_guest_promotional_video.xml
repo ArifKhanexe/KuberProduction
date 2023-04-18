@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -26,8 +26,9 @@
             android:id="@+id/oopsimage"
             android:drawableTop="@drawable/opps_image"
             android:text="Opps, Sorry !"
-            android:textSize="20dp"
-            android:layout_marginTop="50dp"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -38,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="50dp"
             android:textSize="20dp"
             android:text="@string/waiting_status"
             android:gravity="center"
@@ -51,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="50dp"
             android:visibility="visible"/>
 
 
@@ -60,7 +61,7 @@
             android:id="@+id/retry_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="50dp"
             android:layout_marginBottom="10dp"
             android:elevation="2dp"
             android:stateListAnimator="@null"

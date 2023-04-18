@@ -1,264 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
 
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
     tools:context=".Activity.GuestLoginActivity">
 
 
-        <ImageView
-            android:layout_centerHorizontal="true"
-            android:id="@+id/imageView"
-            android:src="@drawable/kuber_logo_icon"
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/kuber_logo_icon"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/textView_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                android:text="Guest Login"
+                android:textColor="@color/black"
+                android:textSize="23dp"
+                android:textStyle="bold" />
 
-
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/RelativeLayoutContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/imageView"
-        android:paddingVertical="10dp">
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_header"
+        >
 
         <ProgressBar
             android:id="@+id/loadingGuestLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
             android:indeterminateTint="@color/primary_project_color"
             android:visibility="visible"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-        <TextView
-            android:id="@+id/textView_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="Guest Login"
-            android:textColor="@color/black"
-            android:textSize="23dp"
-            android:textStyle="bold" />
-
-
-        <ScrollView
-            android:id="@+id/layout_guest_login"
+        <LinearLayout
+            android:id="@+id/linear_layout_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textView_header"
-            android:overScrollMode="never"
-            android:paddingHorizontal="16dp"
-            android:scrollbars="none"
-            android:visibility="visible">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/name_edt"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/grey_project_color"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Guest Name"
+                android:imeOptions="actionNext"
+                android:inputType="textCapWords"
+                android:paddingHorizontal="10dp"
+                android:paddingStart="5dp"
+                android:textSize="14dp" />
+
+            <EditText
+                android:id="@+id/email_edt"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/grey_project_color"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="10dp"
+                android:paddingStart="5dp"
+                android:textSize="14dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <EditText
-                    android:id="@+id/name_edt"
-                    android:layout_width="match_parent"
+                    android:id="@+id/mobile_edt"
+                    android:layout_width="60dp"
                     android:layout_height="45dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:paddingStart="5dp"
+                    android:layout_weight="1"
                     android:backgroundTint="@color/grey_project_color"
-                    android:drawablePadding="8dp"
-                    android:ems="10"
-                    android:hint="Guest Name"
-                    android:imeOptions="actionNext"
+                    android:hint="Mobile No"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:paddingStart="5dp"
+                    android:textSize="14dp" />
+
+                <EditText
+                    android:id="@+id/nationality_edt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/grey_project_color"
+                    android:hint="Nationality"
+                    android:layout_marginStart="10dp"
                     android:inputType="textCapWords"
-                    android:paddingHorizontal="10dp"
+                    android:paddingStart="5dp"
                     android:textSize="14dp" />
 
-                <EditText
-                    android:id="@+id/email_edt"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/grey_project_color"
-                    android:drawablePadding="8dp"
-                    android:paddingStart="5dp"
-                    android:ems="10"
-                    android:hint="Email"
-                    android:imeOptions="actionNext"
-                    android:inputType="textEmailAddress"
-                    android:paddingHorizontal="10dp"
-                    android:textSize="14dp" />
+            </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+            <TextView
+                android:id="@+id/service_dropdown_textview"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="1dp"
+                android:drawableRight="@drawable/down_service_list"
+                android:gravity="center|left"
+                android:paddingStart="5dp"
+                android:paddingEnd="10dp"
+                android:text="Select the Service"
+                android:textColor="@color/grey_project_color"
+                android:textSize="14dp">
 
-                    <EditText
-                        android:id="@+id/mobile_edt"
-                        android:layout_width="60dp"
-                        android:layout_height="45dp"
-                        android:layout_weight="1"
-                        android:paddingStart="5dp"
-                        android:backgroundTint="@color/grey_project_color"
-                        android:hint="Mobile No"
-                        android:inputType="phone"
-                        android:maxLength="10"
-                        android:textSize="14dp" />
+            </TextView>
 
-                    <EditText
-                        android:id="@+id/nationality_edt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="45dp"
-                        android:layout_weight="1"
-                        android:paddingStart="5dp"
-                        android:backgroundTint="@color/grey_project_color"
-                        android:hint="Nationality"
-                        android:inputType="textCapWords"
-                        android:textSize="14dp" />
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="1.1dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="-7dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/grey_project_color"
+                android:paddingStart="5dp" />
 
-                </LinearLayout>
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+               android:layout_marginTop="15dp"
+                android:layout_marginBottom="5dp"
+                android:text="Call Type"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/service_dropdown_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="1dp"
-                    android:gravity="center|left"
-                    android:textColor="@color/grey_project_color"
-                    android:drawableRight="@drawable/down_service_list"
-                    android:paddingEnd="10dp"
-                    android:paddingStart="5dp"
-                    android:text="Select the Service"
-                    android:textSize="14dp">
+            <RadioGroup
+                android:id="@+id/call_type_radioGroup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:weightSum="1">
 
-                </TextView>
-
-                <View
-                    android:id="@+id/view1"
-                    android:layout_width="match_parent"
-                    android:layout_height="1.1dp"
-                    android:paddingStart="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="-7dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/grey_project_color" />
-
-                <TextView
-                    android:id="@+id/text"
+                <RadioButton
+                    android:id="@+id/videoradioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Call Type"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
+                    android:layout_weight="0.5"
+                    android:checked="false"
+                    android:text="Video"
+                    android:textStyle="bold"
+                    android:theme="@style/RadioButtonStyle" />
 
-                <RadioGroup
-                    android:id="@+id/call_type_radioGroup"
-                    android:layout_width="fill_parent"
+                <RadioButton
+                    android:id="@+id/audiooradioButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/text"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="7dp"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:layout_weight="0.5"
+                    android:checked="false"
+                    android:text="Audio"
+                    android:textStyle="bold"
+                    android:theme="@style/RadioButtonStyle" />
 
-                    <RadioButton
-                        android:id="@+id/videoradioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:checked="false"
-                        android:text="Video"
-                        android:textStyle="bold"
-                        android:theme="@style/RadioButtonStyle" />
+                <RadioButton
+                    android:id="@+id/chatoradioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0.33"
+                    android:checked="false"
+                    android:text="Chat"
+                    android:textStyle="bold"
+                    android:theme="@style/RadioButtonStyle" />
+            </RadioGroup>
 
-                    <RadioButton
-                        android:id="@+id/audiooradioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:checked="false"
-                        android:text="Audio"
-                        android:textStyle="bold"
-                        android:theme="@style/RadioButtonStyle" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-                    <RadioButton
-                        android:id="@+id/chatoradioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="0.33"
-                        android:checked="false"
-                        android:text="Chat"
-                        android:textStyle="bold"
-                        android:theme="@style/RadioButtonStyle" />
-                </RadioGroup>
+                <CheckBox
+                    android:id="@+id/terms_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_weight="0"
+                    android:theme="@style/CheckboxStyle" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="40dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <CheckBox
-                        android:id="@+id/terms_checkbox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:theme="@style/CheckboxStyle" />
-
-                    <TextView
-                        android:id="@+id/termsText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="Terms Of Use"
-                        android:textSize="14dp" />
-                </LinearLayout>
-
-
-                <Button
-                    android:id="@+id/login_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:elevation="2dp"
-                    android:stateListAnimator="@null"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/button_color"
-                    android:text="Login"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="16dp" />
+                <TextView
+                    android:id="@+id/termsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Terms Of Use"
+                    android:textSize="14dp" />
             </LinearLayout>
-        </ScrollView>
-    </RelativeLayout>
 
- </LinearLayout>
+
+            <Button
+                android:id="@+id/login_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/button_color"
+                android:elevation="2dp"
+                android:stateListAnimator="@null"
+                android:text="Login"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+ </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -32,6 +32,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -65,8 +66,8 @@ import retrofit2.Response;
 public class GuestLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     List<ServiceModel.PayloadBean> serviceLists ;
-
     Handler handler;
+    LinearLayout linearLayoutcontainer;
     BroadcastReceiver networkBroadcastReceiver;
     ServiceAdapter serviceAdapter=null;
     LocationManager locationManager;
@@ -87,6 +88,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         setContentView(R.layout.activity_guest_login);
 
         init();
@@ -115,6 +117,12 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(networkBroadcastReceiver);
+        name_edt.setText("");
+        mobile_edt.setText("");
+        nationality_edt.setText("");
+        email_edt.setText("");
+        service_dropdown.setText("Select the Service");
+
     }
 
     private void locationService() {
@@ -167,6 +175,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 //      To get the servicelist details from servicelist API
     private void getServiceDetails() {
         loadingGuestLogin.setVisibility(View.VISIBLE);
+        linearLayoutcontainer.setVisibility(View.GONE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ApiClient.getApiClient().getservice(EmptyRequest.INSTANCE).enqueue(new Callback<ServiceModel>() {
@@ -177,6 +186,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
                     if (serviceModel.isStatus()) {
                         loadingGuestLogin.setVisibility(View.GONE);
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        linearLayoutcontainer.setVisibility(View.VISIBLE);
                         serviceLists = response.body().getPayload();
                     }
                 }
@@ -187,7 +197,33 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
                 loadingGuestLogin.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-                Toast.makeText(GuestLoginActivity.this, "No Service List Available", Toast.LENGTH_SHORT).show();
+                Dialog dialog= new Dialog(GuestLoginActivity.this);
+
+                dialog.setContentView(R.layout.no_internet_dialog);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+                dialog.show();
+                TextView noServicetext=dialog.findViewById(R.id.no_internet_textView);
+                noServicetext.setText("No Service List Available");
+                Button tryagain_button= dialog.findViewById(R.id.tryagain_button);
+
+                tryagain_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getServiceDetails();
+                                dialog.dismiss();
+                            }
+                        }, 400);
+
+
+
+                    }
+                });
+
+//                Toast.makeText(GuestLoginActivity.this, "No Service List Available", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -195,7 +231,8 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
     private void init() {
 
-        layoutcontainer= (RelativeLayout) findViewById(R.id.RelativeLayoutContainer);
+
+        linearLayoutcontainer=(LinearLayout) findViewById(R.id.linear_layout_container);
         loadingGuestLogin= (ProgressBar)findViewById(R.id.loadingGuestLogin);
         terms_checkbox = (CheckBox) findViewById(R.id.terms_checkbox);
         name_edt = (EditText) findViewById(R.id.name_edt);
@@ -255,7 +292,12 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
                 @Override
                 public void onClick(View v) {
                     terms_checkbox.setChecked(true);
-                    dialog.dismiss();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialog.dismiss();
+                        }
+                    }, 400);
                 }
             });
         }
@@ -306,11 +348,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
                 RegisterCustomer();
 
 
-                name_edt.setText("");
-                mobile_edt.setText("");
-                nationality_edt.setText("");
-                email_edt.setText("");
-                service_dropdown.setText("Select the Service");
+
 
             }
 

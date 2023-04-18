@@ -15,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ import com.rank.kuber.Common.AppData;
 import com.rank.kuber.R;
 
 public class NetworkBroadcast extends BroadcastReceiver {
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -68,7 +71,8 @@ public class NetworkBroadcast extends BroadcastReceiver {
     }
 
     public static void showDialog(Context context){
-
+        Handler handler;
+        handler = new Handler();
 
         Dialog dialog= new Dialog(context);
 
@@ -83,9 +87,20 @@ public class NetworkBroadcast extends BroadcastReceiver {
             public void onClick(View v) {
 
                 if(isOnline(context)){
-                    dialog.dismiss();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialog.dismiss();
+                        }
+                    }, 400);
                 }else{
-                    showDialog(context);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            showDialog(context);
+                        }
+                    }, 400);
+
                 }
 
             }

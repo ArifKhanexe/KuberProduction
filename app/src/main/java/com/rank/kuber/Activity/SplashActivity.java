@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.R;
 import com.rank.kuber.Utils.NetworkBroadcast;
@@ -39,7 +38,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     public static final int PERMISSIONS_REQUEST_ALL = 100;
-
+    Handler handler;
 
     private String[] mPermissions = {
             "android.permission.CAMERA"
@@ -53,7 +52,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
 
         AppData.currentContext = SplashActivity.this;
 
