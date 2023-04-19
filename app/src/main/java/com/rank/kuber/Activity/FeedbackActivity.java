@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
     TextView test,query,satisfaction;
     RatingBar testRB, queryRB, satisfactionRB;
     EditText feedbacktext;
+    RelativeLayout relativeLayout;
     Button submit, skip;
     String testRating, queryRating, satisfactionRating,comment;
     ProgressBar loadingfeedback;
@@ -64,6 +66,8 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void init(){
+
+        relativeLayout=findViewById(R.id.RelativeLayoutContainerFeedback);
         test= findViewById(R.id.texttest);
         query=findViewById(R.id.textquery);
         satisfaction=findViewById(R.id.textsatisfaction);
@@ -84,6 +88,7 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
 
     private void getfeedback() {
         loadingfeedback.setVisibility(View.VISIBLE);
+        relativeLayout.setVisibility(View.GONE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ApiClient.getApiClient().getfeedback(EmptyRequest.INSTANCE).enqueue(new Callback<GetFeedbackResponse>() {
@@ -91,12 +96,15 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<GetFeedbackResponse> call, Response<GetFeedbackResponse> response) {
                  if(response.isSuccessful()){
                      try {
+                         loadingfeedback.setVisibility(View.GONE);
+                         relativeLayout.setVisibility(View.VISIBLE);
+                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                          getFeedbackResponse = response.body();
                          test.setText(getFeedbackResponse.getPayload().getQuestionOne());
                          satisfaction.setText(getFeedbackResponse.getPayload().getQuestionTwo());
                          query.setText(getFeedbackResponse.getPayload().getQuestionThree());
-                         loadingfeedback.setVisibility(View.GONE);
-                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                      }catch (Exception e){
                          e.printStackTrace();
                      }
@@ -105,7 +113,10 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onFailure(Call<GetFeedbackResponse> call, Throwable t) {
-
+                Intent i = new Intent(FeedbackActivity.this, GuestLoginActivity.class);
+                startActivity(i);
+                finish();
+                Toast.makeText(FeedbackActivity.this, "Unable to load feedback page.", Toast.LENGTH_SHORT).show();
             }
         });
     }

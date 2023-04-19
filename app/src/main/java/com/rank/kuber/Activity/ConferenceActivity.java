@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -82,6 +83,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     public static boolean isSpeakerOnMute, isVideoOnMute, isMicOnMute;
     private long joinCountDown = 0L;
     private boolean showStatistic = false;
+    RelativeLayout relativeLayout;
     String randomString1, randomString2;
     String generatedRandomString;
     private Handler handler;
@@ -132,7 +134,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private void initObjects() {
         Log.e(TAG, "Initobject");
         handler = new Handler();
-
+        relativeLayout=findViewById(R.id.RelativeLayoutContainerConference);
         frame = findViewById(R.id.main_content);
         iv_menu = findViewById(R.id.imgvw_menu_plus);
         fl_videoFrame = findViewById(R.id.join_params_frame);
@@ -151,6 +153,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     }
 
     private void buttonClickEvent() {
+        
 
         iv_menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,7 +290,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
              ConnectorPkg.initialize();
              String logLevel = "info@VidyoClient info@VidyoConnector warning";
 
-             AppData.mVidyoconnector = new Connector(fl_videoFrame, Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Tiles, 15, logLevel, "", 0);
+             AppData.mVidyoconnector = new Connector(fl_videoFrame, Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Default, 15, logLevel, "", 0);
              Log.e(TAG, "Library Version" + AppData.mVidyoconnector.getVersion());
 
          } catch (Exception e){
