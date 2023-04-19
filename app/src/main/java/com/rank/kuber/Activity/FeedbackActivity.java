@@ -113,10 +113,10 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onFailure(Call<GetFeedbackResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Unable to load feedback page.", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(FeedbackActivity.this, GuestLoginActivity.class);
                 startActivity(i);
-                finish();
-                Toast.makeText(FeedbackActivity.this, "Unable to load feedback page.", Toast.LENGTH_SHORT).show();
+              
             }
         });
     }
