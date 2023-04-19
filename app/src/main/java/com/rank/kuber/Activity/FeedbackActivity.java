@@ -116,7 +116,7 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
                 Toast.makeText(getApplicationContext(), "Unable to load feedback page.", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(FeedbackActivity.this, GuestLoginActivity.class);
                 startActivity(i);
-              
+
             }
         });
     }
