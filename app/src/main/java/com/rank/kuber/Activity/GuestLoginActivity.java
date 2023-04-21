@@ -95,12 +95,9 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         registerNetworkBroadcastReceiver();
         handler = new Handler();
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                locationService();
-            }
-        }, 3000);
+//        not running the locationService() as it is not needed.
+        //locationService();
+
 
         getServiceDetails();
         setClickListenerEvents();

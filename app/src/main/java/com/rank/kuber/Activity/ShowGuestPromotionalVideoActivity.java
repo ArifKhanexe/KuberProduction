@@ -2,6 +2,7 @@ package com.rank.kuber.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -71,6 +72,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     public static ArrayList<String> listOfUsersName;
 
     public ChatMsgReceiver chatMsgReceiver;
+    public static Activity SGPA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         init();
         registerNetworkBroadcastReceiver();
         registerReceivers();
+        SGPA = this;
 
         video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
@@ -184,13 +187,13 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         agentRequest.setCallOption(AppData.CallType);
         Log.e(TAG,"CALL OPTION :"+ AppData.CallType);
         if(AppData.location.isEmpty()) {
-            agentRequest.setLocation("India");
+            agentRequest.setLocation("Null");
         }else{
             agentRequest.setLocation(AppData.location);
         }
         if(AppData.Latitude.trim().isEmpty() || AppData.Longitude.trim().isEmpty() || AppData.Latitude == null || AppData.Longitude == null){
-            agentRequest.setLatitude("88");
-            agentRequest.setLongitude("22");
+            agentRequest.setLatitude("00");
+            agentRequest.setLongitude("00");
         }else{
             agentRequest.setLatitude(AppData.Latitude);
             agentRequest.setLongitude(AppData.Longitude);

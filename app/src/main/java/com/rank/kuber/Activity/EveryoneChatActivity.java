@@ -1,5 +1,8 @@
 package com.rank.kuber.Activity;
 
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.SGPA;
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_everyone;
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_specific_user;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersId;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersName;
 
@@ -103,9 +106,16 @@ public class EveryoneChatActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-
+//                      Setting username, id and all displayed messages to null on exit. It is important to do so otherwise
                         listOfUsersId=null;
                         listOfUsersName=null;
+                        al_chat_everyone=null;
+                        al_chat_specific_user=null;
+
+ //                    Destroy the ShowGuestPromotionalVideoActivity remotely from EveryoneChatActivity. This will unregister(chatMsgReceiver);
+
+                        ShowGuestPromotionalVideoActivity.SGPA.finish();
+
                         AppData.Agent_login_id="";
                         AppData.Agent_id="";
                         callHangupApiCall();
@@ -155,9 +165,10 @@ public class EveryoneChatActivity extends AppCompatActivity {
 
     private class ChatUserListAdapter extends BaseAdapter {
 
+        // setting (listofUsersId.size() - 1) instead of listofUserid.size() to remove the private chat option with agent which shows below the everyone option.
         @Override
         public int getCount() {
-            return ShowGuestPromotionalVideoActivity.listOfUsersId.size();
+            return ShowGuestPromotionalVideoActivity.listOfUsersId.size()-1;
         }
 
         @Override
