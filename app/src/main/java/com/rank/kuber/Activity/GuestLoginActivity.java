@@ -483,7 +483,8 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                Toast.makeText(GuestLoginActivity.this, "Cannot register the guest.", Toast.LENGTH_SHORT).show();
+                loadingGuestLogin.setVisibility(View.GONE);
+                Toast.makeText(GuestLoginActivity.this, "Cannot register the guest.", Toast.LENGTH_LONG).show();
             }
         });
     }
