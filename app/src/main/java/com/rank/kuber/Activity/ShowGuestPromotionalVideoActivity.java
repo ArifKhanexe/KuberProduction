@@ -49,6 +49,8 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     ProgressBar agentwaitprogressbar;
     String TAG = "ShowGuestPromotionalVideoActivity";
     BroadcastReceiver networkBroadcastReceiver;
+    public ChatMsgReceiver chatMsgReceiver;
+
     boolean isCancelledClick = false;
     int count = 1;
     boolean AgentStatus = false;
@@ -71,7 +73,6 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     public static ArrayList<String> listOfUsersId ;
     public static ArrayList<String> listOfUsersName;
 
-    public ChatMsgReceiver chatMsgReceiver;
     public static Activity SGPA;
 
     @Override
@@ -128,6 +129,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     public void registerReceivers() {
         try {
             registerReceiver(chatMsgReceiver, new IntentFilter(AppData._intentFilter_CHATMSG_RECEIVED));
+//            registerReceiver(callReceiver, new IntentFilter(AppData._intentFilter_DIALCALL));
         } catch (Exception e) {
             Log.e(AppData.TAG, "RegisterReceiverExceptionCause: " + e.getMessage());
         }
@@ -218,7 +220,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             AppData.RoomKey = arrOfStr[1];
                             AppData.Call_ID = agentResponse.getPayload().getCallId();
                             AppData.Agent_id= agentResponse.getPayload().getAgentId();
-                            AppData.SocketHostUrl = agentResponse.getPayload().getSocketHostPublic();
+//                            AppData.SocketHostUrl = agentResponse.getPayload().getSocketHostPublic();
                             AppData.CustFName=agentResponse.getPayload().getCustFname();
                             AppData.CustLName=agentResponse.getPayload().getCustLname();
                             AppData.RoomName= agentResponse.getPayload().getRoomName();
@@ -241,9 +243,13 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             Log.e(TAG,"Agent_Name=> "+AppData.Agent_Name);
                             Log.e(TAG,"Portal_Address=> "+AppData.Portal_Address);
 
+
+
                             agentwaitprogressbar.setVisibility(View.GONE);
 //                        Showing agent name
                             waiting_status_tv.setText("You are going to meet "+AppData.Agent_Name);
+
+
 
 //                           Move to conference activities when agent is available and calltype is video or audio. Else move to chat conference.
                             if(!AppData.CallType.equalsIgnoreCase("chat")){
@@ -496,6 +502,14 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
             Log.e("increaseMsgCounter", "msgCounter: " + msgCounter + ", previousId: " + previousId);
         }
     }
+
+//    private class CallReceiver extends BroadcastReceiver{
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//
+//        }
+//    }
 
 
 }

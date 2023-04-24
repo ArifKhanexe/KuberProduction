@@ -52,9 +52,9 @@ public class AppData {
     public static String DISPLAY_NAME = "";
 
     // Socket handling
-    public static String SocketHostUrl = "https://vconnect.ranktechsolutions.com:3001";
+    public static String SocketHostUrl = "";
     public static String SOCKET_URL = "https://vconnect.ranktechsolutions.com";//TODO Correct Url 8-11-2022
-    public static String SOCKET_PORT = "3001";
+    public static String SOCKET_PORT = "3004";
     public static String socketMSG = "";
     public static SocketParser socketParser;
     public static SocketLibrary socketLibrary;
@@ -78,7 +78,8 @@ public class AppData {
 
     /* Intent Filters For Broadcast Receiver */
     public static String _intentFilter_FORCE_LOGOUT = "forcelogout";
-    public static String _intentFilter_DIALCALL = "callReceivedByDoctor";
+    public static String _intentFilter_DIALCALL = "incoming_call#received";
+
     public static String _intentFilter_MISSED_CALL = "callMissedByDoctor";
     public static String _intentFilter_INCOMINGCALL = "scheduleCallFromEmployee";
     public static String _intentFilter_HOLD = "holdByEmployee";

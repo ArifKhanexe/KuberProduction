@@ -323,7 +323,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             else if(nationality.length()<1){
                 Toast.makeText(this, "Please enter nationality", Toast.LENGTH_SHORT).show();
             }
-            else if(selectedService.length()<1){
+            else if(service_dropdown.getText().toString().contains("Select the Service")){
                 Toast.makeText(this,"Please select service",Toast.LENGTH_SHORT).show();
             }
             else if(AppData.CallType.length()<1){
@@ -332,6 +332,10 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             else if(!isChecked){
                 Toast.makeText(GuestLoginActivity.this, "Please accept Terms of Use", Toast.LENGTH_SHORT).show();
             }
+            else if(selectedService.length()<1){
+                Toast.makeText(this,"Please select service",Toast.LENGTH_SHORT).show();
+            }
+
             else {
 
                 AppData.name = name;
@@ -451,6 +455,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         registerRequest.setEmail(AppData.email);
         registerRequest.setCellPhone(AppData.phone);
         registerRequest.setNationality(AppData.nationality);
+        registerRequest.setCallMedium("Android");
 
         ApiClient.getApiClient().getregistercustomer(registerRequest).enqueue(new Callback<RegisterResponse>() {
             @Override
@@ -494,6 +499,15 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             AppData.socketClass = new SocketClass();
             AppData.socketParser = new SocketParser();
             AppData.socketLibrary = new SocketLibrary();
+
+
+            String[] arrOfStr = AppData.SocketHostUrl.split(":", 2);
+            AppData.SOCKET_URL = arrOfStr[0];
+            AppData.SOCKET_PORT = arrOfStr[1];
+
+            Log.e("Socket", "Socket URl" + AppData.SOCKET_URL );
+            Log.e("Socket", "Socket Port" + AppData.SOCKET_PORT );
+
             AppData.socketClass.setSocketUrl(AppData.SOCKET_URL);
             AppData.socketClass.setSocketPort(AppData.SOCKET_PORT);
 

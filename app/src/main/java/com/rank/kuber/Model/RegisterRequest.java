@@ -16,10 +16,22 @@ public class RegisterRequest {
     private String category;
     private String language;
     private String service;
+
+
+
     private String customerName;
     private String email;
     private String cellPhone;
     private String nationality;
+    private String callMedium;
+
+    public String getCallMedium() {
+        return callMedium;
+    }
+
+    public void setCallMedium(String callMedium) {
+        this.callMedium = callMedium;
+    }
 
     public String getCategory() {
         return category;
