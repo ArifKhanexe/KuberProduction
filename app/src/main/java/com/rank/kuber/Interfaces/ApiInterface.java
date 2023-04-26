@@ -3,6 +3,8 @@ package com.rank.kuber.Interfaces;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.AgentRequest;
 import com.rank.kuber.Model.AgentResponse;
+import com.rank.kuber.Model.CallPickedRequest;
+import com.rank.kuber.Model.CallPickedResponse;
 import com.rank.kuber.Model.EmptyRequest;
 import com.rank.kuber.Model.GetFeedbackResponse;
 import com.rank.kuber.Model.HangUpCustomerRequest;
@@ -40,5 +42,8 @@ public interface ApiInterface {
 
     @POST(AppData.REQUEST_TYPE_GET_SERVICEDOWNTIME)
     Call<ServiceDownTimeResponse> getservicedowntime (@Body EmptyRequest emptyRequest);
+
+    @POST(AppData.REQUEST_TYPE_PICKED_CALL_BY_CUSTOMER)
+    Call<CallPickedResponse> getpickedcallbycustomer(@Body CallPickedRequest callPickedRequest);
 
 }

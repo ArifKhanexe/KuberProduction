@@ -24,6 +24,8 @@ import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.AgentRequest;
 import com.rank.kuber.Model.AgentResponse;
+import com.rank.kuber.Model.CallPickedRequest;
+import com.rank.kuber.Model.CallPickedResponse;
 import com.rank.kuber.Model.ChatModel;
 import com.rank.kuber.Model.EmptyRequest;
 import com.rank.kuber.Model.ServiceDownTimeResponse;
@@ -50,39 +52,29 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     String TAG = "ShowGuestPromotionalVideoActivity";
     BroadcastReceiver networkBroadcastReceiver;
     public ChatMsgReceiver chatMsgReceiver;
-
-    boolean isCancelledClick = false;
-    int count = 1;
-    boolean AgentStatus = false;
-    public static String ADMIN = "supervisor";
-    public static String ADMIN_NAME = "admin/supervisor";
-    private boolean isAdminAvailable = false;
-
+    CallReceiver callReceiver;
 
     public static ArrayList<ChatModel> al_chat_everyone; //Display chats related to EveryOne
     public static ArrayList<ChatModel> al_chat_specific_user; //Display chats related to Individual User
-
     public static int msgCounter = 0;
     public static boolean isEveryoneSelected = false;
-
     public static String previousId="";
-
-
 
     public static ArrayList<String> listOfIds;
     public static ArrayList<String> listOfUsersId ;
     public static ArrayList<String> listOfUsersName;
 
-    public static Activity SGPA;
+    public static Activity SGPA; //Used to destroy one activity from another activity programmatically.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_guest_promotional_video);
+        AppData.currentContext = ShowGuestPromotionalVideoActivity.this;
         init();
         registerNetworkBroadcastReceiver();
         registerReceivers();
-        SGPA = this;
+        SGPA = ShowGuestPromotionalVideoActivity.this;
 
         video_view.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
@@ -129,7 +121,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     public void registerReceivers() {
         try {
             registerReceiver(chatMsgReceiver, new IntentFilter(AppData._intentFilter_CHATMSG_RECEIVED));
-//            registerReceiver(callReceiver, new IntentFilter(AppData._intentFilter_DIALCALL));
+            registerReceiver(callReceiver, new IntentFilter(AppData._intentFilter_INCOMING_CALL_RECEIVED));
         } catch (Exception e) {
             Log.e(AppData.TAG, "RegisterReceiverExceptionCause: " + e.getMessage());
         }
@@ -138,6 +130,8 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         public void unregisterReceivers() {
         try {
             unregisterReceiver(chatMsgReceiver);
+            unregisterReceiver(callReceiver);
+
         } catch (Exception e) {
             Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
         }
@@ -245,21 +239,21 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
 
 
-                            agentwaitprogressbar.setVisibility(View.GONE);
+                            agentwaitprogressbar.setVisibility(View.VISIBLE);
 //                        Showing agent name
                             waiting_status_tv.setText("You are going to meet "+AppData.Agent_Name);
 
 
 
-//                           Move to conference activities when agent is available and calltype is video or audio. Else move to chat conference.
-                            if(!AppData.CallType.equalsIgnoreCase("chat")){
-                                Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
-                                startActivity(i);
-                                finish();
-                            } else {
-                                Intent i = new Intent(getApplicationContext(), EveryoneChatActivity.class);
-                                startActivity(i);
-                            }
+////                           Move to conference activities when agent is available and calltype is video or audio. Else move to chat conference.
+//                            if(!AppData.CallType.equalsIgnoreCase("chat")){
+//                                Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
+//                                startActivity(i);
+//                                finish();
+//                            } else {
+//                                Intent i = new Intent(getApplicationContext(), EveryoneChatActivity.class);
+//                                startActivity(i);
+//                            }
 
                         } else{
                             agentwaitprogressbar.setVisibility(View.GONE);
@@ -301,7 +295,9 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
         /*Init Broadcast Receiver*/
         chatMsgReceiver = new ChatMsgReceiver();
-
+        if (null == callReceiver) {
+            callReceiver = new ShowGuestPromotionalVideoActivity.CallReceiver();
+        }
         oops=(TextView) findViewById(R.id.oopsimage);
         video_view = (VideoView) findViewById(R.id.video_view);
         waiting_status_tv = (TextView) findViewById(R.id.waiting_status_tv);
@@ -503,13 +499,44 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         }
     }
 
-//    private class CallReceiver extends BroadcastReceiver{
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//
-//        }
-//    }
+    private class CallReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            CallPickedRequest callPickedRequest=new CallPickedRequest();
+            callPickedRequest.setCallId(AppData.Call_ID);
+            callPickedRequest.setCustId(AppData.CustID);
+
+
+            ApiClient.getApiClient().getpickedcallbycustomer(callPickedRequest).enqueue(new Callback<CallPickedResponse>() {
+                @Override
+                public void onResponse(Call<CallPickedResponse> call, Response<CallPickedResponse> response) {
+                    if(response.isSuccessful()){
+                        CallPickedResponse callPickedResponse=response.body();
+                        if(callPickedResponse.getPayload().getSuccMsg().equalsIgnoreCase("SUCCESS")){
+                            Toast.makeText(ShowGuestPromotionalVideoActivity.this,"Agent received the call. Please wait.",Toast.LENGTH_SHORT).show();
+                            if(!AppData.CallType.equalsIgnoreCase("chat")){
+                                Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
+                                startActivity(i);
+                                finish();
+                            } else {
+                                Intent i = new Intent(getApplicationContext(), EveryoneChatActivity.class);
+                                startActivity(i);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CallPickedResponse> call, Throwable t) {
+
+                }
+            });
+
+        }
+    }
 
 
 }

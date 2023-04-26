@@ -49,6 +49,7 @@ public class FeedbackActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
+        AppData.currentContext = FeedbackActivity.this;
         init();
         registerNetworkBroadcastReceiver();
         getfeedback();

@@ -53,8 +53,10 @@ public class AppData {
 
     // Socket handling
     public static String SocketHostUrl = "";
-    public static String SOCKET_URL = "https://vconnect.ranktechsolutions.com";//TODO Correct Url 8-11-2022
-    public static String SOCKET_PORT = "3004";
+//    public static String SOCKET_URL = "https://vconnect.ranktechsolutions.com";//TODO Correct Url 8-11-2022
+//    public static String SOCKET_PORT = "3004";
+    public static String SOCKET_URL = "";//TODO Correct Url 8-11-2022
+    public static String SOCKET_PORT = "";
     public static String socketMSG = "";
     public static SocketParser socketParser;
     public static SocketLibrary socketLibrary;
@@ -62,6 +64,8 @@ public class AppData {
     public static Socket socket;
 
     /* Socket MSG Initialization */
+    public static final String SOCKET_MSG_INCOMING_CALL_RECEIVED = "incoming_call#received";
+
     public static final String SOCKET_MSG_DIAL_CALL_RECEIVED_BY_EMPLOYEE = "callReceivedByDoctor";
     public static final String SOCKET_MSG_CALL_MISSED_BY_EMPLOYEE = "callMissedByDoctor";
     public static final String SOCKET_MSG_SCHEDULE_CALL_FROM_EMPLOYEE = "scheduleCallFromEmployee";
@@ -77,15 +81,17 @@ public class AppData {
 
 
     /* Intent Filters For Broadcast Receiver */
-    public static String _intentFilter_FORCE_LOGOUT = "forcelogout";
-    public static String _intentFilter_DIALCALL = "incoming_call#received";
+
+    public static String _intentFilter_INCOMING_CALL_RECEIVED = "incoming_call#received";
+    public static String _intentFilter_CHATMSG_RECEIVED = "chatMsgReceived";
+    public static String _intentFilter_INDIVIDUAL_CHATMSG = "individualChatMsgReceived";
 
     public static String _intentFilter_MISSED_CALL = "callMissedByDoctor";
     public static String _intentFilter_INCOMINGCALL = "scheduleCallFromEmployee";
     public static String _intentFilter_HOLD = "holdByEmployee";
     public static String _intentFilter_UNHOLD = "unholdByEmployee";
-    public static String _intentFilter_CHATMSG_RECEIVED = "chatMsgReceived";
-    public static String _intentFilter_INDIVIDUAL_CHATMSG = "individualChatMsgReceived";
+
+    public static String _intentFilter_FORCE_LOGOUT = "forcelogout";
     public static String _intentFilter_FILERECEIVED = "fileReceivedDuringCall";
     public static String _intentFilter_MULTIWAY = "multiwayCallFromEmployee";
     public static String _intentFilter_ENDCALL = "callEndedByEmployee";
@@ -107,6 +113,7 @@ public class AppData {
     public static final String REQUEST_TYPE_GET_FEEDBACK = "rest/getfeedback";
     public static final String REQUEST_TYPE_SAVE_FEEDBACK = "rest/savecustomerfeedback";
     public static final String REQUEST_TYPE_GET_SERVICEDOWNTIME = "rest/getservicedowntime";
+    public static final String REQUEST_TYPE_PICKED_CALL_BY_CUSTOMER = "rest/pickedcallbycustomer";
 
 
 

@@ -51,6 +51,8 @@ public class SocketParser {
     public void parseSocket() {
         message = AppData.socketMSG;
 
+
+
         /**
          * @task Incoming Call
          */
@@ -156,6 +158,16 @@ public class SocketParser {
                 AppData.currentContext.sendBroadcast(hangUpIntent);
             } catch (Exception e) {
                 Log.e("HangUpCallSocketEx", "ExceptionCause: " + e.getMessage());
+            }
+        }
+
+        if (message.contains(AppData.SOCKET_MSG_INCOMING_CALL_RECEIVED)) {
+
+            try {
+                Intent i = new Intent(AppData._intentFilter_INCOMING_CALL_RECEIVED);
+                AppData.currentContext.sendBroadcast(i);
+            } catch (Exception e) {
+                Log.e("IncomingCallSocket", "ExceptionCause: " + e.getMessage());
             }
         }
 

@@ -63,19 +63,13 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         Connector.IRegisterLocalCameraEventListener, Connector.IRegisterLocalMicrophoneEventListener, Connector.IRegisterLocalSpeakerEventListener, Connector.IRegisterLocalWindowShareEventListener {
 
     String TAG = "ConferenceActivity";
-    private View joinForm;
     private LinearLayout llFunctionality;
     private ImageView tvEndCall;
     private ImageView ivMicOn, ivMicOff, ivCamOn, ivCamOff, ivCamRotateBack, ivCamRotateFront, iv_menu, ivSpeakerOn, ivSpeakerOff;
-    private View promoVideoLayout;
-    private TextView txtAgentInfo;
-    private VideoView promotional_videovw;
+    private TextView jointext;
     ViewGroup frame;
     private FrameLayout fl_videoFrame;
-
     private HangUpCustomerRequest hangUpCustomerRequest;
-
-
     BroadcastReceiver networkBroadcastReceiver;
     private boolean doRender = false;
     private boolean callStarted = false;
@@ -96,6 +90,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //code that displays the content in full screen mode
         setContentView(R.layout.activity_conference);
+        AppData.currentContext = ConferenceActivity.this;
+
         registerNetworkBroadcastReceiver();
 
         /*Keep Screen Light On*/
@@ -113,7 +109,10 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         endCallReceiver = new EndCallReceiver();*/
 
         joinProgress = findViewById(R.id.join_progress);
+        jointext=findViewById(R.id.join_text);
+        jointext.setText("Please Wait...");
         joinProgress.setVisibility(View.VISIBLE);
+        jointext.setVisibility(View.VISIBLE);
 
         /*AppData.mVidyoconnector.registerLocalCameraEventListener(this);
         AppData.mVidyoconnector.registerLocalMicrophoneEventListener(this);
@@ -139,6 +138,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         iv_menu = findViewById(R.id.imgvw_menu_plus);
         fl_videoFrame = findViewById(R.id.join_params_frame);
         llFunctionality = findViewById(R.id.llFunctionality);
+
         tvEndCall = findViewById(R.id.endCall);
         ivMicOn = findViewById(R.id.ivMicOn);
         ivMicOff = findViewById(R.id.ivMicOff);
@@ -493,7 +493,9 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         ConferenceActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 joinProgress.setVisibility(View.GONE);
+                jointext.setVisibility(View.GONE);
                 iv_menu.setVisibility(View.VISIBLE);
 
                 if(AppData.CallType.equalsIgnoreCase("audio")){

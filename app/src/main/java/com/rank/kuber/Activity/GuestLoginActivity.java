@@ -90,6 +90,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
 //        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         setContentView(R.layout.activity_guest_login);
+        AppData.currentContext = GuestLoginActivity.this;
 
         init();
         registerNetworkBroadcastReceiver();
