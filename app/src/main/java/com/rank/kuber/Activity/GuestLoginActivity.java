@@ -502,11 +502,11 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             AppData.socketLibrary = new SocketLibrary();
 
 
-            String[] arrOfStr = AppData.SocketHostUrl.split(":", 2);
-            AppData.SOCKET_URL = arrOfStr[0];
-            AppData.SOCKET_PORT = arrOfStr[1];
+//            String[] arrOfStr = AppData.SocketHostUrl.split(":", 2);
+//            AppData.SOCKET_URL = arrOfStr[0];
+//            AppData.SOCKET_PORT = arrOfStr[1];
 
-            Log.e("Socket", "Socket URl" + AppData.SOCKET_URL );
+            Log.e("Socket", "Socket URl :" + AppData.SOCKET_URL );
             Log.e("Socket", "Socket Port" + AppData.SOCKET_PORT );
 
             AppData.socketClass.setSocketUrl(AppData.SOCKET_URL);

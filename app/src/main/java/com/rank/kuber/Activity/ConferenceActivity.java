@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -26,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.rank.kuber.ApiClient;
@@ -71,6 +73,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private FrameLayout fl_videoFrame;
     private HangUpCustomerRequest hangUpCustomerRequest;
     BroadcastReceiver networkBroadcastReceiver;
+    private HoldCallReceiver holdCallReceiver;
+    private UnHoldCallReceiver unHoldCallReceiver;
     private boolean doRender = false;
     private boolean callStarted = false;
     private ProgressBar joinProgress;
@@ -92,7 +96,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         setContentView(R.layout.activity_conference);
         AppData.currentContext = ConferenceActivity.this;
 
-        registerNetworkBroadcastReceiver();
+        initObjects();
 
         /*Keep Screen Light On*/
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -110,7 +114,6 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
         joinProgress = findViewById(R.id.join_progress);
         jointext=findViewById(R.id.join_text);
-        jointext.setText("Please Wait...");
         joinProgress.setVisibility(View.VISIBLE);
         jointext.setVisibility(View.VISIBLE);
 
@@ -120,9 +123,16 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         AppData.mVidyoconnector.registerParticipantEventListener(this);*/
 //        frame.addOnLayoutChangeListener(this);
 
-        initObjects();
         buttonClickEvent();
+        registerNetworkBroadcastReceiver();
+        registerReceivers();
 
+    }
+
+
+    private void registerReceivers() {
+        registerReceiver(holdCallReceiver,new IntentFilter(AppData._intentFilter_HOLD));
+        registerReceiver(unHoldCallReceiver,new IntentFilter(AppData._intentFilter_UNHOLD));
     }
 
     private void registerNetworkBroadcastReceiver() {
@@ -148,6 +158,9 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         ivCamRotateFront = findViewById(R.id.ivCamRotateFront);
         ivSpeakerOn=findViewById(R.id.ivSpeakeron);
         ivSpeakerOff=findViewById(R.id.ivSpeakeroff);
+
+        holdCallReceiver= new ConferenceActivity.HoldCallReceiver();
+        unHoldCallReceiver=new ConferenceActivity.UnHoldCallReceiver();
 
         initVideoconnectorObj();
     }
@@ -466,6 +479,11 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             Log.e("onDestroy_3", e.toString());
         }
 
+        unregisterReceiver(holdCallReceiver);
+        unregisterReceiver(unHoldCallReceiver);
+//        AppData.SOCKET_MSG_UNHOLD="unhold";
+//        AppData.SOCKET_MSG_HOLD="hold";
+
         unregisterReceiver(networkBroadcastReceiver);
     }
 
@@ -717,4 +735,49 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     public void onLoudestParticipantChanged(Participant participant, boolean audioOnly) {
 
     }
+
+    /**
+     * BroadCast Receiver For Hold Call
+     */
+    private class HoldCallReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            try {
+                AppData.mVidyoconnector.setSpeakerPrivacy(true);
+                AppData.mVidyoconnector.setMicrophonePrivacy(true);
+                AppData.mVidyoconnector.setCameraPrivacy(true);
+                fl_videoFrame.setVisibility(View.GONE);
+                jointext.setText("Call is on Hold");
+                jointext.setVisibility(View.VISIBLE);
+//                Toast.makeText(ConferenceActivity.this,"Call is on HOLD",Toast.LENGTH_SHORT).show();
+
+
+//            } catch (Exception e) {
+//                Log.e("HoldCallReceiver", "ExceptionCause: " + e.getMessage());
+//            }
+        }
+    }
+
+    /**
+     * Broadcast Receiver For UnHoldCall
+     */
+    private class UnHoldCallReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                AppData.mVidyoconnector.setSpeakerPrivacy(false);
+                AppData.mVidyoconnector.setMicrophonePrivacy(false);
+                AppData.mVidyoconnector.setCameraPrivacy(false);
+                fl_videoFrame.setVisibility(View.VISIBLE);
+                jointext.setText("Call is on Hold");
+                jointext.setVisibility(View.GONE);
+
+            } catch (Exception e) {
+                Log.e("UnHoldCallReceiver", "ExceptionCause: " + e.getMessage());
+            }
+        }
+    }
+
 }

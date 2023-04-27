@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +52,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
     BroadcastReceiver networkBroadcastReceiver;
     public ChatMsgReceiver chatMsgReceiver;
     CallReceiver callReceiver;
+    MissedCallReceiver missedCallReceiver;
 
     public static ArrayList<ChatModel> al_chat_everyone; //Display chats related to EveryOne
     public static ArrayList<ChatModel> al_chat_specific_user; //Display chats related to Individual User
@@ -122,6 +122,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         try {
             registerReceiver(chatMsgReceiver, new IntentFilter(AppData._intentFilter_CHATMSG_RECEIVED));
             registerReceiver(callReceiver, new IntentFilter(AppData._intentFilter_INCOMING_CALL_RECEIVED));
+            registerReceiver(missedCallReceiver, new IntentFilter(AppData._intentFilter_CALL_MISSED_BY_AGENT));
         } catch (Exception e) {
             Log.e(AppData.TAG, "RegisterReceiverExceptionCause: " + e.getMessage());
         }
@@ -131,6 +132,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         try {
             unregisterReceiver(chatMsgReceiver);
             unregisterReceiver(callReceiver);
+            unregisterReceiver(missedCallReceiver);
 
         } catch (Exception e) {
             Log.e("onDestroyUnRegisterRec", "ExceptionCause: " + e.getMessage());
@@ -213,6 +215,8 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             AppData.Portal_Address = arrOfStr[0];
                             AppData.RoomKey = arrOfStr[1];
                             AppData.Call_ID = agentResponse.getPayload().getCallId();
+//                            AppData.SOCKET_MSG_HOLD= AppData.SOCKET_MSG_HOLD+"#"+AppData.Call_ID+"#";
+//                            AppData.SOCKET_MSG_UNHOLD=AppData.SOCKET_MSG_UNHOLD+"#"+AppData.Call_ID;
                             AppData.Agent_id= agentResponse.getPayload().getAgentId();
 //                            AppData.SocketHostUrl = agentResponse.getPayload().getSocketHostPublic();
                             AppData.CustFName=agentResponse.getPayload().getCustFname();
@@ -298,6 +302,10 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         if (null == callReceiver) {
             callReceiver = new ShowGuestPromotionalVideoActivity.CallReceiver();
         }
+
+        missedCallReceiver = new ShowGuestPromotionalVideoActivity.MissedCallReceiver();
+
+
         oops=(TextView) findViewById(R.id.oopsimage);
         video_view = (VideoView) findViewById(R.id.video_view);
         waiting_status_tv = (TextView) findViewById(R.id.waiting_status_tv);
@@ -499,6 +507,9 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         }
     }
 
+    /**
+     * Broadcast Receiver For Call received by agent
+     */
     private class CallReceiver extends BroadcastReceiver{
 
         @Override
@@ -537,6 +548,24 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
         }
     }
+
+    /**
+     * Broadcast Receiver For Call missed by agent
+     */
+
+    private class MissedCallReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            agentwaitprogressbar.setVisibility(View.GONE);
+            waiting_status_tv.setText("Agent missed the call. Please try again later.");
+            retry_btn.setVisibility(View.VISIBLE);
+            cancel_btn.setVisibility(View.VISIBLE);
+            oops.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 
 
 }

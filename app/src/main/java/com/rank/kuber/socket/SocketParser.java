@@ -126,26 +126,16 @@ public class SocketParser {
          * @task Hold/UnHold Call
          */
         if (message.contains(AppData.SOCKET_MSG_HOLD)) {
-            if (message.contains(AppData.SOCKET_MSG_UNHOLD)) {
-                Intent i = new Intent(AppData._intentFilter_UNHOLD);
-                AppData.currentContext.sendBroadcast(i);
-            } else if (message.contains(AppData.SOCKET_MSG_HOLD)) {
                 Intent i = new Intent(AppData._intentFilter_HOLD);
                 AppData.currentContext.sendBroadcast(i);
-            }
         }
 
         /**
          * @task Hold/UnHold Call
          */
-        if (message.contains(AppData.SOCKET_MSG_UNHOLD)) {
             if (message.contains(AppData.SOCKET_MSG_UNHOLD)) {
                 Intent i = new Intent(AppData._intentFilter_UNHOLD);
                 AppData.currentContext.sendBroadcast(i);
-            } else if (message.contains(AppData.SOCKET_MSG_HOLD)) {
-                Intent i = new Intent(AppData._intentFilter_HOLD);
-                AppData.currentContext.sendBroadcast(i);
-            }
         }
 
         /**
@@ -161,6 +151,10 @@ public class SocketParser {
             }
         }
 
+
+        /**
+         * @task Call received By Agent
+         */
         if (message.contains(AppData.SOCKET_MSG_INCOMING_CALL_RECEIVED)) {
 
             try {
@@ -170,6 +164,21 @@ public class SocketParser {
                 Log.e("IncomingCallSocket", "ExceptionCause: " + e.getMessage());
             }
         }
+
+        /**
+         * @task Call missed By Agent
+         */
+        if (message.contains(AppData.SOCKET_MSG_CALL_MISSED_BY_AGENT)) {
+
+            try {
+                Intent i = new Intent(AppData._intentFilter_CALL_MISSED_BY_AGENT);
+                AppData.currentContext.sendBroadcast(i);
+            } catch (Exception e) {
+                Log.e("IncomingCallSocket", "ExceptionCause: " + e.getMessage());
+            }
+        }
+
+
 
 
         /**
