@@ -66,17 +66,15 @@ public class AppData {
     /* Socket MSG Initialization */
     public static final String SOCKET_MSG_INCOMING_CALL_RECEIVED = "incoming_call#received";
     public static final String SOCKET_MSG_CALL_MISSED_BY_AGENT = "missed#";
-//    public static String SOCKET_MSG_HOLD = "hold";
-//    public static String SOCKET_MSG_UNHOLD = "unhold";
     public static final String SOCKET_MSG_HOLD = "hold#";
     public static final String SOCKET_MSG_UNHOLD = "unhold#";
+    public static final String SOCKET_MSG_CALL_ENDED_BY_EMPLOYEE = "hangUp#";
+
 
     public static final String SOCKET_MSG_SCHEDULE_CALL_FROM_EMPLOYEE = "scheduleCallFromEmployee";
     public static final String SOCKET_MSG_PATIENT_JOIN_SCHEDULE_CALL = "callJoinedByPatient";
-    public static final String SOCKET_MSG_CALL_ENDED_BY_EMPLOYEE = "callEndedByEmployee";
     public static final String SOCKET_MSG_RECORD_STARTED = "recordConfirm~recordOn";
     public static final String SOCKET_MSG_MULTIWAY_EMP_LEAVE_CONFERECE = "leaveConferenceByMultiwayEmployee";
-
     public static final String SOCKET_MSG_FILE_RECEIVED_DURING_CALL = "fileSent";
     public static final String SOCKET_MSG_PRESCRIPTION_RECEIVED_DURING_CALL = "prescriptionSent";
 
@@ -85,20 +83,18 @@ public class AppData {
     /* Intent Filters For Broadcast Receiver */
 
     public static String _intentFilter_INCOMING_CALL_RECEIVED = "incoming_call#received";
-    public static String _intentFilter_CALL_MISSED_BY_AGENT= "missed";
+    public static String _intentFilter_CALL_MISSED_BY_AGENT= "missed#";
     public static String _intentFilter_CHATMSG_RECEIVED = "chatMsgReceived";
     public static String _intentFilter_INDIVIDUAL_CHATMSG = "individualChatMsgReceived";
     public static String _intentFilter_HOLD = "hold#";
     public static String _intentFilter_UNHOLD = "unhold#";
-
-    public static String _intentFilter_MISSED_CALL = "callMissedByDoctor";
-    public static String _intentFilter_INCOMINGCALL = "scheduleCallFromEmployee";
+    public static String _intentFilter_ENDCALL = "hangUp#";
 
 
     public static String _intentFilter_FORCE_LOGOUT = "forcelogout";
     public static String _intentFilter_FILERECEIVED = "fileReceivedDuringCall";
     public static String _intentFilter_MULTIWAY = "multiwayCallFromEmployee";
-    public static String _intentFilter_ENDCALL = "callEndedByEmployee";
+
 
     public static String Longitude= "";
     public static String Latitude= "";

@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context=".Activity.ChatConferenceActivity">
 
+
     <ListView
         android:id="@+id/lv_userSpecificChat"
         android:layout_width="match_parent"
@@ -26,7 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/tenDp"
         android:orientation="horizontal"
-        android:padding="@dimen/tenDp"
+        android:paddingTop="@dimen/tenDp"
+        android:paddingBottom="10dp"
         android:weightSum="1">
 
         <EditText
@@ -35,19 +37,24 @@
             android:layout_height="match_parent"
             android:layout_weight=".85"
             android:hint="Type your message"
+            android:background="@drawable/sendchatbackground"
             android:imeOptions="actionDone"
+            android:layout_marginEnd="10dp"
             android:maxLength="250"
-            android:padding="@dimen/sixDp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:textColor="#80333333"
-            android:textSize="@dimen/seventeenSp" />
+            android:textSize="17dp"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <ImageView
             android:id="@+id/iv_sendChat"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/tenDp"
+            android:layout_height="45dp"
             android:layout_weight=".15"
-            android:src="@drawable/ic_sendchat" />
+            android:src="@drawable/ic_send" />
     </LinearLayout>
 
 

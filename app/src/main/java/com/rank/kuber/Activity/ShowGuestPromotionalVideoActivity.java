@@ -261,7 +261,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
 
                         } else{
                             agentwaitprogressbar.setVisibility(View.GONE);
-                            waiting_status_tv.setText("All our agents are busy right now. Please try again later.");
+                            waiting_status_tv.setText(R.string.busy_status);
                             retry_btn.setVisibility(View.VISIBLE);
                             cancel_btn.setVisibility(View.VISIBLE);
                             oops.setVisibility(View.VISIBLE);
@@ -558,7 +558,7 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
         @Override
         public void onReceive(Context context, Intent intent) {
             agentwaitprogressbar.setVisibility(View.GONE);
-            waiting_status_tv.setText("Agent missed the call. Please try again later.");
+            waiting_status_tv.setText(R.string.missed_status);
             retry_btn.setVisibility(View.VISIBLE);
             cancel_btn.setVisibility(View.VISIBLE);
             oops.setVisibility(View.VISIBLE);

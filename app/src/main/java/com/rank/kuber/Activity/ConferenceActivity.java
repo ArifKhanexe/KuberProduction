@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.nfc.Tag;
@@ -66,15 +67,16 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
     String TAG = "ConferenceActivity";
     private LinearLayout llFunctionality;
-    private ImageView tvEndCall;
+    private ImageView tvEndCall,tvhold, tvagentimage;
     private ImageView ivMicOn, ivMicOff, ivCamOn, ivCamOff, ivCamRotateBack, ivCamRotateFront, iv_menu, ivSpeakerOn, ivSpeakerOff;
-    private TextView jointext;
+    private TextView jointext,agenttext;
     ViewGroup frame;
     private FrameLayout fl_videoFrame;
     private HangUpCustomerRequest hangUpCustomerRequest;
     BroadcastReceiver networkBroadcastReceiver;
     private HoldCallReceiver holdCallReceiver;
     private UnHoldCallReceiver unHoldCallReceiver;
+    private HangUpReceiver hangUpReceiver;
     private boolean doRender = false;
     private boolean callStarted = false;
     private ProgressBar joinProgress;
@@ -114,6 +116,9 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
         joinProgress = findViewById(R.id.join_progress);
         jointext=findViewById(R.id.join_text);
+        agenttext=findViewById(R.id.agenttext);
+        agenttext.setText(AppData.Agent_Name);
+        frame.setBackgroundColor(getResources().getColor(R.color.black));
         joinProgress.setVisibility(View.VISIBLE);
         jointext.setVisibility(View.VISIBLE);
 
@@ -133,6 +138,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private void registerReceivers() {
         registerReceiver(holdCallReceiver,new IntentFilter(AppData._intentFilter_HOLD));
         registerReceiver(unHoldCallReceiver,new IntentFilter(AppData._intentFilter_UNHOLD));
+        registerReceiver(hangUpReceiver, new IntentFilter(AppData._intentFilter_ENDCALL));
     }
 
     private void registerNetworkBroadcastReceiver() {
@@ -148,7 +154,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         iv_menu = findViewById(R.id.imgvw_menu_plus);
         fl_videoFrame = findViewById(R.id.join_params_frame);
         llFunctionality = findViewById(R.id.llFunctionality);
-
+        tvhold=findViewById(R.id.holdimage);
         tvEndCall = findViewById(R.id.endCall);
         ivMicOn = findViewById(R.id.ivMicOn);
         ivMicOff = findViewById(R.id.ivMicOff);
@@ -158,9 +164,12 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         ivCamRotateFront = findViewById(R.id.ivCamRotateFront);
         ivSpeakerOn=findViewById(R.id.ivSpeakeron);
         ivSpeakerOff=findViewById(R.id.ivSpeakeroff);
+        tvagentimage=findViewById(R.id.agentimage);
+
 
         holdCallReceiver= new ConferenceActivity.HoldCallReceiver();
         unHoldCallReceiver=new ConferenceActivity.UnHoldCallReceiver();
+        hangUpReceiver=new ConferenceActivity.HangUpReceiver();
 
         initVideoconnectorObj();
     }
@@ -481,6 +490,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
         unregisterReceiver(holdCallReceiver);
         unregisterReceiver(unHoldCallReceiver);
+        unregisterReceiver(hangUpReceiver);
+
 //        AppData.SOCKET_MSG_UNHOLD="unhold";
 //        AppData.SOCKET_MSG_HOLD="hold";
 
@@ -515,6 +526,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 joinProgress.setVisibility(View.GONE);
                 jointext.setVisibility(View.GONE);
                 iv_menu.setVisibility(View.VISIBLE);
+                frame.setBackgroundColor(getResources().getColor(R.color.black));
 
                 if(AppData.CallType.equalsIgnoreCase("audio")){
                     AppData.mVidyoconnector.setCameraPrivacy(true);
@@ -747,9 +759,15 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 AppData.mVidyoconnector.setSpeakerPrivacy(true);
                 AppData.mVidyoconnector.setMicrophonePrivacy(true);
                 AppData.mVidyoconnector.setCameraPrivacy(true);
-                fl_videoFrame.setVisibility(View.GONE);
+
+                frame.setBackgroundColor(getResources().getColor(R.color.white));
                 jointext.setText("Call is on Hold");
                 jointext.setVisibility(View.VISIBLE);
+                tvhold.setVisibility(View.VISIBLE);
+                agenttext.setVisibility(View.VISIBLE);
+                tvagentimage.setVisibility(View.VISIBLE);
+                fl_videoFrame.setVisibility(View.GONE);
+
 //                Toast.makeText(ConferenceActivity.this,"Call is on HOLD",Toast.LENGTH_SHORT).show();
 
 
@@ -770,13 +788,40 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 AppData.mVidyoconnector.setSpeakerPrivacy(false);
                 AppData.mVidyoconnector.setMicrophonePrivacy(false);
                 AppData.mVidyoconnector.setCameraPrivacy(false);
-                fl_videoFrame.setVisibility(View.VISIBLE);
-                jointext.setText("Call is on Hold");
+                frame.setBackgroundColor(getResources().getColor(R.color.black));
                 jointext.setVisibility(View.GONE);
+                tvhold.setVisibility(View.GONE);
+                agenttext.setVisibility(View.GONE);
+                tvagentimage.setVisibility(View.GONE);
+                fl_videoFrame.setVisibility(View.VISIBLE);
 
             } catch (Exception e) {
                 Log.e("UnHoldCallReceiver", "ExceptionCause: " + e.getMessage());
             }
+        }
+    }
+    /**
+     * Broadcast Receiver For Call end by the agent
+     */
+    private class HangUpReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AppData.mVidyoconnector.setSpeakerPrivacy(true);
+            AppData.mVidyoconnector.setMicrophonePrivacy(true);
+            AppData.mVidyoconnector.setCameraPrivacy(true);
+            frame.setBackgroundColor(getResources().getColor(R.color.black));
+            fl_videoFrame.setVisibility(View.GONE);
+            tvhold.setVisibility(View.GONE);
+            jointext.setVisibility(View.VISIBLE);
+            jointext.setText(R.string.callend_text);
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(getApplicationContext(), FeedbackActivity.class);
+                    startActivity(i);
+                }
+            }, 3000);
         }
     }
 

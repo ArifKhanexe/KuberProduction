@@ -6,28 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".Activity.EveryoneChatActivity">
 
+    <LinearLayout
+        android:id="@+id/lineartitlebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/secondary_project_color"
+        android:weightSum="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
         android:id="@+id/chat_back_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/twentyDp"
-        android:src="@drawable/back_arrow_black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_weight="0.05"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center"
+        android:src="@drawable/back_white" />
 
     <TextView
         android:id="@+id/chat_toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/twentyDp"
-        android:text="Chat"
-        android:textColor="@color/primary_project_color"
-        android:textSize="@dimen/twentyFiveSP"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        android:layout_marginVertical="@dimen/twentyDp"
+        android:layout_weight="0.95"
+        android:layout_gravity="center"
+        android:layout_marginLeft="-38dp"
+        android:gravity="center"
+        android:text="Chat List"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="@dimen/twentyFiveSP" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/lv_chat"
@@ -36,6 +47,6 @@
         android:dividerHeight="@dimen/oneDp"
         android:padding="@dimen/tenDp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chat_toolbar_title" />
+        app:layout_constraintTop_toBottomOf="@+id/lineartitlebar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

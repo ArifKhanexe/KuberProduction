@@ -2,6 +2,9 @@
     <string name="app_name">Kuber</string>
     <string name="terms">" Our services are subject to certain policies and guidelines that govern their use. By using our services, you agree to comply with our privacy policy, acceptable use policy, and local regulations. Violating these policies may result in the termination of the service or legal action. For more information about our policies and guidelines, please visit our website. "</string>
     <string name="waiting_status">"Please wait while your call is being connected with our agent."</string>
+    <string name="busy_status">"All our agents are busy right now. Please try again later."</string>
+    <string name="missed_status">"Agent missed the call. Please try again later."</string>
     <string name="hyperlink"><a href="https://ranktechsolutions.com/">ranktechsolutions.com</a></string>
     <string name="no_internet"> No internet connection. \n Please check your internet connection.</string>
+    <string name="callend_text">"Call ended by the agent. \n Redirecting to feedback page..."</string>
 </resources>

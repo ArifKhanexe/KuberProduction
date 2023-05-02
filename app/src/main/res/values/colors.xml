@@ -81,5 +81,6 @@
     <color name="secondary_project_color">#00B8F3</color>
     <color name="radio_project_color">#00B7F2</color>
     <color name="grey_project_color">#919191</color>
+    <color name="third_project_color">#E9FEFF</color>
 
 </resources>

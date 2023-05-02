@@ -168,7 +168,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
         // setting (listofUsersId.size() - 1) instead of listofUserid.size() to remove the private chat option with agent which shows below the everyone option.
         @Override
         public int getCount() {
-            return ShowGuestPromotionalVideoActivity.listOfUsersId.size()-1;
+            return ShowGuestPromotionalVideoActivity.listOfUsersId.size();
         }
 
         @Override
