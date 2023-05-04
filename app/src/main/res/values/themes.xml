@@ -14,10 +14,15 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowAnimationStyle">
-            @style/MyCustomActivityAnimation</item>
+        <item name="android:windowAnimationStyle">@style/MyCustomActivityAnimation</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:autofilledHighlight" tools:targetApi="o">@color/transparent</item>
+    </style>
+
+    <style name="EditTextStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/secondary_project_color</item>
+        <item name="colorControlNormal">@color/grey_project_color</item>
     </style>
 
 

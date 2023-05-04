@@ -1,5 +1,7 @@
 package com.rank.kuber.Activity;
 
+import static com.rank.kuber.Activity.EveryoneChatActivity.selectedChatUserPos;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rank.kuber.Common.AppData;
@@ -32,7 +35,8 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
 
     private ListView lv_userSpecificChat;
     private EditText et_writeChatMsg;
-    private ImageView iv_sendChat;
+    private ImageView iv_sendChat, iv_backbutton;
+    TextView chatusername;
     private ChatAdapter chatAdapter;
     private ChatReceivedUserReceiver chatReceivedUserReceiver;
     BroadcastReceiver networkBroadcastReceiver;
@@ -84,6 +88,9 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
         lv_userSpecificChat = (ListView) findViewById(R.id.lv_userSpecificChat);
         et_writeChatMsg = (EditText) findViewById(R.id.et_writeChatMsg);
         iv_sendChat = (ImageView) findViewById(R.id.iv_sendChat);
+        iv_backbutton = findViewById(R.id.chat_back_img2);
+        chatusername=findViewById(R.id.chat_username_title);
+        chatusername.setText(ShowGuestPromotionalVideoActivity.listOfUsersName.get(selectedChatUserPos));
     }
     private void initObjects() {
         chatAdapter = new ChatAdapter(ChatConferenceActivity.this);
@@ -95,10 +102,13 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
         registerReceiver(chatReceivedUserReceiver, new IntentFilter(AppData._intentFilter_INDIVIDUAL_CHATMSG));
 
         lv_userSpecificChat.setAdapter(chatAdapter);
+
+
     }
 
     private void setClickListenerEvents() {
         iv_sendChat.setOnClickListener(this);
+        iv_backbutton.setOnClickListener(this);
     }
 
     @Override
@@ -119,7 +129,7 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
 
                 if (!ShowGuestPromotionalVideoActivity.isEveryoneSelected) {
                     Log.e("UserSpecificChatAct", "Chat Send To Specific User");
-                    AppData.socketClass.sendPrivateChat(ShowGuestPromotionalVideoActivity.listOfUsersId.get(EveryoneChatActivity.selectedChatUserPos), et_writeChatMsg.getText().toString());
+                    AppData.socketClass.sendPrivateChat(ShowGuestPromotionalVideoActivity.listOfUsersId.get(selectedChatUserPos), et_writeChatMsg.getText().toString());
                 } else {
                     Log.e("UserSpecificChatAct", "ListUserId "+ShowGuestPromotionalVideoActivity.listOfUsersId);
                     Log.e("UserSpecificChatAct", "Chat Send To Everyone");
@@ -131,6 +141,9 @@ public class ChatConferenceActivity extends AppCompatActivity implements View.On
             } else {
                 Toast.makeText(getApplicationContext(), "Field is blank, can't send blank chat", Toast.LENGTH_LONG).show();
             }
+        }
+        if (view == iv_backbutton){
+            onBackPressed();
         }
     }
 

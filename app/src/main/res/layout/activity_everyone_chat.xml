@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/lineartitlebar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:orientation="horizontal"
         android:background="@color/secondary_project_color"
         android:weightSum="1"
@@ -32,7 +32,7 @@
         android:layout_marginVertical="@dimen/twentyDp"
         android:layout_weight="0.95"
         android:layout_gravity="center"
-        android:layout_marginLeft="-38dp"
+        android:paddingStart="-40dp"
         android:gravity="center"
         android:text="Chat List"
         android:textStyle="bold"
@@ -43,9 +43,10 @@
     <ListView
         android:id="@+id/lv_chat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:dividerHeight="@dimen/oneDp"
-        android:padding="@dimen/tenDp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="80dp"
+        android:divider="@color/black"
+        android:dividerHeight="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lineartitlebar" />
 

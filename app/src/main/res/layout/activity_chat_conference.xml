@@ -7,6 +7,49 @@
     android:orientation="vertical"
     tools:context=".Activity.ChatConferenceActivity">
 
+    <LinearLayout
+        android:id="@+id/lineartitlebar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:background="@color/secondary_project_color"
+        android:weightSum="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/chat_back_img2"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/back_white" />
+
+        <ImageView
+            android:id="@+id/circleImageView"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/white_user_icon" />
+
+        <TextView
+            android:id="@+id/chat_username_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/twentyDp"
+            android:layout_weight="0.9"
+            android:layout_gravity="center"
+            android:paddingStart="10dp"
+            android:gravity="left"
+            android:text="Username"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="17dp" />
+
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/lv_userSpecificChat"

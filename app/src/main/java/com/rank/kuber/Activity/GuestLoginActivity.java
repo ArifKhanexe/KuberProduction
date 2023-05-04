@@ -2,14 +2,17 @@ package com.rank.kuber.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,6 +23,8 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.Patterns;
@@ -45,6 +50,7 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.EmptyRequest;
@@ -80,6 +86,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
     RadioGroup call_type_radioGroup;
     RadioButton videoradioButton, audiooradioButton, chatoradioButton;
     Button login_btn;
+    View view1;
     RegisterRequest registerRequest;
     RegisterResponse registerResponse;
     String TAG = "GuestLoginActivity";
@@ -102,7 +109,78 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
 
         getServiceDetails();
         setClickListenerEvents();
+        setTextChangeListener();
 
+
+    }
+
+    private void setTextChangeListener() {
+        name_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                 name_edt.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+            email_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                email_edt.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mobile_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+               mobile_edt.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        nationality_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                nationality_edt.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     //     Registering broadcast receiver for runtime network checking
@@ -233,6 +311,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         linearLayoutcontainer=(LinearLayout) findViewById(R.id.linear_layout_container);
         loadingGuestLogin= (ProgressBar)findViewById(R.id.loadingGuestLogin);
         terms_checkbox = (CheckBox) findViewById(R.id.terms_checkbox);
+        view1= findViewById(R.id.view1);
         name_edt = (EditText) findViewById(R.id.name_edt);
         email_edt = (EditText) findViewById(R.id.email_edt);
         mobile_edt = (EditText) findViewById(R.id.mobile_edt);
@@ -310,31 +389,46 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             boolean isChecked =   terms_checkbox.isChecked();
 
             if(name.length()<1){
-                Toast.makeText(this, "Please enter name", Toast.LENGTH_SHORT).show();
+                name_edt.requestFocus();
+                name_edt.setError("Please enter name.");
+//                Toast.makeText(this, "Please enter name", Toast.LENGTH_SHORT).show();
             }
             else if(email.length()<1){
-                Toast.makeText(this, "Please enter email address", Toast.LENGTH_SHORT).show();
+                email_edt.requestFocus();
+                email_edt.setError("Please enter a email address.");
+//                Toast.makeText(this, "Please enter email address", Toast.LENGTH_SHORT).show();
             }
             else if(!isValidEmail(email)){
-                Toast.makeText(this, "Please enter valid email address", Toast.LENGTH_SHORT).show();
+                email_edt.requestFocus();
+                email_edt.setError("Please enter a valid email address.");
+//                Toast.makeText(this, "Please enter valid email address", Toast.LENGTH_SHORT).show();
             }
             else if(phone.length()<10){
-                Toast.makeText(this, "Please enter valid mobile no", Toast.LENGTH_SHORT).show();
+                mobile_edt.requestFocus();
+                mobile_edt.setError("Please enter a valid mobile no.");
+//                Toast.makeText(this, "Please enter valid mobile no", Toast.LENGTH_SHORT).show();
             }
             else if(nationality.length()<1){
-                Toast.makeText(this, "Please enter nationality", Toast.LENGTH_SHORT).show();
+                nationality_edt.requestFocus();
+                nationality_edt.setError("Please enter the nationality.");
+//                Toast.makeText(this, "Please enter nationality", Toast.LENGTH_SHORT).show();
             }
             else if(service_dropdown.getText().toString().contains("Select the Service")){
-                Toast.makeText(this,"Please select service",Toast.LENGTH_SHORT).show();
+                globalSnackbar("Please select the service.");
+                view1.setBackgroundColor(getResources().getColor(R.color.colorRed));
+//             Toast.makeText(this,"Please select the service.",Toast.LENGTH_SHORT).show();
             }
             else if(AppData.CallType.length()<1){
-                Toast.makeText(this,"Please select call type",Toast.LENGTH_SHORT).show();
+                globalSnackbar("Please select the call type.");
+//                Toast.makeText(this,"Please select the call type.",Toast.LENGTH_SHORT).show();
             }
             else if(!isChecked){
-                Toast.makeText(GuestLoginActivity.this, "Please accept Terms of Use", Toast.LENGTH_SHORT).show();
+                globalSnackbar("Please accept the Terms of Use.");
+//                Toast.makeText(GuestLoginActivity.this, "Please accept the Terms of Use.", Toast.LENGTH_SHORT).show();
             }
             else if(selectedService.length()<1){
-                Toast.makeText(this,"Please select service",Toast.LENGTH_SHORT).show();
+                globalSnackbar("Please select the service.");
+//                Toast.makeText(this,"Please select the service.",Toast.LENGTH_SHORT).show();
             }
 
             else {
@@ -357,6 +451,7 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         }
 
     }
+
 //    Set selected servicelist on the TextView
     private void dropdown(TextView service_dropdown) {
         if(serviceLists!=null && serviceLists.size()>0){
@@ -374,12 +469,13 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
         popupWindow.setVerticalOffset(-10);
 //        popupWindow.setBackgroundDrawable(new ColorDrawable(0));
         popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 AppData.selectedService= serviceLists.get(i).getServiceName();
                 service_dropdown.setText(AppData.selectedService);
                 service_dropdown.setTextColor(getResources().getColor(R.color.black));
-
+                view1.setBackgroundColor(getResources().getColor(R.color.grey_project_color));
                 popupWindow.dismiss();
             }
         });
@@ -516,6 +612,15 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
             Log.e("Socket", "Socket Created");
         } catch (Exception e) {
             Log.e("CreateSocketException", "ExceptionCause: " + e.getMessage());
+        }
+    }
+    public void globalSnackbar(String text) {
+        View rootView = findViewById(android.R.id.content);
+        if (rootView != null) {
+            Snackbar mysnac= Snackbar.make(rootView, text, Snackbar.LENGTH_SHORT);
+            View sbview=mysnac.getView();
+            sbview.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
+            mysnac.show();
         }
     }
 
