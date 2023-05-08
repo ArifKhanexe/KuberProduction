@@ -422,13 +422,13 @@ public class GuestLoginActivity extends AppCompatActivity implements View.OnClic
                 globalSnackbar("Please select the call type.");
 //                Toast.makeText(this,"Please select the call type.",Toast.LENGTH_SHORT).show();
             }
-            else if(!isChecked){
-                globalSnackbar("Please accept the Terms of Use.");
-//                Toast.makeText(GuestLoginActivity.this, "Please accept the Terms of Use.", Toast.LENGTH_SHORT).show();
-            }
             else if(selectedService.length()<1){
                 globalSnackbar("Please select the service.");
 //                Toast.makeText(this,"Please select the service.",Toast.LENGTH_SHORT).show();
+            }
+            else if(!isChecked){
+                globalSnackbar("Please accept the Terms of Use.");
+//                Toast.makeText(GuestLoginActivity.this, "Please accept the Terms of Use.", Toast.LENGTH_SHORT).show();
             }
 
             else {

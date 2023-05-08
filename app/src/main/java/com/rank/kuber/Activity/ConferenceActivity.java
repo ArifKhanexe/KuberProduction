@@ -1,5 +1,7 @@
 package com.rank.kuber.Activity;
 
+import static com.rank.kuber.R.anim.pull_in;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +16,10 @@ import android.net.ConnectivityManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
+import android.transition.Transition;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +30,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.ChatModel;
@@ -66,9 +73,10 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         Connector.IRegisterLocalCameraEventListener, Connector.IRegisterLocalMicrophoneEventListener, Connector.IRegisterLocalSpeakerEventListener, Connector.IRegisterLocalWindowShareEventListener {
 
     String TAG = "ConferenceActivity";
+    public PopupWindow mypopupWindow;
     private LinearLayout llFunctionality;
     private ImageView tvEndCall,tvhold, tvagentimage;
-    private ImageView ivMicOn, ivMicOff, ivCamOn, ivCamOff, ivCamRotateBack, ivCamRotateFront, iv_menu, ivSpeakerOn, ivSpeakerOff;
+    private ImageView ivMicOn, ivMicOff, ivCamOn, ivCamOff, ivCamRotateBack, ivCamRotateFront, iv_menu, ivSpeakerOn, ivSpeakerOff, ivMenuOption;
     private TextView jointext,agenttext;
     ViewGroup frame;
     private FrameLayout fl_videoFrame;
@@ -152,6 +160,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         relativeLayout=findViewById(R.id.RelativeLayoutContainerConference);
         frame = findViewById(R.id.main_content);
         iv_menu = findViewById(R.id.imgvw_menu_plus);
+        ivMenuOption=findViewById(R.id.iv_menu);
         fl_videoFrame = findViewById(R.id.join_params_frame);
         llFunctionality = findViewById(R.id.llFunctionality);
         tvhold=findViewById(R.id.holdimage);
@@ -160,8 +169,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         ivMicOff = findViewById(R.id.ivMicOff);
         ivCamOn = findViewById(R.id.ivCamOn);
         ivCamOff = findViewById(R.id.ivCamOff);
-        ivCamRotateBack = findViewById(R.id.ivCamRotateBack);
-        ivCamRotateFront = findViewById(R.id.ivCamRotateFront);
+//        ivCamRotateBack = findViewById(R.id.ivCamRotateBack);
+//        ivCamRotateFront = findViewById(R.id.ivCamRotateFront);
         ivSpeakerOn=findViewById(R.id.ivSpeakeron);
         ivSpeakerOff=findViewById(R.id.ivSpeakeroff);
         tvagentimage=findViewById(R.id.agentimage);
@@ -251,35 +260,35 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             }
         });
 
-        ivCamRotateBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                    jniBridge.SetCameraDevice(AppUtils.BACK_CAMERA);
-                AppData.mVidyoconnector.cycleCamera();
-                if (isVideoOnMute) {
-                    AppData.mVidyoconnector.setCameraPrivacy(true);
-                } else {
-                    AppData.mVidyoconnector.setCameraPrivacy(false);
-                }
-                ivCamRotateBack.setVisibility(View.GONE);
-                ivCamRotateFront.setVisibility(View.VISIBLE);
-            }
-        });
-
-        ivCamRotateFront.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppData.mVidyoconnector.cycleCamera();
-                if (isVideoOnMute) {
-                    AppData.mVidyoconnector.setCameraPrivacy(true);
-                } else {
-                    AppData.mVidyoconnector.setCameraPrivacy(false);
-                }
-                ivCamRotateBack.setVisibility(View.VISIBLE);
-                ivCamRotateFront.setVisibility(View.GONE);
-
-            }
-        });
+//        ivCamRotateBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                    jniBridge.SetCameraDevice(AppUtils.BACK_CAMERA);
+//                AppData.mVidyoconnector.cycleCamera();
+//                if (isVideoOnMute) {
+//                    AppData.mVidyoconnector.setCameraPrivacy(true);
+//                } else {
+//                    AppData.mVidyoconnector.setCameraPrivacy(false);
+//                }
+//                ivCamRotateBack.setVisibility(View.GONE);
+//                ivCamRotateFront.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
+//        ivCamRotateFront.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AppData.mVidyoconnector.cycleCamera();
+//                if (isVideoOnMute) {
+//                    AppData.mVidyoconnector.setCameraPrivacy(true);
+//                } else {
+//                    AppData.mVidyoconnector.setCameraPrivacy(false);
+//                }
+//                ivCamRotateBack.setVisibility(View.VISIBLE);
+//                ivCamRotateFront.setVisibility(View.GONE);
+//
+//            }
+//        });
 
         ivSpeakerOn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,6 +307,16 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 isSpeakerOnMute=false;
                 ivSpeakerOn.setVisibility(View.VISIBLE);
                 ivSpeakerOff.setVisibility(View.GONE);
+            }
+        });
+
+        ivMenuOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMenu();
+//              mypopupWindow.setAnimationStyle(R.style.animation);
+                mypopupWindow.showAtLocation(view,Gravity.BOTTOM|Gravity.RIGHT,0,170);
+
             }
         });
     }
@@ -395,6 +414,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         AppData.Agent_id = "";
         AppData.RoomKey = "";
         AppData.Portal_Address = "";
+        AppData.CallType="";
 
         /*joinButton.setEnabled(true);
         cancelButton.setEnabled(false);*/
@@ -824,5 +844,39 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             }, 3000);
         }
     }
+
+    public void showMenu(){
+        View view ;
+        LayoutInflater inflater = (LayoutInflater)
+                getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.menua_layout, null);
+
+        ImageView Chat, Rotate,Upload;
+        Chat = view.findViewById(R.id.chat);
+        Rotate = view.findViewById(R.id.camera_rotate);
+        Upload = view.findViewById(R.id.upload);
+
+        Rotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppData.mVidyoconnector.cycleCamera();
+                if (isVideoOnMute) {
+                    AppData.mVidyoconnector.setCameraPrivacy(true);
+                } else {
+                    AppData.mVidyoconnector.setCameraPrivacy(false);
+                }
+            }
+        });
+
+
+//        WindowManager.LayoutParams layoutParams = mypopupWindow
+
+//        mypopupWindow = new PopupWindow(view,480, 460, true);  //Closed due to test 14-10-2022
+        mypopupWindow = new PopupWindow(view,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);//new added 14-10-2022
+
+
+
+    }
+
 
 }

@@ -118,6 +118,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
 
                         AppData.Agent_login_id="";
                         AppData.Agent_id="";
+                        AppData.CallType="";
                         callHangupApiCall();
                         AppData.socketClass.removeSocket();
                         startActivity(new Intent(getApplicationContext(), FeedbackActivity.class));
