@@ -8,6 +8,7 @@ import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUs
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -53,6 +54,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
     private ChatUserListAdapter chatUserListAdapter;
     private ImageView back_img;
     private ListView lv_chat;
+    public static Activity ECA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        ECA = EveryoneChatActivity.this;
 
     }
 
@@ -95,7 +98,11 @@ public class EveryoneChatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        showAlertDialogOnBackPressed();
+        if(AppData.CallType.equalsIgnoreCase("chat")){
+            showAlertDialogOnBackPressed();
+        }else{
+            super.onBackPressed();
+        }
     }
 
     public void showAlertDialogOnBackPressed(){
@@ -106,7 +113,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-//                      Setting username, id and all displayed messages to null on exit. It is important to do so otherwise
+//                      Setting username, id and all displayed messages to null on exit. It is important to do so otherwise chat data remains
                         listOfUsersId=null;
                         listOfUsersName=null;
                         al_chat_everyone=null;

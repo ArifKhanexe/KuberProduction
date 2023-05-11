@@ -531,7 +531,6 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             if(!AppData.CallType.equalsIgnoreCase("chat")){
                                 Intent i = new Intent(getApplicationContext(), ConferenceActivity.class);
                                 startActivity(i);
-                                finish();
                             } else {
                                 Intent i = new Intent(getApplicationContext(), EveryoneChatActivity.class);
                                 startActivity(i);

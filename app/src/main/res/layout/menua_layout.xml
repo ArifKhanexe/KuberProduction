@@ -5,17 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/menu_option_shape">
 
-
     <ImageView
-        android:id="@+id/camera_rotate"
+        android:id="@+id/chat"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="20dp"
-        android:src="@drawable/camera_rotate"
+        android:src="@drawable/chat_white"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/upload"
@@ -25,22 +23,17 @@
         android:src="@drawable/upload_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/camera_rotate" />
-
+        app:layout_constraintTop_toBottomOf="@id/chat" />
 
     <ImageView
-        android:id="@+id/chat"
+        android:id="@+id/camera_rotate"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="20dp"
-        android:src="@drawable/ic_chat"
+        android:src="@drawable/camera_rotate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/upload" />
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

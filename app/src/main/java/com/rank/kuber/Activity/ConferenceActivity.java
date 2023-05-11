@@ -1,5 +1,9 @@
 package com.rank.kuber.Activity;
 
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_everyone;
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_specific_user;
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersId;
+import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersName;
 import static com.rank.kuber.R.anim.pull_in;
 
 import androidx.annotation.NonNull;
@@ -428,14 +432,35 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
         stopDevices();
 
+
+//     Setting username, id and all displayed messages to null on exit. It is important to do so otherwise
+        listOfUsersId=null;
+        listOfUsersName=null;
+        al_chat_everyone=null;
+        al_chat_specific_user=null;
+
+        // Checks if Activity is not null then Destroy the ShowGuestPromotionalVideoActivity remotely from ChatConferenceActivity. This will unregister(chatMsgReceiver);
+       if( ShowGuestPromotionalVideoActivity.SGPA != null) {
+           ShowGuestPromotionalVideoActivity.SGPA.finish();
+       }
+        AppData.Agent_login_id="";
+        AppData.Agent_id="";
+        AppData.CallType="";
+        AppData.socketClass.removeSocket();
+
+        // Checks if Activity is not null then Destroy the EveryoneChatActivity remotely from ChatConferenceActivity.
+        if(EveryoneChatActivity.ECA !=null ) {
+            EveryoneChatActivity.ECA.finish();
+        }
+
         if (AppData.mVidyoconnector != null) {
 //            jniBridge.RenderRelease();
 
 //            jniBridge.LeaveConference();
 //            callCancel();
-            finish();
-            startActivity(new Intent(ConferenceActivity.this, FeedbackActivity.class));
 
+            startActivity(new Intent(ConferenceActivity.this, FeedbackActivity.class));
+            finish();
         }
     }
 
@@ -516,6 +541,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 //        AppData.SOCKET_MSG_HOLD="hold";
 
         unregisterReceiver(networkBroadcastReceiver);
+        ShowGuestPromotionalVideoActivity.SGPA.finish();
     }
 
     @Override
@@ -856,6 +882,11 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         Rotate = view.findViewById(R.id.camera_rotate);
         Upload = view.findViewById(R.id.upload);
 
+//        WindowManager.LayoutParams layoutParams = mypopupWindow
+
+//        mypopupWindow = new PopupWindow(view,480, 460, true);  //Closed due to test 14-10-2022
+        mypopupWindow = new PopupWindow(view,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);//new added 14-10-2022
+
         Rotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -865,14 +896,17 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 } else {
                     AppData.mVidyoconnector.setCameraPrivacy(false);
                 }
+              mypopupWindow.dismiss();
             }
         });
 
-
-//        WindowManager.LayoutParams layoutParams = mypopupWindow
-
-//        mypopupWindow = new PopupWindow(view,480, 460, true);  //Closed due to test 14-10-2022
-        mypopupWindow = new PopupWindow(view,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);//new added 14-10-2022
+        Chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), EveryoneChatActivity.class);
+                startActivity(i);
+            }
+        });
 
 
 
