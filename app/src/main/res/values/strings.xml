@@ -8,4 +8,5 @@
     <string name="no_internet"> No internet connection. \n Please check your internet connection.</string>
     <string name="callend_text">"Call ended by the agent. \n Redirecting to feedback page..."</string>
     <string name="serviceerror">Please select the service.</string>
+    <string name="choose_file">Select a file</string>
 </resources>

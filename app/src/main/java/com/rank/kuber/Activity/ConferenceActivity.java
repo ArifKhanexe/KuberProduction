@@ -7,16 +7,21 @@ import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUs
 import static com.rank.kuber.R.anim.pull_in;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,9 +50,13 @@ import com.google.android.material.snackbar.Snackbar;
 import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.ChatModel;
+import com.rank.kuber.Model.EmployeeList;
+import com.rank.kuber.Model.GetEmployeesRequest;
+import com.rank.kuber.Model.GetEmployeesResponse;
 import com.rank.kuber.Model.HangUpCustomerRequest;
 import com.rank.kuber.Model.HangUpCustomerResponse;
 import com.rank.kuber.R;
+import com.rank.kuber.Utils.FileUtils;
 import com.rank.kuber.Utils.NetworkBroadcast;
 import com.vidyo.VidyoClient.Connector.Connector;
 import com.vidyo.VidyoClient.Connector.ConnectorPkg;
@@ -60,8 +69,10 @@ import com.vidyo.VidyoClient.Endpoint.LogRecord;
 import com.vidyo.VidyoClient.Endpoint.Participant;
 import com.vidyo.VidyoClient.NetworkInterface;
 
+import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -76,6 +87,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         Connector.IRegisterNetworkInterfaceEventListener, View.OnLayoutChangeListener,
         Connector.IRegisterLocalCameraEventListener, Connector.IRegisterLocalMicrophoneEventListener, Connector.IRegisterLocalSpeakerEventListener, Connector.IRegisterLocalWindowShareEventListener {
 
+    private static final int FILE_UPLOAD_REQUEST_CODE =4556 ;
     String TAG = "ConferenceActivity";
     public PopupWindow mypopupWindow;
     private LinearLayout llFunctionality;
@@ -99,7 +111,9 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     String randomString1, randomString2;
     String generatedRandomString;
     private Handler handler;
+    String imageFilePath="";
     private static boolean isOnHold;
+    public List<EmployeeList> employeeLists;
 //    String Host = "https://ranktechsolutions.platform.vidyo.io";
     String Host = "https://ranktechsolutions.platform.vidyo.io";
 
@@ -908,8 +922,123 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             }
         });
 
+        Upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(ConferenceActivity.this)
+                        .setTitle("Upload")
+                        .setMessage("Select the type of file")
+                        .setPositiveButton("Images", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                showFileChooser();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Documents", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                showFileChooser();
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+            }
+        });
+    }
+    private void showFileChooser() {
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        // The MIME data type filter
+        intent.setType("*/*");
+
+        // Only return URIs that can be opened with ContentResolver
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        Intent chooserIntent = Intent.createChooser(intent, getString(R.string.choose_file));
+
+        try {
+            startActivityForResult(chooserIntent, FILE_UPLOAD_REQUEST_CODE);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case FILE_UPLOAD_REQUEST_CODE:
+                //If the file selection was successful
+                if ((resultCode == RESULT_OK) && (data != null)) {
+                    final Uri uri = data.getData();
+                    try {
 
 
+                        imageFilePath = FileUtils.getPath(ConferenceActivity.this, uri);
+                        String fileExtension = FileUtils.getExtension(imageFilePath);
+                        int lastIndexOfSlash = imageFilePath.lastIndexOf("/");
+                        String fileName = imageFilePath.substring((lastIndexOfSlash + 1), imageFilePath.length());
+                        Log.e("UploadFile", "UploadFileName: " + fileName);
+                        Log.e("EMRRecordActivity", "File Path: " + imageFilePath);
+                        uploadFileDuringCall(imageFilePath,uri);
+
+                    } catch (Exception e) {
+                        Log.e("patFileUploadDuringCl", "ExceptionCause: " + e.getMessage());
+                        Toast.makeText(ConferenceActivity.this, "Please select a proper file manager to select file", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
+    }
+
+    private void uploadFileDuringCall(String filePath,Uri uri) {
+        final File file = new File(filePath);
+        double lengthInBytes = file.length();
+        double length = lengthInBytes / (1024 * 1024);
+        if (length <= 5.0) {
+//            if (file.exists()) {
+//                String image_name = file.getAbsolutePath();
+            String image_name = filePath.substring(filePath.lastIndexOf("/") + 1);
+            getincallemployees();
+//            fileUploadDuringCallService(file,image_name,uri);
+
+//            }else{
+//                Toast.makeText(ConferenceActivity.this, "File doesn't exist", Toast.LENGTH_LONG).show();
+//            }
+        } else {
+            Toast.makeText(ConferenceActivity.this, "File size should be less than 5 MB", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void getincallemployees() {
+        GetEmployeesRequest getEmployeesRequest= new GetEmployeesRequest();
+        getEmployeesRequest.setCallId(AppData.Call_ID);
+
+        ApiClient.getApiClient().getincallemployees(getEmployeesRequest).enqueue(new Callback<GetEmployeesResponse>() {
+            @Override
+            public void onResponse(Call<GetEmployeesResponse> call, Response<GetEmployeesResponse> response) {
+                if(response.isSuccessful()) {
+                    GetEmployeesResponse getEmployeesResponse = response.body();
+                    if(getEmployeesResponse.isStatus()){
+                        List<GetEmployeesResponse.PayloadBean> payloadBeanList= response.body().getPayload();
+                        employeeLists = new ArrayList<EmployeeList>();
+                        for(GetEmployeesResponse.PayloadBean a:payloadBeanList){
+                            EmployeeList employeeList = null;
+                            employeeList.setId(a.getId());
+                            employeeList.setLoginId(a.getLoginId());
+                            employeeLists.add(employeeList);
+                        }
+                    }
+                }else{
+                    Toast.makeText(ConferenceActivity.this, "Couldn't fetch employee details.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetEmployeesResponse> call, Throwable t) {
+                Toast.makeText(ConferenceActivity.this, "Cannot upload due to server issue.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

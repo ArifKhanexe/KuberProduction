@@ -6,6 +6,8 @@ import com.rank.kuber.Model.AgentResponse;
 import com.rank.kuber.Model.CallPickedRequest;
 import com.rank.kuber.Model.CallPickedResponse;
 import com.rank.kuber.Model.EmptyRequest;
+import com.rank.kuber.Model.GetEmployeesRequest;
+import com.rank.kuber.Model.GetEmployeesResponse;
 import com.rank.kuber.Model.GetFeedbackResponse;
 import com.rank.kuber.Model.HangUpCustomerRequest;
 import com.rank.kuber.Model.HangUpCustomerResponse;
@@ -45,5 +47,8 @@ public interface ApiInterface {
 
     @POST(AppData.REQUEST_TYPE_PICKED_CALL_BY_CUSTOMER)
     Call<CallPickedResponse> getpickedcallbycustomer(@Body CallPickedRequest callPickedRequest);
+
+    @POST(AppData.REQUEST_TYPE_GET_EMPLOYEES)
+    Call<GetEmployeesResponse> getincallemployees(@Body GetEmployeesRequest getEmployeesRequest);
 
 }
