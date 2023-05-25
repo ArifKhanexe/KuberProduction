@@ -17,10 +17,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,7 @@ public class SplashActivity extends AppCompatActivity {
             , "android.permission.ACCESS_FINE_LOCATION"
             , "android.permission.ACCESS_NETWORK_STATE"
             , "android.permission.RECORD_AUDIO"
+            , "android.permission.READ_EXTERNAL_STORAGE"
     };
 
     @Override
@@ -135,21 +138,23 @@ public class SplashActivity extends AppCompatActivity {
         int result3 = ContextCompat.checkSelfPermission(this, mPermissions[2]);
         int result4 = ContextCompat.checkSelfPermission(this, mPermissions[3]);
         int result5 = ContextCompat.checkSelfPermission(this, mPermissions[4]);
-        return result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED && result3 == PackageManager.PERMISSION_GRANTED && result4 == PackageManager.PERMISSION_GRANTED && result5 == PackageManager.PERMISSION_GRANTED;
+        int result6= ContextCompat.checkSelfPermission(this,mPermissions[5]);
+        return result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED && result3 == PackageManager.PERMISSION_GRANTED && result4 == PackageManager.PERMISSION_GRANTED && result5 == PackageManager.PERMISSION_GRANTED && result6 == PackageManager.PERMISSION_GRANTED;
     }
 
 
 //    If camera permission was already not granted then show a dialog box for giving camera permission. Else request permissions.
     private void requestPermission() {
         if (Build.VERSION.SDK_INT > 22) {
-            if (shouldShowRequestPermissionRationale(mPermissions[0])) {
+            if (shouldShowRequestPermissionRationale(mPermissions[0]) || shouldShowRequestPermissionRationale(mPermissions[1]) ||  shouldShowRequestPermissionRationale(mPermissions[2])
+                    || shouldShowRequestPermissionRationale(mPermissions[3]) || shouldShowRequestPermissionRationale(mPermissions[4]) || shouldShowRequestPermissionRationale(mPermissions[5])) {
                 new AlertDialog.Builder(this)
                         .setTitle("Permission Needed")
-                        .setMessage("Camera permission is crucial for the functioning of app")
+                        .setMessage("1.WRITE_EXTERNAL_STORAGE\n2.CAMERA \n3. RECORD_AUDIO\n4.Location\nPermission is crucial for the functioning of app")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(SplashActivity.this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2],mPermissions[3],mPermissions[4]}, PERMISSIONS_REQUEST_ALL);
+                                ActivityCompat.requestPermissions(SplashActivity.this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2],mPermissions[3],mPermissions[4],mPermissions[5]}, PERMISSIONS_REQUEST_ALL);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -161,11 +166,20 @@ public class SplashActivity extends AppCompatActivity {
                         }).create().show();
             } else {
                 if (Build.VERSION.SDK_INT > 22) {
-                    ActivityCompat.requestPermissions(this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2],mPermissions[3],mPermissions[4]}, PERMISSIONS_REQUEST_ALL);
+                    ActivityCompat.requestPermissions(this, new String[]{mPermissions[0], mPermissions[1] ,mPermissions[2],mPermissions[3],mPermissions[4], mPermissions[5]}, PERMISSIONS_REQUEST_ALL);
                 }
             }
         }
     }
+        public boolean hasAllPermissionsGranted( int[] grantResults) {
+            for (int grantResult : grantResults) {
+                if (grantResult == PackageManager.PERMISSION_DENIED) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
 
 //    Move to GuestLoginActivity if only camera permission is granted.
     @Override
@@ -174,15 +188,21 @@ public class SplashActivity extends AppCompatActivity {
         {
 
             if (requestCode == PERMISSIONS_REQUEST_ALL) {
-
                 if(grantResults.length>0) {
-
-                    boolean cameraPermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    if (cameraPermissionAccepted) {
-                        Toast.makeText(this, "Permission Granted for Camera, Now you can access all the facilities.", Toast.LENGTH_LONG).show();
+                    boolean results = hasAllPermissionsGranted(grantResults);
+//                    boolean cameraPermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED ;
+                    if (results) {
+                        Toast.makeText(this, "Permission Granted, Now you can access all the facilities.", Toast.LENGTH_SHORT).show();
                         mainFunction();
                     } else {
                         Toast.makeText(this, "Permission Denied, You cannot access all the facilities.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "1.WRITE_EXTERNAL_STORAGE\n2.CAMERA \n3. RECORD_AUDIO\n4.Location\nPermissions are necessary to continue further.", Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
                     }
                 }
                /* if (Build.VERSION.SDK_INT > 22){

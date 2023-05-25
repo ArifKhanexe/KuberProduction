@@ -1000,7 +1000,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 //                String image_name = file.getAbsolutePath();
             String image_name = filePath.substring(filePath.lastIndexOf("/") + 1);
             getincallemployees();
-//            fileUploadDuringCallService(file,image_name,uri);
+            fileUploadDuringCallService(file,image_name,uri);
 
 //            }else{
 //                Toast.makeText(ConferenceActivity.this, "File doesn't exist", Toast.LENGTH_LONG).show();
@@ -1009,6 +1009,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             Toast.makeText(ConferenceActivity.this, "File size should be less than 5 MB", Toast.LENGTH_LONG).show();
         }
     }
+
+
 
     private void getincallemployees() {
         GetEmployeesRequest getEmployeesRequest= new GetEmployeesRequest();
@@ -1023,11 +1025,12 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                         List<GetEmployeesResponse.PayloadBean> payloadBeanList= response.body().getPayload();
                         employeeLists = new ArrayList<EmployeeList>();
                         for(GetEmployeesResponse.PayloadBean a:payloadBeanList){
-                            EmployeeList employeeList = null;
+                            EmployeeList employeeList = new EmployeeList();
                             employeeList.setId(a.getId());
                             employeeList.setLoginId(a.getLoginId());
                             employeeLists.add(employeeList);
                         }
+                        Toast.makeText(ConferenceActivity.this, employeeLists.get(0).getId() + employeeLists.get(0).getLoginId(), Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(ConferenceActivity.this, "Couldn't fetch employee details.", Toast.LENGTH_SHORT).show();
@@ -1039,6 +1042,10 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 Toast.makeText(ConferenceActivity.this, "Cannot upload due to server issue.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void fileUploadDuringCallService(File file, String image_name, Uri uri) {
+        
     }
 
 
