@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.transition.Transition;
 import android.util.Log;
@@ -35,6 +37,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.CookieManager;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -101,6 +105,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private HoldCallReceiver holdCallReceiver;
     private UnHoldCallReceiver unHoldCallReceiver;
     private HangUpReceiver hangUpReceiver;
+    private DownloadFileReceiver downloadFileReceiver;
     private boolean doRender = false;
     private boolean callStarted = false;
     private ProgressBar joinProgress;
@@ -165,6 +170,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         registerReceiver(holdCallReceiver,new IntentFilter(AppData._intentFilter_HOLD));
         registerReceiver(unHoldCallReceiver,new IntentFilter(AppData._intentFilter_UNHOLD));
         registerReceiver(hangUpReceiver, new IntentFilter(AppData._intentFilter_ENDCALL));
+        registerReceiver(downloadFileReceiver, new IntentFilter(AppData._intentFilter_FILERECEIVED));
     }
 
     private void registerNetworkBroadcastReceiver() {
@@ -197,6 +203,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         holdCallReceiver= new ConferenceActivity.HoldCallReceiver();
         unHoldCallReceiver=new ConferenceActivity.UnHoldCallReceiver();
         hangUpReceiver=new ConferenceActivity.HangUpReceiver();
+        downloadFileReceiver = new DownloadFileReceiver();
 
         initVideoconnectorObj();
     }
@@ -550,6 +557,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         unregisterReceiver(holdCallReceiver);
         unregisterReceiver(unHoldCallReceiver);
         unregisterReceiver(hangUpReceiver);
+        unregisterReceiver(downloadFileReceiver);
 
 //        AppData.SOCKET_MSG_UNHOLD="unhold";
 //        AppData.SOCKET_MSG_HOLD="hold";
@@ -1031,6 +1039,8 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                             employeeLists.add(employeeList);
                         }
                         Toast.makeText(ConferenceActivity.this, employeeLists.get(0).getId() + employeeLists.get(0).getLoginId(), Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(ConferenceActivity.this, "Error Message : " + getEmployeesResponse.getError().getErrorMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(ConferenceActivity.this, "Couldn't fetch employee details.", Toast.LENGTH_SHORT).show();
@@ -1046,6 +1056,78 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
     private void fileUploadDuringCallService(File file, String image_name, Uri uri) {
         
+    }
+
+    /**
+     * BroadCast Receiver For File Receive During Call
+     */
+    private class DownloadFileReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ConferenceActivity.this, R.style.AlertDialogTheme);
+
+                alertDialog.setTitle("File Receive");
+                alertDialog.setMessage("You have received a file");
+                alertDialog.setIcon(R.drawable.ic_receive_file);
+                alertDialog.setCancelable(false)
+                        .setPositiveButton("View", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                 /*Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppData.FILE_RECEIVE_URL));
+                        startActivity(Intent.createChooser(browserIntent, "Select your choice"));*/
+
+                                Log.e("FileReceiveURL: ",AppData.FILE_RECEIVE_URL);
+                                Intent launchGoogleChrome = new Intent(Intent.ACTION_VIEW, Uri.parse(AppData.FILE_RECEIVE_URL));
+//                        launchGoogleChrome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        launchGoogleChrome.setPackage("com.android.chrome");
+//                        launchGoogleChrome.putExtra("com.android.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true);
+
+                                try {
+                                    startActivity(Intent.createChooser(launchGoogleChrome,"Select your choice"));
+                                } catch (ActivityNotFoundException e) {
+                                    e.printStackTrace();
+//                            launchGoogleChrome.setPackage(null);
+//                            startActivity(launchGoogleChrome);
+                                    startActivity(Intent.createChooser(launchGoogleChrome,"Select your choice"));
+                                }
+
+                                dialog.cancel();
+                            }
+                        }).setNeutralButton("Download", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DownloadManager.Request request= new DownloadManager.Request(Uri.parse(AppData.FILE_RECEIVE_URL));
+                                String title = URLUtil.guessFileName(AppData.FILE_RECEIVE_URL,null,null);
+                                request.setTitle(title);
+                                request.setDescription("Downloading file. Please wait...");
+                                String cookies= CookieManager.getInstance().getCookie(AppData.FILE_RECEIVE_URL);
+                                request.addRequestHeader("cookies",cookies);
+                                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,title);
+
+                                DownloadManager downloadManager= (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+                                downloadManager.enqueue(request);
+
+                                Toast.makeText(context, "Downloading started.", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog dialog = alertDialog.create();
+
+                dialog.show();
+
+
+            } catch (Exception e) {
+                Log.e("DownloadFileReceiver", "ExceptionCause: " + e.getMessage());
+            }
+        }
     }
 
 

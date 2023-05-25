@@ -20,6 +20,11 @@
         <item name="android:autofilledHighlight" tools:targetApi="o">@color/transparent</item>
     </style>
 
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/primary_project_color</item>
+    </style>
+
+
     <style name="EditTextStyle" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/secondary_project_color</item>
         <item name="colorControlNormal">@color/grey_project_color</item>

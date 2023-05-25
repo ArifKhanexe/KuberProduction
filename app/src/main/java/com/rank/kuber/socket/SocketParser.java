@@ -115,6 +115,32 @@ public class SocketParser {
             }
         }
 
+        /**
+         * @task File Receive During Call
+         */
+        if (message.contains(AppData.SOCKET_MSG_FILE_RECEIVED_DURING_CALL)) {
+            tempPushString = message;
+
+            try {
+                String[] splitString = tempPushString.split("#");
+                String filePath = splitString[1].trim();
+                String fileName = splitString[2].trim();
+//                AppData.FILE_TYPE = splitString[3].trim();
+                AppData.FILE_TYPE = "";
+
+                Log.e("FileReceivedPath", "filePath: " + filePath);
+                if (filePath.trim().length() > 0) {
+                    AppData.FILE_RECEIVE_URL = filePath.trim();
+
+                    Intent fileReceiveIntent = new Intent(AppData._intentFilter_FILERECEIVED);
+                    AppData.currentContext.sendBroadcast(fileReceiveIntent);
+                }
+            } catch (Exception e) {
+                Log.e("FileReceiveSocketEx", "ExceptionCause: " + e.getMessage());
+            }
+        }
+
+
 
 
         /**
