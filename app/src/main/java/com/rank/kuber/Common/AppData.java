@@ -117,6 +117,8 @@ public class AppData {
     public static final String REQUEST_TYPE_GET_SERVICEDOWNTIME = "rest/getservicedowntime";
     public static final String REQUEST_TYPE_PICKED_CALL_BY_CUSTOMER = "rest/pickedcallbycustomer";
     public static final String REQUEST_TYPE_GET_EMPLOYEES="rest/getincallemployees";
+    public static final String REQUEST_TYPE_UPLOAD_FILE="rest/uploadfile";
+
 
 
 

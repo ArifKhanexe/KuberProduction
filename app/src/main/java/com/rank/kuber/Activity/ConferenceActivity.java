@@ -51,6 +51,8 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.rank.kuber.ApiClient;
 import com.rank.kuber.Common.AppData;
 import com.rank.kuber.Model.ChatModel;
@@ -59,6 +61,9 @@ import com.rank.kuber.Model.GetEmployeesRequest;
 import com.rank.kuber.Model.GetEmployeesResponse;
 import com.rank.kuber.Model.HangUpCustomerRequest;
 import com.rank.kuber.Model.HangUpCustomerResponse;
+import com.rank.kuber.Model.UploadRequest;
+import com.rank.kuber.Model.UploadResponse;
+import com.rank.kuber.Model.conferenceUsersDtoList;
 import com.rank.kuber.R;
 import com.rank.kuber.Utils.FileUtils;
 import com.rank.kuber.Utils.NetworkBroadcast;
@@ -80,6 +85,9 @@ import java.util.List;
 
 import javax.crypto.NoSuchPaddingException;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -106,6 +114,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private UnHoldCallReceiver unHoldCallReceiver;
     private HangUpReceiver hangUpReceiver;
     private DownloadFileReceiver downloadFileReceiver;
+    private List<MultipartBody.Part> multipartList = new ArrayList<>();
     private boolean doRender = false;
     private boolean callStarted = false;
     private ProgressBar joinProgress;
@@ -118,7 +127,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private Handler handler;
     String imageFilePath="";
     private static boolean isOnHold;
-    public List<EmployeeList> employeeLists;
+    public List<conferenceUsersDtoList> employeeLists;
 //    String Host = "https://ranktechsolutions.platform.vidyo.io";
     String Host = "https://ranktechsolutions.platform.vidyo.io";
 
@@ -1007,8 +1016,9 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 //            if (file.exists()) {
 //                String image_name = file.getAbsolutePath();
             String image_name = filePath.substring(filePath.lastIndexOf("/") + 1);
-            getincallemployees();
-            fileUploadDuringCallService(file,image_name,uri);
+            getincallemployees(file,image_name,uri);
+
+
 
 //            }else{
 //                Toast.makeText(ConferenceActivity.this, "File doesn't exist", Toast.LENGTH_LONG).show();
@@ -1020,7 +1030,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
 
 
-    private void getincallemployees() {
+    private void getincallemployees(File uploadFile, String image_name, Uri uri) {
         GetEmployeesRequest getEmployeesRequest= new GetEmployeesRequest();
         getEmployeesRequest.setCallId(AppData.Call_ID);
 
@@ -1031,13 +1041,18 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                     GetEmployeesResponse getEmployeesResponse = response.body();
                     if(getEmployeesResponse.isStatus()){
                         List<GetEmployeesResponse.PayloadBean> payloadBeanList= response.body().getPayload();
-                        employeeLists = new ArrayList<EmployeeList>();
+                        employeeLists = new ArrayList<>();
                         for(GetEmployeesResponse.PayloadBean a:payloadBeanList){
-                            EmployeeList employeeList = new EmployeeList();
+                            conferenceUsersDtoList employeeList = new conferenceUsersDtoList();
                             employeeList.setId(a.getId());
                             employeeList.setLoginId(a.getLoginId());
                             employeeLists.add(employeeList);
                         }
+
+
+
+                        fileUploadDuringCallService(uploadFile,image_name,uri);
+
                         Toast.makeText(ConferenceActivity.this, employeeLists.get(0).getId() + employeeLists.get(0).getLoginId(), Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(ConferenceActivity.this, "Error Message : " + getEmployeesResponse.getError().getErrorMessage(), Toast.LENGTH_SHORT).show();
@@ -1054,8 +1069,82 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         });
     }
 
-    private void fileUploadDuringCallService(File file, String image_name, Uri uri) {
-        
+    private void fileUploadDuringCallService(File uploadFile, String image_name, Uri uri) {
+
+        Log.e("Conference", "Outside " );
+        if (multipartList!=null && multipartList.size()>0){
+            multipartList.clear();
+        }
+        final Long fileSize = uploadFile.length();
+        final String fileName = uploadFile.getName();
+        RequestBody requestBody = RequestBody.create(MediaType.parse(getContentResolver().getType(uri)), uploadFile);
+        MultipartBody.Part fileMultipart = MultipartBody.Part.createFormData("files", fileName, requestBody);
+
+        Log.e("MultiPart: ",requestBody.toString());
+        Log.e("MultiPart: ",fileMultipart.toString());
+        multipartList.add(fileMultipart);
+
+
+//        UploadRequest uploadRequest = new UploadRequest();
+//        uploadRequest.setFile(fileMultipart);
+//        uploadRequest.setConferenceUsersDtoList(employeeLists);
+//        uploadRequest.setCallId(AppData.Call_ID);
+//        uploadRequest.setCustId(AppData.CustID);
+//        uploadRequest.setDocumentTitle("test");
+
+//        String stringToPost = new Gson().toJson(employeeLists);
+//        RequestBody requestBody1 = RequestBody.create(
+//                MediaType.parse("multipart/form-data"), // notice I'm using "multipart/form-data"
+//                stringToPost
+//        );
+
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addFormDataPart("file", uploadFile.getName(),RequestBody.create(MediaType.parse(getContentResolver().getType(uri)),uploadFile)) ;
+        builder.addFormDataPart("conferenceUsersDtoList", new Gson().toJson(employeeLists));
+        builder.addFormDataPart("custId", AppData.CustID);
+        builder.addFormDataPart("callId",AppData.Call_ID);
+        builder.addFormDataPart("documentTitle","test");
+
+
+//        MultipartBody.Part Listdescription = MultipartBody.Part.createFormData("conferenceUsersDtoList", stringToPost);
+//
+//        RequestBody CustIDPart = RequestBody.create(MultipartBody.FORM, AppData.CustID);
+//        RequestBody CallIDPart = RequestBody.create(MultipartBody.FORM, AppData.Call_ID);
+//        RequestBody DocumentTitlePart = RequestBody.create(MultipartBody.FORM, "Test");
+
+        RequestBody requestBody1 = builder.build();
+
+
+        ApiClient.getApiClient().getuploadfile(requestBody1).enqueue(new Callback<UploadResponse>() {
+            @Override
+            public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+
+                if(response.isSuccessful()){
+                    UploadResponse uploadResponse= response.body();
+
+                    try {
+                        if(uploadResponse.getPayload().getSuccess().equals("SUCCESS")){
+                            Log.e("Conference", "inside " );
+                            Toast.makeText(ConferenceActivity.this,uploadResponse.getPayload().getSuccess()+ uploadResponse.getPayload().getFilepath(),Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(ConferenceActivity.this,"false",Toast.LENGTH_LONG).show();
+                        }
+                    }catch (Exception e){
+                        Toast.makeText(ConferenceActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+
+                }else{
+
+                    Toast.makeText(ConferenceActivity.this, response.body().getError().getErrorMessage(),Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UploadResponse> call, Throwable t) {
+                Toast.makeText(ConferenceActivity.this,"failure",Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     /**
