@@ -1,16 +1,24 @@
 package com.rank.kuber.Activity;
 
+import static com.rank.kuber.Activity.EveryoneChatActivity.selectedChatUserPos;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_everyone;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_specific_user;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersId;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.listOfUsersName;
 import static com.rank.kuber.R.anim.pull_in;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -19,7 +27,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -27,6 +37,8 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.transition.Transition;
 import android.util.Log;
 import android.view.Gravity;
@@ -67,6 +79,7 @@ import com.rank.kuber.Model.conferenceUsersDtoList;
 import com.rank.kuber.R;
 import com.rank.kuber.Utils.FileUtils;
 import com.rank.kuber.Utils.NetworkBroadcast;
+import com.rank.kuber.Utils.RealPathUtil;
 import com.vidyo.VidyoClient.Connector.Connector;
 import com.vidyo.VidyoClient.Connector.ConnectorPkg;
 import com.vidyo.VidyoClient.Device.Device;
@@ -79,6 +92,9 @@ import com.vidyo.VidyoClient.Endpoint.Participant;
 import com.vidyo.VidyoClient.NetworkInterface;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -942,42 +958,94 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         Upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(ConferenceActivity.this)
-                        .setTitle("Upload")
-                        .setMessage("Select the type of file")
-                        .setPositiveButton("Images", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                showFileChooser();
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton("Documents", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                showFileChooser();
-                                dialog.dismiss();
-                            }
-                        }).create().show();
+
+
+                Dialog dialog= new Dialog(ConferenceActivity.this);
+
+                dialog.setContentView(R.layout.upload_dialogbox);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+                dialog.show();
+
+                Button image_upload = dialog.findViewById(R.id.images_button);
+                Button document_upload= dialog.findViewById(R.id.document_button);
+                Button close=dialog.findViewById(R.id.close_button);
+                image_upload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showFileChooser();
+                        dialog.dismiss();
+                    }
+                });
+                document_upload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showFileChooser();
+                        dialog.dismiss();
+                    }
+                });
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
     }
     private void showFileChooser() {
-        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);//TODO New Changes here 18-11-2021
         // The MIME data type filter
         intent.setType("*/*");
-
         // Only return URIs that can be opened with ContentResolver
         intent.addCategory(Intent.CATEGORY_OPENABLE);
+
 
         Intent chooserIntent = Intent.createChooser(intent, getString(R.string.choose_file));
 
         try {
             startActivityForResult(chooserIntent, FILE_UPLOAD_REQUEST_CODE);
+//            someActivityResultLauncher.launch(chooserIntent);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
         }
     }
+
+//    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+//            new ActivityResultContracts.StartActivityForResult(),
+//            new ActivityResultCallback<ActivityResult>() {
+//                @Override
+//                public void onActivityResult(ActivityResult result) {
+//                    if (result.getResultCode() == Activity.RESULT_OK) {
+//                        // There are no request codes
+//                        Intent data = result.getData();
+//                        final Uri uri = data.getData();
+//                        try {
+//
+//                            imageFilePath = FileUtils.getPath(ConferenceActivity.this, uri);
+//                            String fileExtension = FileUtils.getExtension(imageFilePath);
+//                            int lastIndexOfSlash = imageFilePath.lastIndexOf("/");
+//                            String fileName = imageFilePath.substring((lastIndexOfSlash + 1), imageFilePath.length());
+//                            Log.e("UploadFile", "UploadFileName: " + fileName);
+//                            Log.e("EMRRecordActivity", "File Path: " + imageFilePath);
+//
+//                            // Alternatively, use FileUtils.getFile(Context, Uri)
+//                            if (imageFilePath != null && FileUtils.isLocal(imageFilePath) {
+//                                File file = new File(imageFilePath);
+//                            }
+//                            uploadFileDuringCall(imageFilePath,uri);
+//
+//
+//                        } catch (Exception e) {
+//                            Log.e("patFileUploadDuringCl", "ExceptionCause: " + e.getMessage());
+//                            Toast.makeText(ConferenceActivity.this, "Please select a proper file manager to select file", Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//                }
+//            });
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -991,13 +1059,20 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                     try {
 
 
-                        imageFilePath = FileUtils.getPath(ConferenceActivity.this, uri);
-                        String fileExtension = FileUtils.getExtension(imageFilePath);
-                        int lastIndexOfSlash = imageFilePath.lastIndexOf("/");
-                        String fileName = imageFilePath.substring((lastIndexOfSlash + 1), imageFilePath.length());
-                        Log.e("UploadFile", "UploadFileName: " + fileName);
-                        Log.e("EMRRecordActivity", "File Path: " + imageFilePath);
-                        uploadFileDuringCall(imageFilePath,uri);
+//                        imageFilePath = FileUtils.getPath(ConferenceActivity.this, uri);
+//                        String fileExtension = FileUtils.getExtension(imageFilePath);
+//                        int lastIndexOfSlash = imageFilePath.lastIndexOf("/");
+//                        String fileName = imageFilePath.substring((lastIndexOfSlash + 1), imageFilePath.length());
+//                        Log.e("UploadFile", "UploadFileName: " + fileName);
+//                        Log.e("EMRRecordActivity", "File Path: " + imageFilePath);
+//                        // Alternatively, use FileUtils.getFile(Context, Uri)
+//                        if (imageFilePath != null && FileUtils.isLocal(imageFilePath) ){
+//                            File file = new File(imageFilePath);
+//                        }
+                        String fileName = "Test";
+                        imageFilePath=copyFileToInternal(this,uri);
+                        final File file = new File(imageFilePath);
+                        uploadFileDuringCall(file,uri,fileName);
 
                     } catch (Exception e) {
                         Log.e("patFileUploadDuringCl", "ExceptionCause: " + e.getMessage());
@@ -1008,14 +1083,41 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         }
     }
 
-    private void uploadFileDuringCall(String filePath,Uri uri) {
-        final File file = new File(filePath);
+    public static String copyFileToInternal(Context context, Uri fileUri) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Cursor cursor = context.getContentResolver().query(fileUri, new String[]{OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE}, null, null);
+            cursor.moveToFirst();
+
+            @SuppressLint("Range") String displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            @SuppressLint("Range") long size = cursor.getLong(cursor.getColumnIndex(OpenableColumns.SIZE));
+
+            File file = new File(context.getFilesDir() + "/" + displayName);
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
+                byte buffers[] = new byte[1024];
+                int read;
+                while ((read = inputStream.read(buffers)) != -1) {
+                    fileOutputStream.write(buffers, 0, read);
+                }
+                inputStream.close();
+                fileOutputStream.close();
+                return file.getPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private void uploadFileDuringCall(File file,Uri uri, String file_name) {
+//        final File file = new File(filePath);
         double lengthInBytes = file.length();
         double length = lengthInBytes / (1024 * 1024);
         if (length <= 5.0) {
 //            if (file.exists()) {
 //                String image_name = file.getAbsolutePath();
-            String image_name = filePath.substring(filePath.lastIndexOf("/") + 1);
+            String image_name = file_name;
             getincallemployees(file,image_name,uri);
 
 
@@ -1103,7 +1205,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         builder.addFormDataPart("conferenceUsersDtoList", new Gson().toJson(employeeLists));
         builder.addFormDataPart("custId", AppData.CustID);
         builder.addFormDataPart("callId",AppData.Call_ID);
-        builder.addFormDataPart("documentTitle","test");
+        builder.addFormDataPart("documentTitle",fileName);
 
 
 //        MultipartBody.Part Listdescription = MultipartBody.Part.createFormData("conferenceUsersDtoList", stringToPost);
@@ -1122,26 +1224,28 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                 if(response.isSuccessful()){
                     UploadResponse uploadResponse= response.body();
 
-                    try {
-                        if(uploadResponse.getPayload().getSuccess().equals("SUCCESS")){
-                            Log.e("Conference", "inside " );
-                            Toast.makeText(ConferenceActivity.this,uploadResponse.getPayload().getSuccess()+ uploadResponse.getPayload().getFilepath(),Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(ConferenceActivity.this,"false",Toast.LENGTH_LONG).show();
+                        try {
+                                if(uploadResponse.getPayload().getSuccess().equals("SUCCESS")){
+                                    Log.e("Conference", "inside " );
+                                    for(conferenceUsersDtoList a: employeeLists){
+                                        Log.e("Conference", "Filepath : " + uploadResponse.getPayload().getFilepath() );
+                                        AppData.socketClass.send(a.getLoginId(), "fileSentByCust#<"+ uploadResponse.getPayload().getFilepath() + ">#<" + uploadResponse.getPayload().getDocTitle() + ">");
+                                    }
+                                    Toast.makeText(ConferenceActivity.this,uploadResponse.getPayload().getSuccess()+ uploadResponse.getPayload().getFilepath(),Toast.LENGTH_LONG).show();
+                                }else if(!uploadResponse.isStatus()){
+                                    Toast.makeText(ConferenceActivity.this, uploadResponse.getError().getErrorMessage(),Toast.LENGTH_LONG).show();
+                                }
+                        }catch (Exception e){
+                            Toast.makeText(ConferenceActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                         }
-                    }catch (Exception e){
-                        Toast.makeText(ConferenceActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
-                    }
-
-                }else{
-
-                    Toast.makeText(ConferenceActivity.this, response.body().getError().getErrorMessage(),Toast.LENGTH_LONG).show();
+                }{
+                    Toast.makeText(ConferenceActivity.this, "Unsuccessful.",Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UploadResponse> call, Throwable t) {
-                Toast.makeText(ConferenceActivity.this,"failure",Toast.LENGTH_LONG).show();
+                Toast.makeText(ConferenceActivity.this,"Upload failure",Toast.LENGTH_LONG).show();
             }
         });
 

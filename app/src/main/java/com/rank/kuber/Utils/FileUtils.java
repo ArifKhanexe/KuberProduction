@@ -51,6 +51,7 @@ public class FileUtils {
      * @return Extension including the dot("."); "" if there is no extension;
      *         null if uri was null.
      */
+
     public static String getExtension(String uri) {
         if (uri == null) {
             return null;
@@ -273,15 +274,9 @@ public class FileUtils {
 
                 // TODO handle non-primary volumes
             }
+
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
-
-//                final String id = DocumentsContract.getDocumentId(uri);
-//                final Uri contentUri = ContentUris.withAppendedId(
-//                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-//
-//                return getDataColumn(context, contentUri, null, null);
-
                 final String id = DocumentsContract.getDocumentId(uri);
 
                 if (id != null && id.startsWith("raw:")) {
@@ -302,6 +297,12 @@ public class FileUtils {
                         }
                     } catch (Exception e) {}
                 }
+
+//                final String id = DocumentsContract.getDocumentId(uri);
+//                final Uri contentUri = ContentUris.withAppendedId(
+//                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+//
+//                return getDataColumn(context, contentUri, null, null);
 
                 // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
                 String fileName = getFileName(context, uri);
@@ -356,6 +357,7 @@ public class FileUtils {
 
         return null;
     }
+
 
 
     public static String getFileName(@NonNull Context context, Uri uri) {
@@ -581,7 +583,7 @@ public class FileUtils {
                                 MediaStore.Video.Thumbnails.MINI_KIND,
                                 null);
                     }
-                    else if (mimeType.contains(FileUtils.MIME_TYPE_IMAGE)) {
+                    else if (mimeType.contains(FileUtils.MIME_TYPE_IMAGE) ) {
                         bm = MediaStore.Images.Thumbnails.getThumbnail(
                                 resolver,
                                 id,
