@@ -1,5 +1,7 @@
 package com.rank.kuber.Activity;
 
+import static com.rank.kuber.Activity.ChatConferenceActivity.activeChat;
+import static com.rank.kuber.Activity.ConferenceActivity.activeVideo;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.SGPA;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_everyone;
 import static com.rank.kuber.Activity.ShowGuestPromotionalVideoActivity.al_chat_specific_user;
@@ -10,17 +12,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -49,6 +57,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
     String TAG = "EveryoneChatActivity";
     HangUpCustomerRequest hangUpCustomerRequest;
     BroadcastReceiver networkBroadcastReceiver;
+    private DownloadFileReceiver downloadFileReceiver;
     public static int selectedChatUserPos = -1;
     public static String receivedChatId;  //Required to show a yellow dot beside the user, to identify that chat msg has received
     private ChatUserListAdapter chatUserListAdapter;
@@ -88,12 +97,15 @@ public class EveryoneChatActivity extends AppCompatActivity {
     private void registerNetworkBroadcastReceiver() {
         networkBroadcastReceiver= new NetworkBroadcast();
         registerReceiver(networkBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        downloadFileReceiver = new DownloadFileReceiver();
+        registerReceiver(downloadFileReceiver, new IntentFilter(AppData._intentFilter_FILERECEIVED));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(networkBroadcastReceiver);
+        unregisterReceiver(downloadFileReceiver);
     }
 
     @Override
@@ -106,7 +118,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
     }
 
     public void showAlertDialogOnBackPressed(){
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this,R.style.AlertDialogTheme)
                 .setTitle("Exit")
                 .setMessage("Do you want to exit or disconnect the chat ?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -318,6 +330,86 @@ public class EveryoneChatActivity extends AppCompatActivity {
             Log.e("filterBySelectChatUser", "size: " + ShowGuestPromotionalVideoActivity.al_chat_specific_user.size());
         } catch (Exception e) {
             Log.e("filterBySelectChatUser", e.toString());
+        }
+    }
+
+    /**
+     * BroadCast Receiver For File Receive During Call
+     */
+    private class DownloadFileReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if(activeChat || activeVideo) {
+                    if (!AppData.CallType.equalsIgnoreCase("chat")) {
+                        Toast.makeText(context, "File received. Go back to video conference page for more info.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "File received. Go to chatting page for more info.", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(EveryoneChatActivity.this, R.style.AlertDialogTheme);
+
+                    alertDialog.setTitle("File Receive");
+                    alertDialog.setMessage("You have received a file");
+                    alertDialog.setIcon(R.drawable.ic_receive_file);
+                    alertDialog.setCancelable(false)
+                            .setPositiveButton("View", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                                   /*Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppData.FILE_RECEIVE_URL));
+                        startActivity(Intent.createChooser(browserIntent, "Select your choice"));*/
+
+                                    Log.e("FileReceiveURL: ",AppData.FILE_RECEIVE_URL);
+                                    Intent launchGoogleChrome = new Intent(Intent.ACTION_VIEW, Uri.parse(AppData.FILE_RECEIVE_URL));
+//                        launchGoogleChrome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        launchGoogleChrome.setPackage("com.android.chrome");
+//                        launchGoogleChrome.putExtra("com.android.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true);
+
+                                    try {
+                                        startActivity(Intent.createChooser(launchGoogleChrome,"Select your choice"));
+                                    } catch (ActivityNotFoundException e) {
+                                        e.printStackTrace();
+//                            launchGoogleChrome.setPackage(null);
+//                            startActivity(launchGoogleChrome);
+                                        startActivity(Intent.createChooser(launchGoogleChrome,"Select your choice"));
+                                    }
+
+
+                                    dialog.cancel();
+                                }
+                            })
+                            .setNeutralButton("Download", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    DownloadManager.Request request= new DownloadManager.Request(Uri.parse(AppData.FILE_RECEIVE_URL));
+                                    String title = URLUtil.guessFileName(AppData.FILE_RECEIVE_URL,null,null);
+                                    request.setTitle(title);
+                                    request.setDescription("Downloading file. Please wait...");
+                                    String cookies= CookieManager.getInstance().getCookie(AppData.FILE_RECEIVE_URL);
+                                    request.addRequestHeader("cookies",cookies);
+                                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,title);
+
+                                    DownloadManager downloadManager= (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+                                    downloadManager.enqueue(request);
+
+                                    Toast.makeText(context, "Downloading started.", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog dialog = alertDialog.create();
+
+                    dialog.show();
+                }
+            } catch (Exception e) {
+                Log.e("DownloadFileReceiver", "ExceptionCause: " + e.getMessage());
+            }
         }
     }
 

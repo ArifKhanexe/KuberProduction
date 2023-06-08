@@ -143,6 +143,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
     private Handler handler;
     String imageFilePath="";
     private static boolean isOnHold;
+    static boolean activeVideo = false;
     public List<conferenceUsersDtoList> employeeLists;
 //    String Host = "https://ranktechsolutions.platform.vidyo.io";
     String Host = "https://ranktechsolutions.platform.vidyo.io";
@@ -153,6 +154,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //code that displays the content in full screen mode
         setContentView(R.layout.activity_conference);
         AppData.currentContext = ConferenceActivity.this;
+        activeVideo=true;
 
         initObjects();
 
@@ -589,6 +591,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
         unregisterReceiver(networkBroadcastReceiver);
         ShowGuestPromotionalVideoActivity.SGPA.finish();
+        activeVideo=false;
     }
 
     @Override
@@ -1092,22 +1095,28 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
             @SuppressLint("Range") long size = cursor.getLong(cursor.getColumnIndex(OpenableColumns.SIZE));
 
             File file = new File(context.getFilesDir() + "/" + displayName);
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
-                byte buffers[] = new byte[1024];
-                int read;
-                while ((read = inputStream.read(buffers)) != -1) {
-                    fileOutputStream.write(buffers, 0, read);
+            double lengthInBytes = file.length();
+            double length = lengthInBytes / (1024 * 1024);
+            if (length > 5.0) {
+                Toast.makeText(context.getApplicationContext(), "File size should be less than 5 MB", Toast.LENGTH_LONG).show();
+            } else {
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
+                    byte buffers[] = new byte[1024];
+                    int read;
+                    while ((read = inputStream.read(buffers)) != -1) {
+                        fileOutputStream.write(buffers, 0, read);
+                    }
+                    inputStream.close();
+                    fileOutputStream.close();
+                    return file.getPath();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                inputStream.close();
-                fileOutputStream.close();
-                return file.getPath();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
-        return null;
+            return null;
     }
 
     private void uploadFileDuringCall(File file,Uri uri, String file_name) {
@@ -1155,7 +1164,7 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
                         fileUploadDuringCallService(uploadFile,image_name,uri);
 
-                        Toast.makeText(ConferenceActivity.this, employeeLists.get(0).getId() + employeeLists.get(0).getLoginId(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(ConferenceActivity.this, employeeLists.get(0).getId() + employeeLists.get(0).getLoginId(), Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(ConferenceActivity.this, "Error Message : " + getEmployeesResponse.getError().getErrorMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -1229,17 +1238,15 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
                                     Log.e("Conference", "inside " );
                                     for(conferenceUsersDtoList a: employeeLists){
                                         Log.e("Conference", "Filepath : " + uploadResponse.getPayload().getFilepath() );
-                                        AppData.socketClass.send(a.getLoginId(), "fileSentByCust#<"+ uploadResponse.getPayload().getFilepath() + ">#<" + uploadResponse.getPayload().getDocTitle() + ">");
+                                        AppData.socketClass.send(a.getLoginId(), "fileSentByCust#"+ uploadResponse.getPayload().getFilepath() + "#" + uploadResponse.getPayload().getDocTitle());
                                     }
-                                    Toast.makeText(ConferenceActivity.this,uploadResponse.getPayload().getSuccess()+ uploadResponse.getPayload().getFilepath(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ConferenceActivity.this,uploadResponse.getPayload().getSuccess() /*+ uploadResponse.getPayload().getFilepath()*/,Toast.LENGTH_LONG).show();
                                 }else if(!uploadResponse.isStatus()){
                                     Toast.makeText(ConferenceActivity.this, uploadResponse.getError().getErrorMessage(),Toast.LENGTH_LONG).show();
                                 }
                         }catch (Exception e){
                             Toast.makeText(ConferenceActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
                         }
-                }{
-                    Toast.makeText(ConferenceActivity.this, "Unsuccessful.",Toast.LENGTH_LONG).show();
                 }
             }
 
