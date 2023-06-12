@@ -80,6 +80,9 @@
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
+
+
+
     </FrameLayout>
 
     <ImageView

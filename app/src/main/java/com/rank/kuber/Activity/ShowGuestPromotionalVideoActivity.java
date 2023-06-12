@@ -233,9 +233,10 @@ public class ShowGuestPromotionalVideoActivity extends AppCompatActivity impleme
                             AppData.Agent_Name = arr[0];
                             AppData.Agent_Name = fullStatus.substring(11);
 
-                            listOfUsersId.add(AppData.Agent_login_id);
-                            listOfUsersName.add(AppData.Agent_Name);
-
+                            if(AppData.CallType.equalsIgnoreCase("chat")) {
+                                listOfUsersId.add(AppData.Agent_login_id);
+                                listOfUsersName.add(AppData.Agent_Name);
+                            }
                             Log.e(TAG,"RoomKey=> "+AppData.RoomKey);
                             Log.e(TAG,"Agent_id=> "+AppData.Agent_id);
                             Log.e(TAG,"Agent_Name=> "+AppData.Agent_Name);

@@ -193,6 +193,11 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
     }
 
+    @Override
+    public void onBackPressed(){
+
+    }
+
 
     private void registerReceivers() {
         registerReceiver(holdCallReceiver,new IntentFilter(AppData._intentFilter_HOLD));
@@ -610,7 +615,6 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
         Log.e("onSuccess", "Join Conference Successfully");
 
 
-
         /*Register ParticipantEventListener Interface*/
         AppData.mVidyoconnector.registerLocalMicrophoneEventListener(this);
         AppData.mVidyoconnector.registerParticipantEventListener(this);
@@ -827,73 +831,80 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
     @Override
     public void onParticipantJoined(Participant participant) {
-        if (participant.getName().contains("~")) {
-            try {
-                String participantName = participant.getName().split("~")[0];
-                String participantId = participant.getName().split("~")[1];
-                Log.e("Participant Joined",participantName+" "+participantId);
+        if(!AppData.CallType.equalsIgnoreCase("chat")) {
+
+            if (participant.getName().contains("~")) {
+                try {
+                    String participantName = participant.getName().split("~")[0];
+                    String participantId = participant.getName().split("~")[1];
+                    Log.e("Participant Joined", participantName + " " + participantId);
 
 
                     listOfUsersName.add(participantName);
                     listOfUsersId.add(participantId);
 //                    listOfIds.add(participantId);
 
-            } catch (Exception e) {
-                Log.e("OnParticipantJoined", "ExceptionCause: " + e.getMessage());
-            }
-        } else if (participant.getName().isEmpty()) {
-            if (listOfUsersName!=null && listOfUsersName.size()>0){
-                listOfUsersName.clear();
-                listOfUsersName.add("N.A.");
-                listOfUsersId.clear();
-                listOfUsersId.add("No User Available");
-            }
+                } catch (Exception e) {
+                    Log.e("OnParticipantJoined", "ExceptionCause: " + e.getMessage());
+                }
+            } else if (participant.getName().isEmpty()) {
+                if (listOfUsersName != null && listOfUsersName.size() > 0) {
+                    listOfUsersName.clear();
+                    listOfUsersName.add("N.A.");
+                    listOfUsersId.clear();
+                    listOfUsersId.add("No User Available");
+                }
 
+            }
         }
-
     }
 
     @Override
     public void onParticipantLeft(Participant participant) {
-        if (participant.getName().contains("~")) {
-            String participantName = participant.getName().split("~")[0];
-            String participantId = participant.getName().split("~")[1];
-            Log.d("Participant Left ",participantName+ " " +participantId);
+        if(!AppData.CallType.equalsIgnoreCase("chat")) {
+            if (participant.getName().contains("~")) {
+                String participantName = participant.getName().split("~")[0];
+                String participantId = participant.getName().split("~")[1];
+                Log.d("Participant Left ", participantName + " " + participantId);
 
 
-            try {
-                if (listOfUsersId != null) {
-                    int i = 0;
-                    while(i<listOfUsersId.size()){
-                        Log.e("OnParticipantLeft", "position " +String.valueOf(i));
-                        if (listOfUsersId.get(i).equalsIgnoreCase(participantId)) {
-                            Log.e("OnParticipantLeft", "userlist " +listOfUsersName);
-                            listOfUsersName.remove(i);
-                            Log.e("OnParticipantLeft", "userlistRemove " +listOfUsersName);
+                try {
+                    if (listOfUsersId != null) {
+                        int i = 0;
+                        while (i < listOfUsersId.size()) {
+                            Log.e("OnParticipantLeft", "position " + String.valueOf(i));
+                            if (listOfUsersId.get(i).equalsIgnoreCase(participantId)) {
+                                Log.e("OnParticipantLeft", "userlist " + listOfUsersName);
+                                listOfUsersName.remove(i);
+                                Log.e("OnParticipantLeft", "userlistRemove " + listOfUsersName);
 
-                            Log.e("OnParticipantLeft", "userIdslist " +listOfUsersId);
-                            listOfUsersId.remove(i);
-                            Log.e("OnParticipantLeft", "userIdslistRemove " +listOfUsersId);
+                                Log.e("OnParticipantLeft", "userIdslist " + listOfUsersId);
+                                listOfUsersId.remove(i);
+                                Log.e("OnParticipantLeft", "userIdslistRemove " + listOfUsersId);
 
-                            synchronized(listOfUsersName){
-                                listOfUsersName.notify();
-                            }synchronized(listOfUsersId){
-                                listOfUsersId.notify();
-                            }
+                                synchronized (listOfUsersName) {
+                                    listOfUsersName.notify();
+                                }
+                                synchronized (listOfUsersId) {
+                                    listOfUsersId.notify();
+                                }
 
-                            new Handler(Looper.getMainLooper())
-                                    .post(new Runnable() {
-                                        @Override public void run() {
-                                            Toast.makeText(ConferenceActivity.this, "Call ended by "+ participantName, Toast.LENGTH_SHORT).show();
-                                        }});
+                                new Handler(Looper.getMainLooper())
+                                        .post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(ConferenceActivity.this, "Call ended by " + participantName, Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
 //                            showAlertDialogOnCallEndedByPatient();
-                            return;
+                                return;
+                            }
+                            i++;
                         }
-                        i++;
                     }
+                } catch (Exception e) {
+                    Log.e("OnParticipantLeft", "ExceptionCause: " + e.getMessage());
                 }
-            } catch (Exception e) {
-                Log.e("OnParticipantLeft", "ExceptionCause: " + e.getMessage());
             }
         }
     }

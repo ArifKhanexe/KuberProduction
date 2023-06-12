@@ -344,9 +344,7 @@ public class EveryoneChatActivity extends AppCompatActivity {
                 if(activeChat || activeVideo) {
                     if (!AppData.CallType.equalsIgnoreCase("chat")) {
                         Toast.makeText(context, "File received. Go back to video conference page for more info.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, "File received. Go to chatting page for more info.", Toast.LENGTH_SHORT).show();
-                    }
+                    } 
                 }else{
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(EveryoneChatActivity.this, R.style.AlertDialogTheme);
 
