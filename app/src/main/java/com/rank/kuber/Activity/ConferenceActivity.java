@@ -37,6 +37,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.transition.Transition;
@@ -826,12 +827,75 @@ public class ConferenceActivity extends AppCompatActivity implements Connector.I
 
     @Override
     public void onParticipantJoined(Participant participant) {
+        if (participant.getName().contains("~")) {
+            try {
+                String participantName = participant.getName().split("~")[0];
+                String participantId = participant.getName().split("~")[1];
+                Log.e("Participant Joined",participantName+" "+participantId);
+
+
+                    listOfUsersName.add(participantName);
+                    listOfUsersId.add(participantId);
+//                    listOfIds.add(participantId);
+
+            } catch (Exception e) {
+                Log.e("OnParticipantJoined", "ExceptionCause: " + e.getMessage());
+            }
+        } else if (participant.getName().isEmpty()) {
+            if (listOfUsersName!=null && listOfUsersName.size()>0){
+                listOfUsersName.clear();
+                listOfUsersName.add("N.A.");
+                listOfUsersId.clear();
+                listOfUsersId.add("No User Available");
+            }
+
+        }
 
     }
 
     @Override
     public void onParticipantLeft(Participant participant) {
+        if (participant.getName().contains("~")) {
+            String participantName = participant.getName().split("~")[0];
+            String participantId = participant.getName().split("~")[1];
+            Log.d("Participant Left ",participantName+ " " +participantId);
 
+
+            try {
+                if (listOfUsersId != null) {
+                    int i = 0;
+                    while(i<listOfUsersId.size()){
+                        Log.e("OnParticipantLeft", "position " +String.valueOf(i));
+                        if (listOfUsersId.get(i).equalsIgnoreCase(participantId)) {
+                            Log.e("OnParticipantLeft", "userlist " +listOfUsersName);
+                            listOfUsersName.remove(i);
+                            Log.e("OnParticipantLeft", "userlistRemove " +listOfUsersName);
+
+                            Log.e("OnParticipantLeft", "userIdslist " +listOfUsersId);
+                            listOfUsersId.remove(i);
+                            Log.e("OnParticipantLeft", "userIdslistRemove " +listOfUsersId);
+
+                            synchronized(listOfUsersName){
+                                listOfUsersName.notify();
+                            }synchronized(listOfUsersId){
+                                listOfUsersId.notify();
+                            }
+
+                            new Handler(Looper.getMainLooper())
+                                    .post(new Runnable() {
+                                        @Override public void run() {
+                                            Toast.makeText(ConferenceActivity.this, "Call ended by "+ participantName, Toast.LENGTH_SHORT).show();
+                                        }});
+//                            showAlertDialogOnCallEndedByPatient();
+                            return;
+                        }
+                        i++;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("OnParticipantLeft", "ExceptionCause: " + e.getMessage());
+            }
+        }
     }
 
     @Override
